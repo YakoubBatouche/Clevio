@@ -132,3 +132,9 @@
 @media (prefers-reduced-motion: reduce) {
   .hero__float { animation: none; transform: none; }
 }
+
+/* Exact cover geometry shared with the original full-frame artwork. */
+.hero__artwork { container-type: size; }
+.hero__scene { position: absolute; bottom: 0; left: 50%; width: max(100cqw, calc(100cqh * 16 / 9)); aspect-ratio: 16 / 9; transform: translateX(-50%); pointer-events: none; }
+.hero__scene .hero__part { inset: auto; object-fit: fill; }
+@media (max-width: 979px) { .hero__scene { left: 2%; transform: translateX(-2%); } }

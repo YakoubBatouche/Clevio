@@ -53,3 +53,9 @@ npm run test:e2e
 ```
 
 Browser checks cover Chromium, Firefox and WebKit, responsive widths, keyboard behavior, section navigation, project dialogs, inquiry validation, reduced motion and automated accessibility. Successful GitHub runs save desktop/tablet/mobile review screenshots on the `visual-review` branch and attach build/review files to the run.
+
+## Separated hero scene
+
+The main glass C, pedestal and lime orbital light are independent static PNG layers. The light has back/front pieces to preserve its overlap with the C. All are registered to the original 7680×4320 master. Visible opaque surface pixels are retained; only the newly exposed background is inpainted. Soft lighting mattes reproduce the source within one RGB level (mean difference below 0.05/255).
+
+The site uses tightly cropped 2K/4K/8K PNG exports and a lossless background, positioned inside a shared cover frame. This preserves both desktop and mobile object placement while avoiding full-canvas PNG decode overhead. Existing floating cube/bubble motion remains unchanged; no new animation is applied to these scene pieces. Full-canvas masters and the reconstruction report are saved with the chat outputs.

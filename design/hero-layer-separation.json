@@ -1,0 +1,60 @@
+{
+  "canvas": {
+    "width": 7680,
+    "height": 4320
+  },
+  "source": "public/hero-layers/hires/hero-background-8k.png",
+  "parts": [
+    {
+      "name": "orbit-back",
+      "bounds": {
+        "left": 734,
+        "top": 2312,
+        "width": 3585,
+        "height": 691
+      },
+      "opaqueSourcePixels": 72198
+    },
+    {
+      "name": "stage",
+      "bounds": {
+        "left": 297,
+        "top": 3281,
+        "width": 4157,
+        "height": 837
+      },
+      "opaqueSourcePixels": 1972047
+    },
+    {
+      "name": "main-c",
+      "bounds": {
+        "left": 286,
+        "top": 221,
+        "width": 4397,
+        "height": 3165
+      },
+      "opaqueSourcePixels": 5619662
+    },
+    {
+      "name": "orbit-front",
+      "bounds": {
+        "left": 1290,
+        "top": 2725,
+        "width": 504,
+        "height": 67
+      },
+      "opaqueSourcePixels": 9973
+    }
+  ],
+  "verification": {
+    "maximumChannelDifference": 1,
+    "meanChannelDifference": 0.04888945151748971,
+    "opaqueSurfaceDifference": 0
+  },
+  "notes": [
+    "Existing 8K enhanced source preserved; no new enhancement applied.",
+    "Only newly exposed backdrop was generated; opaque foreground detail retains source RGB.",
+    "Soft lighting matte quantization differs by at most one level of 255.",
+    "Static scene parts: no animation added."
+  ]
+}

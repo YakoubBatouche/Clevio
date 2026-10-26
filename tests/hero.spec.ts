@@ -271,3 +271,27 @@ test('reduced motion leaves the full headline and actions visible', async ({ pag
     expect(Math.abs(box!.height - baseline!.height)).toBeLessThan(0.1)
   }
 })
+
+
+test('separated C, pedestal and orbit keep the original cover registration', async ({ page }) => {
+  for (const width of [390, 1672]) {
+    await page.setViewportSize({ width, height: 941 })
+    await page.goto('/')
+    const parts = page.locator('[data-hero-piece]')
+    await expect(parts).toHaveCount(4)
+    await expect.poll(() => parts.evaluateAll((images) => images.every((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true)
+    const background = await page.locator('.hero__background').boundingBox()
+    const frame = await page.locator('.hero__scene').boundingBox()
+    expect(background).not.toBeNull()
+    expect(frame).not.toBeNull()
+    const scale = Math.max(background!.width / 7680, background!.height / 4320)
+    const sceneWidth = 7680 * scale
+    const sceneHeight = 4320 * scale
+    const expectedX = background!.x + (background!.width - sceneWidth) * (width < 980 ? 0.02 : 0.5)
+    expect(Math.abs(frame!.x - expectedX)).toBeLessThan(0.15)
+    expect(Math.abs(frame!.y - (background!.y + background!.height - sceneHeight))).toBeLessThan(0.15)
+    expect(Math.abs(frame!.width - sceneWidth)).toBeLessThan(0.15)
+    expect(Math.abs(frame!.height - sceneHeight)).toBeLessThan(0.15)
+    for (const part of await parts.all()) await expect(part).toHaveCSS('animation-name', 'none')
+  }
+})
