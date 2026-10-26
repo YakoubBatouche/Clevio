@@ -19,7 +19,7 @@ test('desktop hero uses selectable Arabic text and individually interactive acti
   expect(errors).toEqual([])
   if (testInfo.project.name === 'chromium') {
     await fs.mkdir('artifacts', { recursive: true })
-    await page.screenshot({ path: 'artifacts/hero-desktop.jpg', type: 'jpeg', quality: 94, fullPage: true })
+    await page.screenshot({ path: 'artifacts/homepage-desktop.jpg', type: 'jpeg', quality: 94, fullPage: true })
     console.log('DESKTOP_METRICS', await page.locator('.hero__heading').evaluate((el) => {
       const box = el.getBoundingClientRect()
       return { x: box.x, y: box.y, width: box.width, height: box.height, font: getComputedStyle(el).fontFamily }
@@ -48,11 +48,11 @@ for (const width of [320, 390, 768, 1024, 1440, 1920]) {
     expect(rect!.height).toBeGreaterThanOrEqual(44)
     if (width === 390 && testInfo.project.name === 'chromium') {
       await fs.mkdir('artifacts', { recursive: true })
-      await page.screenshot({ path: 'artifacts/hero-mobile.jpg', type: 'jpeg', quality: 94, fullPage: true })
+      await page.screenshot({ path: 'artifacts/homepage-mobile.jpg', type: 'jpeg', quality: 94, fullPage: true })
     }
     if (width === 768 && testInfo.project.name === 'chromium') {
       await fs.mkdir('artifacts', { recursive: true })
-      await page.screenshot({ path: 'artifacts/hero-tablet.jpg', type: 'jpeg', quality: 94, fullPage: true })
+      await page.screenshot({ path: 'artifacts/homepage-tablet.jpg', type: 'jpeg', quality: 94, fullPage: true })
     }
   })
 }
@@ -70,39 +70,65 @@ test('mobile navigation supports keyboard dismissal and focus return', async ({ 
   await expect(trigger).toHaveAttribute('aria-expanded', 'false')
 })
 
-test('primary action prepares a real email draft without claiming delivery', async ({ page }) => {
+test('hero contact action reaches the form and prepares a valid email draft', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'لنبدأ مشروعك', exact: true }).click()
-  const dialog = page.getByRole('dialog', { name: 'لنبدأ مشروعك', exact: true })
-  await expect(dialog).toBeVisible()
-  await dialog.getByLabel('الاسم الكامل').fill('عميل كليفيو')
-  await dialog.getByLabel('البريد الإلكتروني').fill('hello@example.com')
-  await dialog.getByLabel('عن مشروعك').fill('هوية بصرية وموقع جديد')
-  await dialog.getByRole('button', { name: 'جهّز رسالة المشروع' }).click()
-  const draft = dialog.getByRole('link', { name: 'فتح تطبيق البريد' })
-  await expect(draft).toHaveAttribute('href', /^mailto:info%40clevio\.dz\?subject=/)
+  await expect(page).toHaveURL(/#contact$/)
+  const form = page.getByRole('form', { name: 'تفاصيل مشروع جديد' })
+  const name = form.getByLabel('الاسم الكامل')
+  await expect(name).toBeFocused()
+  await name.fill('عميل كليفيو')
+  const contact = form.getByLabel('البريد الإلكتروني أو رقم الهاتف')
+  await contact.fill('invalid')
+  await form.getByLabel('نوع الخدمة أو المشروع').selectOption('التصميم الإبداعي')
+  await form.getByLabel('تفاصيل المشروع').fill('هوية بصرية وموقع جديد')
+  await form.getByRole('button', { name: 'جهّز تفاصيل مشروعك' }).click()
+  expect(await contact.evaluate((input) => (input as HTMLInputElement).validity.valid)).toBe(false)
+  await expect(form.getByRole('link', { name: 'فتح تطبيق البريد' })).not.toBeVisible()
+  await contact.fill('hello@example.com')
+  await form.getByRole('button', { name: 'جهّز تفاصيل مشروعك' }).click()
+  const draft = form.getByRole('link', { name: 'فتح تطبيق البريد' })
+  expect((await draft.getAttribute('href'))?.startsWith('mailto:info@clevio.dz?subject=')).toBe(true)
   expect(decodeURIComponent((await draft.getAttribute('href'))!)).toContain('هوية بصرية وموقع جديد')
-  await page.keyboard.press('Escape')
-  await expect(dialog).not.toBeVisible()
+  await form.getByLabel('تفاصيل المشروع').fill('فكرة محدثة')
+  await expect(draft).not.toBeVisible()
 })
 
-test('secondary action and navigation open useful panels', async ({ page }) => {
+test('selected work opens accessible details and links to the project form', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'اكتشف أعمالنا', exact: true }).click()
-  await expect(page.getByRole('dialog', { name: 'أعمالنا', exact: true })).toBeVisible()
-  await page.getByRole('button', { name: 'إغلاق النافذة' }).click()
-  await page.getByRole('button', { name: 'خدماتنا', exact: true }).click()
-  await expect(page.getByRole('dialog', { name: 'خدماتنا', exact: true })).toBeVisible()
+  await expect(page).toHaveURL(/#work$/)
+  const card = page.getByRole('button', { name: 'عرض هوية بصرية متكاملة', exact: true })
+  await card.click()
+  const dialog = page.getByRole('dialog', { name: 'هوية بصرية متكاملة', exact: true })
+  await expect(dialog).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(dialog).not.toBeVisible()
+  await expect(card).toBeFocused()
+  await card.click()
+  await dialog.getByRole('button', { name: 'لنتحدث عن مشروعك' }).click()
+  await expect(dialog).not.toBeVisible()
+  await expect(page).toHaveURL(/#contact$/)
+  await expect(page.locator('#contact input[name="name"]')).toBeFocused()
 })
 
-test('hero and contact panel pass automated accessibility checks', async ({ page }) => {
+test('service information remains reachable from the header', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true }).getByRole('button', { name: 'خدماتنا', exact: true }).click()
+  await expect(page.getByRole('dialog', { name: 'خدماتنا', exact: true })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog', { name: 'خدماتنا', exact: true })).not.toBeVisible()
+})
+
+test('homepage and project details pass automated accessibility checks', async ({ page }) => {
   await page.goto('/')
   await page.evaluate(() => document.fonts.ready)
-  const hero = await new AxeBuilder({ page }).analyze()
-  expect(hero.violations).toEqual([])
-  await page.getByRole('button', { name: 'لنبدأ مشروعك', exact: true }).click()
-  const contact = await new AxeBuilder({ page }).analyze()
-  expect(contact.violations).toEqual([])
+  expect(await page.locator('main').count()).toBe(1)
+  const homepage = await new AxeBuilder({ page }).analyze()
+  expect(homepage.violations).toEqual([])
+  await page.getByRole('button', { name: 'عرض تجربة رقمية تفاعلية', exact: true }).click()
+  const project = await new AxeBuilder({ page }).analyze()
+  expect(project.violations).toEqual([])
 })
 
 test('reduced motion leaves the full headline and actions visible', async ({ page }) => {

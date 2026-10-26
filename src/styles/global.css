@@ -27,6 +27,7 @@
   font-display: swap;
 }
 :root {
+  color-scheme: dark;
   font-family: 'Cairo Variable', sans-serif;
   color: #f8faff;
   background: #020b24;
@@ -65,3 +66,5 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
 }
+
+section[tabindex="-1"]:focus { outline: none; }

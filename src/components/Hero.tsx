@@ -19,8 +19,7 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
   }, { scope: root })
 
   return (
-    <main>
-      <section id="home" className="hero" ref={root} aria-labelledby="hero-heading">
+      <section id="home" className="hero" tabIndex={-1} ref={root} aria-labelledby="hero-heading">
         <div className="hero__artwork" aria-hidden="true">
           <img className="hero__background" src={import.meta.env.BASE_URL + 'hero-layers/hires/hero-background-2k.webp'} srcSet={heroSources('hero-background', 'webp')} sizes={heroImageSizes} alt="" width="7680" height="4320" fetchPriority="high" decoding="async" />
           <img className="hero__float hero__float--blue" data-hero-object="blue-bubble" src={import.meta.env.BASE_URL + 'hero-layers/hires/bubble-blue-2k.png'} srcSet={heroSources('bubble-blue')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
@@ -43,6 +42,5 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
           </div>
         </div>
       </section>
-    </main>
   )
 }

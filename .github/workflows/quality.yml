@@ -1,4 +1,4 @@
-name: Build and verify Clevio hero
+name: Build and verify Clevio homepage
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: clevio-hero-review
+          name: clevio-homepage-review
           path: |
             dist/
             artifacts/

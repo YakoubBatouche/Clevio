@@ -1,60 +1,55 @@
 # Clevio
 
-The first implementation of Clevio's approved Arabic hero. All text, navigation, calls to action and icons are independent accessible React elements. Only the scene is a background image.
+An Arabic, right-to-left creative agency homepage based on the approved midnight-blue, glass and lime visual direction.
 
-## Run
+## Run locally
 
-Use Node.js 24 and npm.
+Use Node.js 24.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-`npm run build` type-checks and creates the production build in `dist/`.
-`npm run lint` checks the source.
-`npm run test:e2e` runs Chromium, Firefox and WebKit checks after installing their browsers with `npx playwright install`.
+The development command prepares the shared logo assets and starts Vite. The production build is written to `dist/`.
 
-Assets are optimized automatically before development and production builds. Arabic fonts are installed and hosted with the site; Google Fonts and runtime font CDNs are not required.
+## Page and behavior
 
-## Installed foundation
+- Hero with editable Arabic text, independent actions, and separate background, cube and bubble images.
+- Asymmetric selected-work gallery with three illustrated concepts and accessible project-detail dialogs.
+- Partner strip with clearly labeled sample marks.
+- Project inquiry form with required-field and email/phone validation.
+- Responsive footer with working section links and contact actions.
 
-- React 19, TypeScript and Vite.
-- GSAP and its React integration for timelines; ScrollTrigger is available on demand.
-- Motion for UI interaction and layout animations.
-- Lenis for future scroll choreography, with an optional cleaned-up integration in `src/lib/animation.ts`.
-- Three.js, React Three Fiber and Drei for future 3D scenes. These are installed but not imported into this image-based hero.
-- Lucide SVG icons.
-- ESLint, Playwright and axe for code, browser and accessibility checks.
+Work and contact navigation moves to the real homepage sections. Services and agency information remain available in dialogs. Interactions use simple hover feedback and the existing restrained hero entrance; no advanced scroll or 3D animation is enabled.
 
-Exact installed versions are recorded in package.json and package-lock.json. Use `npm ci` to reproduce them.
+## Inquiry delivery and content
 
-## Structure
+The form prepares a draft for the visitor's email application. It does not submit to an inquiry backend or claim that a message was sent. Configure `VITE_CONTACT_EMAIL` to change the destination; the address from the supplied sketch is the default.
 
-- `src/components/Hero.tsx`: editable three-line Arabic headline, description, independent actions and scene image.
-- `src/components/Header.tsx`: desktop navigation and keyboard-accessible mobile menu.
-- `src/components/Brand.tsx`: exact approved bitmap logo displayed through an SVG viewport. Replace this with the original standalone vector logo when available.
-- `src/components/ContentDialog.tsx`: useful service, work-category and agency panels reached from the hero; no invented client projects.
-- `src/components/ContactForm.tsx`: prepares a draft for the visitor's email app. It does not send to a backend or claim delivery.
-- `src/styles/`: shared colors, typography, responsive layout and dialog styling.
-- `design/`: approved source image and the separate text-free scene.
-- `scripts/prepare-assets.mjs`: lossless reference conversion and compressed scene formats.
-- `tests/hero.spec.ts`: real browser interactions, overflow, keyboard behavior, reduced motion and accessibility checks.
+Set `VITE_WHATSAPP_NUMBER` to an approved international number to enable WhatsApp. Otherwise the secondary action uses email. No invented phone or social accounts are shown.
 
-The contact address comes from the supplied sketch. Set `VITE_CONTACT_EMAIL` in an environment file to change it. No secrets are needed.
+The current project imagery and partner marks are explicitly labeled as illustrative concepts. Replace them with approved client content before a public launch.
 
-## Scope and visual review
+## Images and typography
 
-This pass implements the hero only. The other homepage sections will be added next using the agreed design direction. Its navigation actions currently open useful panels rather than empty destination pages. All panels are separate from the hero composition.
+Large Arabic headings use the supplied NaN SuperX Serif Text Arabic Black font at weight 900. Body text and buttons use Cairo.
 
-The approved image supplies layout, colors and artwork. The original font files were not supplied, so the editable heading uses the closest installed Arabic display family and will be compared visually. A raster reference cannot establish a literal pixel-identical font match.
+The hero's 7680×4320 exports are enhanced/upscaled artwork, not native 8K renders. Responsive 2K, 4K and 8K sources are selected for scene size and display density. Floating elements remain independent transparent PNGs. The original artwork is preserved.
 
-GitHub Actions installs the locked dependencies, builds the project, and checks Chromium, Firefox and WebKit. Successful runs place desktop, tablet and mobile screenshots on the `visual-review` branch and save a build/review ZIP as a workflow artifact. This does not publish a public live website.
+The exact bitmap logo from the approved design is displayed through an SVG viewport until a standalone vector logo is supplied. Work thumbnails and the contact sculpture are optimized WebP assets.
 
-## Supplied display fonts
+## Foundation
 
-NaN SuperX Serif Text Arabic is registered at weights 700 and 900 and used for Arabic display headings. The supplied Arabic fonts cover all characters in the hero headline. NaN SuperX Sans Display remains available for supported Latin headings. Subtitles and buttons retain Cairo.
+React, TypeScript and Vite; GSAP with its React integration; Motion; Lenis; Three.js, React Three Fiber and Drei; Lucide icons. Exact versions are recorded in the package manifest and lockfile. The installed 3D and smooth-scroll tools are available for later work and are not enabled in the current page.
 
-## High-resolution layered hero
+## Checks
 
-The hero uses separate full-frame background, cube and bubble images. Responsive 2K/4K/8K sources are selected for rendered scene size and display density. The 8K exports are 7680 x 4320 enhanced/upscaled assets, not native 8K source renders. Floating objects were upscaled from their original transparent cutouts to preserve shape and placement. The earlier source images remain available as backups.
+```sh
+npm run build
+npm run lint
+npx playwright install
+npm run test:e2e
+```
+
+Browser checks cover Chromium, Firefox and WebKit, responsive widths, keyboard behavior, section navigation, project dialogs, inquiry validation, reduced motion and automated accessibility. Successful GitHub runs save desktop/tablet/mobile review screenshots on the `visual-review` branch and attach build/review files to the run.

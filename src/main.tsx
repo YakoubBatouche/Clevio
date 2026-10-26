@@ -10,3 +10,11 @@ import './styles/dialog.css'
 createRoot(document.getElementById('root')!).render(
   <StrictMode><App /></StrictMode>,
 )
+
+import './styles/selected-work.css'
+
+import './styles/partners.css'
+
+import './styles/contact-section.css'
+
+import './styles/footer.css'

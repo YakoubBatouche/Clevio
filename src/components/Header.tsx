@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import type { MouseEvent } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Brand } from './Brand'
 import { navigation } from '../content/site'
@@ -33,20 +34,31 @@ export function Header({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
     menuButton.current?.focus()
   }
 
-  function navigate(panel: Panel | null) {
+  function choose(panel: Panel | null, event?: MouseEvent<HTMLAnchorElement>) {
+    if (event && (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)) return
     closeMenu()
-    if (panel) onNavigate(panel)
+    if (panel) {
+      event?.preventDefault()
+      onNavigate(panel)
+    }
+  }
+
+  function items() {
+    return navigation.map(({ label, panel }) => {
+      if (panel === null || panel === 'work' || panel === 'contact') {
+        return <a key={label} href={panel ? '#' + panel : '#home'}
+          className={panel === null ? 'is-active' : undefined}
+          aria-current={panel === null ? 'page' : undefined}
+          onClick={(event) => choose(panel, event)}>{label}</a>
+      }
+      return <button key={label} type="button" onClick={() => choose(panel)}>{label}</button>
+    })
   }
 
   return (
     <header className="site-header">
       <Brand />
-      <nav className="desktop-nav" aria-label="التنقل الرئيسي">
-        {navigation.map(({ label, panel }) => panel
-          ? <button key={label} type="button" onClick={() => onNavigate(panel)}>{label}</button>
-          : <a key={label} href="#home" className="is-active" aria-current="page">{label}</a>,
-        )}
-      </nav>
+      <nav className="desktop-nav" aria-label="التنقل الرئيسي">{items()}</nav>
       <button ref={menuButton} type="button" className="menu-toggle" aria-label="فتح القائمة"
         aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(true)}>
         <Menu aria-hidden="true" />
@@ -58,12 +70,7 @@ export function Header({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
           <button type="button" className="icon-button navigation-dialog__close" aria-label="إغلاق القائمة" onClick={closeMenu}>
             <X aria-hidden="true" />
           </button>
-          <nav aria-label="التنقل على الهاتف">
-            {navigation.map(({ label, panel }) => panel
-              ? <button key={label} type="button" onClick={() => navigate(panel)}>{label}</button>
-              : <a key={label} href="#home" aria-current="page" onClick={() => navigate(null)}>{label}</a>,
-            )}
-          </nav>
+          <nav aria-label="التنقل على الهاتف">{items()}</nav>
         </div>
       </dialog>
     </header>
