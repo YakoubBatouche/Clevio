@@ -33,7 +33,7 @@ The current project imagery and partner marks are explicitly labeled as illustra
 
 ## Images and typography
 
-Large Arabic headings use the supplied NaN SuperX Sans Text Arabic Black font at weight 900. Body text and buttons use Cairo.
+Large Arabic headings use the supplied NaN SuperX Sans Text Arabic Black font at weight 900. Body text uses RH ZAK Regular (400), and controls and supporting headings use RH ZAK Bold (700). The supplied Thin face (100) is registered for suitable large decorative text; small functional text keeps regular or bold weight for readability.
 
 The hero's 7680×4320 exports are enhanced/upscaled artwork, not native 8K renders. Responsive 2K, 4K and 8K sources are selected for scene size and display density. Floating elements remain independent transparent PNGs. The original artwork is preserved.
 

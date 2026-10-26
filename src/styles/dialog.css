@@ -7,8 +7,8 @@ dialog::backdrop { background: rgb(0 6 22 / 76%); backdrop-filter: blur(12px); }
 .content-dialog { width: min(720px, 90vw); }
 .content-dialog__inner { position: relative; padding: 44px; }
 .content-dialog__close { position: absolute; top: 20px; left: 20px; }
-.panel-eyebrow { margin: 0 0 12px; color: var(--blue); font-size: 13px; font-weight: 800; text-align: right; }
-.content-dialog h2 { margin: 0 0 28px; font: 800 clamp(24px, 3vw, 36px)/1.5 var(--font-display); }
+.panel-eyebrow { margin: 0 0 12px; color: var(--blue); font-size: 13px; font-weight: 700; text-align: right; }
+.content-dialog h2 { margin: 0 0 28px; font: 900 clamp(24px, 3vw, 36px)/1.5 var(--font-display); }
 .panel-copy { color: #d3dcef; line-height: 2; margin: 0 0 24px; font-size: 18px; }
 .service-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; }
 .service-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgb(130 170 255 / 15%); }

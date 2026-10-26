@@ -8,11 +8,11 @@
 .desktop-nav > a, .desktop-nav > button {
   position: relative; display: inline-flex; align-items: center; min-height: 44px;
   padding: 0 0 8px; background: transparent; white-space: nowrap;
-  font-size: clamp(14px, 0.99vw, 20px); font-weight: 600; line-height: 1.8;
+  font-size: clamp(14px, 0.99vw, 20px); font-weight: 700; line-height: 1.8;
   transition: color 180ms ease;
 }
 .desktop-nav > :hover { color: var(--lime); }
-.desktop-nav .is-active { color: var(--lime); font-weight: 800; }
+.desktop-nav .is-active { color: var(--lime); font-weight: 700; }
 .desktop-nav .is-active::after {
   content: ''; position: absolute; right: 0; bottom: 0; width: 100%; height: 2px; background: var(--lime);
 }
@@ -34,17 +34,17 @@
   font-size: clamp(76px, 7.6vw, 154px); line-height: 1.05; padding-top: 0;
 }
 .hero__line { display: block; transform-origin: right center; }
-.hero__description { margin: 1.85vw 0 0; font-size: clamp(16px, 1.17vw, 21px); line-height: 1.78; font-weight: 600; }
+.hero__description { margin: 1.85vw 0 0; font-size: clamp(16px, 1.17vw, 21px); line-height: 1.78; font-weight: 400; }
 .hero__description span { display: block; white-space: nowrap; }
 .hero__actions { display: flex; direction: rtl; align-items: center; gap: clamp(20px, 2.2vw, 40px); margin-top: 2.25vw; }
 .action {
   display: inline-flex; direction: rtl; align-items: center; justify-content: space-between; gap: clamp(14px, 1.4vw, 26px);
-  flex: none; min-height: 44px; padding: 0; background: none; white-space: nowrap; font-weight: 800;
+  flex: none; min-height: 44px; padding: 0; background: none; white-space: nowrap; font-weight: 700;
 }
 .action svg { flex: none; width: clamp(18px, 1.4vw, 24px); height: clamp(18px, 1.4vw, 24px); min-width: 18px; min-height: 18px; }
 .action--primary {
   min-width: clamp(190px, 14.9vw, 284px); min-height: clamp(48px, 3.6vw, 62px); padding: 0.25vw clamp(20px, 1.7vw, 34px);
-  border-radius: 100px; background: var(--lime); color: var(--navy); font-size: clamp(16px, 1.22vw, 22px); font-weight: 900;
+  border-radius: 100px; background: var(--lime); color: var(--navy); font-size: clamp(16px, 1.22vw, 22px); font-weight: 700;
   box-shadow: 0 0 0 1px rgb(213 255 72 / 8%);
   transition: background-color 180ms, box-shadow 180ms;
 }
@@ -81,7 +81,7 @@
   .hero { display: flex; flex-direction: column; min-height: 100svh; height: auto; padding-top: 122px; }
   .hero__content { position: relative; top: auto; right: auto; width: 88%; margin: 0 auto; z-index: 1; order: 0; }
   .hero__heading { font-size: clamp(64px, 14.8vw, 106px); line-height: 1.05; }
-  .hero__description { margin-top: 24px; font-size: clamp(14px, 3.5vw, 18px); line-height: 1.9; font-weight: 500; }
+  .hero__description { margin-top: 24px; font-size: clamp(14px, 3.5vw, 18px); line-height: 1.9; font-weight: 400; }
   .hero__description span { white-space: normal; }
   .hero__actions { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); max-width: 470px; gap: 16px; margin-top: 26px; margin-left: auto; }
   .action { gap: 14px; }

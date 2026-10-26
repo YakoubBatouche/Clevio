@@ -17,7 +17,7 @@
   padding-inline-end: clamp(16px, 2vw, 32px);
   border-inline-end: 1px solid rgb(125 164 238 / 13%);
 }
-.site-footer h2 { margin: 0 0 16px; color: #f2f6ff; font-size: 17px; font-weight: 800; line-height: 1.6; }
+.site-footer h2 { margin: 0 0 16px; color: #f2f6ff; font-size: 17px; font-weight: 700; line-height: 1.6; }
 .site-footer ul { margin: 0; padding: 0; list-style: none; }
 .site-footer li + li { margin-top: 4px; }
 .site-footer li a, .site-footer li button {
@@ -28,7 +28,7 @@
   background: transparent;
   color: #a8b7d4;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 400;
   text-align: start;
   line-height: 1.8;
   transition: color 160ms ease;
@@ -40,7 +40,7 @@
   align-items: center;
   gap: 10px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.8;
   transition: color 160ms ease;
 }
@@ -56,11 +56,11 @@
   color: var(--lime);
   background: transparent;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 700;
 }
 .site-footer__contact-cta svg { width: 20px; height: 20px; }
 .site-footer__brand .brand { width: 176px; min-width: 0; max-width: 100%; margin-bottom: 22px; }
-.site-footer__brand p { max-width: 280px; margin: 0; font-size: 16px; font-weight: 500; line-height: 1.95; color: #a8b7d4; }
+.site-footer__brand p { max-width: 280px; margin: 0; font-size: 16px; font-weight: 400; line-height: 1.95; color: #a8b7d4; }
 .site-footer__bottom {
   display: flex;
   justify-content: space-between;

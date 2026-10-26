@@ -1,4 +1,25 @@
 @font-face {
+  font-family: 'RH ZAK';
+  src: url('/fonts/RH-Zak-Reg.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'RH ZAK';
+  src: url('/fonts/RH-Zak-Bold-1.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'RH ZAK';
+  src: url('/fonts/RH-Zak-Thin-1.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
   font-family: 'NaN SuperX Sans Arabic';
   src: url('/fonts/NaNSuperXSansTextArabic-Black-TRIAL.ttf') format('truetype');
   font-weight: 900;
@@ -7,7 +28,9 @@
 }
 :root {
   color-scheme: dark;
-  font-family: 'Cairo Variable', sans-serif;
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.7;
   color: #f8faff;
   background: #020b24;
   font-synthesis: none;
@@ -16,6 +39,7 @@
   --navy: #020b24;
   --lime: #d5ff48;
   --blue: #3887ff;
+  --font-body: 'RH ZAK', 'Alexandria Variable', sans-serif;
   --font-display: 'NaN SuperX Sans Arabic', 'Alexandria Variable', sans-serif;
 }
 * { box-sizing: border-box; }

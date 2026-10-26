@@ -30,13 +30,13 @@
 .contact-section__fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 19px 18px; }
 .contact-section__field { position: relative; display: flex; flex-direction: column; gap: 9px; min-width: 0; }
 .contact-section__field--full { grid-column: 1 / -1; }
-.contact-section__field label { color: #dbe5f7; font-size: 14px; line-height: 1.6; font-weight: 600; }
+.contact-section__field label { color: #dbe5f7; font-size: 14px; line-height: 1.6; font-weight: 700; }
 .contact-section__field label span { color: #8eb8ff; margin-inline-start: 3px; }
 .contact-section__field input, .contact-section__field select, .contact-section__field textarea {
   display: block; width: 100%; min-width: 0; min-height: 54px;
   border: 1px solid rgb(108 153 239 / 36%); border-radius: 10px;
   padding: 13px 16px; color: #f5f8ff; background: rgb(2 12 32 / 64%);
-  font: 500 16px/1.65 'Cairo Variable', sans-serif;
+  font: 400 16px/1.65 var(--font-body);
   transition: border-color 160ms ease, background-color 160ms ease;
 }
 .contact-section__field input::placeholder, .contact-section__field textarea::placeholder { color: #91a4c6; opacity: 1; }
@@ -52,17 +52,17 @@
   display: inline-flex; align-items: center; justify-content: space-between; gap: 24px;
   min-height: 56px; padding: 12px 26px; border-radius: 999px;
   background: var(--lime); color: var(--navy);
-  font-size: 17px; font-weight: 900; line-height: 1.4;
+  font-size: 17px; font-weight: 700; line-height: 1.4;
   transition: transform 160ms ease, background-color 160ms ease;
 }
 .contact-section__submit svg { width: 23px; height: 23px; flex: none; }
 .contact-section__submit:hover { background: #e1ff7c; transform: translateY(-1px); }
-.contact-section__direct { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: #d4e1f8; font-size: 14px; font-weight: 600; transition: color 160ms ease; }
+.contact-section__direct { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: #d4e1f8; font-size: 14px; font-weight: 700; transition: color 160ms ease; }
 .contact-section__direct svg { width: 23px; height: 23px; flex: none; }
 .contact-section__direct:hover { color: var(--lime); }
 .contact-section__draft { margin-top: 22px; padding: 18px 20px; border: 1px solid rgb(213 255 72 / 35%); border-radius: 12px; background: rgb(21 42 39 / 40%); }
 .contact-section__draft p { margin: 0 0 10px; color: #deebdc; font-size: 15px; line-height: 1.9; }
-.contact-section__draft a { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; color: var(--lime); font-size: 16px; font-weight: 800; }
+.contact-section__draft a { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; color: var(--lime); font-size: 16px; font-weight: 700; }
 .contact-section__draft a svg { width: 20px; height: 20px; }
 .contact-section__art { position: relative; min-width: 0; align-self: end; }
 .contact-section__art::before { content: ''; position: absolute; inset: 23% 3% 6%; z-index: -1; border-radius: 50%; background: radial-gradient(ellipse, rgb(24 90 239 / 28%), transparent 68%); filter: blur(16px); }
