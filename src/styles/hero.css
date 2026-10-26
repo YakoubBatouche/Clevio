@@ -1,0 +1,99 @@
+.site-header {
+  position: absolute; z-index: 10; top: 2.25vw; left: 5%; width: 90%;
+  display: flex; direction: ltr; align-items: center; justify-content: space-between;
+}
+.brand { display: block; width: 11.1vw; max-width: 210px; min-width: 140px; line-height: 0; }
+.brand svg { display: block; width: 100%; height: auto; }
+.desktop-nav { display: flex; direction: rtl; align-items: center; gap: 3.15vw; }
+.desktop-nav > a, .desktop-nav > button {
+  position: relative; display: inline-flex; align-items: center; min-height: 44px;
+  padding: 0 0 8px; background: transparent; white-space: nowrap;
+  font-size: clamp(14px, 0.99vw, 20px); font-weight: 600; line-height: 1.8;
+  transition: color 180ms ease;
+}
+.desktop-nav > :hover { color: var(--lime); }
+.desktop-nav .is-active { color: var(--lime); font-weight: 800; }
+.desktop-nav .is-active::after {
+  content: ''; position: absolute; right: 0; bottom: 0; width: 100%; height: 2px; background: var(--lime);
+}
+.menu-toggle { display: none; }
+.hero {
+  position: relative; isolation: isolate; overflow: clip;
+  width: 100%; min-height: 100svh; height: 56.28vw;
+  background: var(--navy);
+}
+.hero__artwork { position: absolute; z-index: -1; inset: 0; display: block; }
+.hero__artwork img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
+.hero__content {
+  position: absolute; top: 17.4%; right: 7.7%; width: 32%;
+  direction: rtl; text-align: right;
+}
+.hero__heading {
+  margin: 0; color: var(--lime); font-family: var(--font-display); font-weight: 900;
+  font-size: 8.55vw; line-height: 0.99;
+}
+.hero__line { display: block; }
+.hero__description { margin: 2.15vw 0 0; font-size: 1.34vw; line-height: 1.78; font-weight: 600; }
+.hero__description span { display: block; white-space: nowrap; }
+.hero__actions { display: flex; direction: rtl; align-items: center; gap: 2.65vw; margin-top: 2.55vw; }
+.action {
+  display: inline-flex; direction: rtl; align-items: center; justify-content: space-between; gap: 1.65vw;
+  flex: none; min-height: 44px; padding: 0; background: none; white-space: nowrap; font-weight: 800;
+}
+.action svg { flex: none; width: 1.65vw; height: 1.65vw; min-width: 20px; min-height: 20px; }
+.action--primary {
+  min-width: 16.65vw; min-height: 4.05vw; padding: 0.25vw 2vw;
+  border-radius: 100px; background: var(--lime); color: var(--navy); font-size: 1.38vw; font-weight: 900;
+  box-shadow: 0 0 0 1px rgb(213 255 72 / 8%);
+  transition: background-color 180ms, box-shadow 180ms;
+}
+.action--primary:hover { background: #e0ff77; box-shadow: 0 5px 30px rgb(213 255 72 / 13%); }
+.action--secondary {
+  min-height: 3vw; padding-bottom: 0.45vw; border-bottom: 2px solid #217bff; font-size: 1.15vw;
+}
+.action--secondary svg { color: #4b92ff; }
+@media (min-width: 2000px) {
+  .site-header { top: 2.7vw; }
+}
+@media (min-width: 768px) and (max-width: 1100px) {
+  .site-header { top: 28px; }
+  .desktop-nav { gap: 24px; }
+  .hero { min-height: max(100svh, 680px); }
+  .hero__content { width: 37%; right: 5%; top: 22%; }
+  .hero__heading { font-size: 9.1vw; }
+  .hero__description { font-size: 16px; margin-top: 28px; }
+  .hero__description span { white-space: normal; }
+  .hero__actions { gap: 20px; margin-top: 28px; }
+  .action--primary { min-width: 178px; min-height: 54px; padding: 8px 20px; font-size: 17px; }
+  .action--secondary { font-size: 15px; min-height: 46px; }
+}
+@media (max-width: 767px) {
+  html { scrollbar-gutter: auto; }
+  .site-header { top: 24px; left: 6%; width: 88%; }
+  .brand { width: 148px; min-width: 0; }
+  .desktop-nav { display: none; }
+  .menu-toggle {
+    display: grid; place-items: center; width: 46px; height: 46px; padding: 0;
+    color: white; background: rgb(8 25 62 / 50%); border: 1px solid rgb(128 165 240 / 25%); border-radius: 12px;
+  }
+  .menu-toggle svg { width: 24px; height: 24px; }
+  .hero { display: flex; flex-direction: column; min-height: 100svh; height: auto; padding-top: 122px; }
+  .hero__content { position: relative; top: auto; right: auto; width: 88%; margin: 0 auto; z-index: 1; }
+  .hero__heading { font-size: clamp(70px, 16.4vw, 118px); line-height: 1.02; }
+  .hero__description { margin-top: 24px; font-size: clamp(15px, 3.8vw, 20px); line-height: 1.9; font-weight: 500; }
+  .hero__description span { white-space: normal; }
+  .hero__actions { gap: 20px; margin-top: 26px; flex-wrap: wrap; }
+  .action { gap: 14px; }
+  .action svg { width: 22px; height: 22px; }
+  .action--primary { min-width: 178px; min-height: 56px; padding: 10px 20px; font-size: 17px; }
+  .action--secondary { min-height: 48px; padding-bottom: 4px; font-size: 16px; }
+  .hero__artwork { position: relative; inset: auto; width: 100%; height: 105vw; max-height: 680px; margin-top: -10px; z-index: 0; overflow: hidden; }
+  .hero__artwork img { object-position: 2% bottom; }
+  .hero__artwork::after { content: ''; position: absolute; inset: -1px 0 0; background: linear-gradient(to bottom, var(--navy), transparent 22%); }
+}
+@media (max-width: 374px) {
+  .hero__actions { gap: 14px; }
+  .action--primary { min-width: 154px; padding: 10px 15px; font-size: 15px; }
+  .action--secondary { font-size: 14px; gap: 8px; }
+  .action svg { width: 19px; height: 19px; min-width: 19px; min-height: 19px; }
+}

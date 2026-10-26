@@ -1,0 +1,69 @@
+name: Build and verify Clevio hero
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['README.md', 'docs/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clevio-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run test:e2e
+      - name: Save build and browser review files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clevio-hero-review
+          path: |
+            dist/
+            artifacts/
+            playwright-report/
+            test-results/
+          retention-days: 14
+      - name: Publish reviewed screenshots to the visual-review branch
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('node:fs/promises');
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const branch = 'visual-review';
+            const paths = (await fs.readdir('artifacts')).filter(name => name.endsWith('.png'));
+            const tree = [];
+            for (const path of paths) {
+              const content = await fs.readFile('artifacts/' + path);
+              const { data } = await github.rest.git.createBlob({ owner, repo, encoding: 'base64', content: content.toString('base64') });
+              tree.push({ path, mode: '100644', type: 'blob', sha: data.sha });
+            }
+            const report = JSON.stringify({ source_commit: context.sha, workflow_run: context.runId, checked_at: new Date().toISOString() }, null, 2);
+            tree.push({ path: 'review.json', mode: '100644', type: 'blob', content: report });
+            let parent;
+            try { parent = (await github.rest.git.getRef({ owner, repo, ref: 'heads/' + branch })).data.object.sha; }
+            catch (error) { if (error.status !== 404) throw error; }
+            const treeResult = await github.rest.git.createTree({ owner, repo, tree });
+            const commit = await github.rest.git.createCommit({ owner, repo, message: 'Browser review for ' + context.sha.slice(0, 7), tree: treeResult.data.sha, parents: parent ? [parent] : [context.sha] });
+            if (parent) await github.rest.git.updateRef({ owner, repo, ref: 'heads/' + branch, sha: commit.data.sha });
+            else await github.rest.git.createRef({ owner, repo, ref: 'refs/heads/' + branch, sha: commit.data.sha });
