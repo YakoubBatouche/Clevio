@@ -13,6 +13,7 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
   useHeroFloatInteraction(root)
 
   useGSAP(() => {
+    if (import.meta.env.DEV && new URLSearchParams(window.location.search).has('skipintro')) return
     const media = gsap.matchMedia()
     media.add('(prefers-reduced-motion: no-preference)', () => {
       gsap.from('.hero__line', { y: 22, opacity: 0, stagger: 0.09, duration: 0.75, ease: 'power3.out' })

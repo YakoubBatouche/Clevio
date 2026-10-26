@@ -2,9 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import '@fontsource-variable/alexandria'
 import { App } from './App'
+import { prepareIntro } from './intro/bootstrap'
+import './styles/intro.css'
 import './styles/global.css'
 import './styles/hero.css'
 import './styles/dialog.css'
+
+prepareIntro()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode><App /></StrictMode>,

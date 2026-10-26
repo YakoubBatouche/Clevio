@@ -1,0 +1,181 @@
+import { useRef, useState } from 'react'
+import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
+import { gsap, useGSAP } from '../lib/animation'
+import { INTRO_CONFIG } from '../intro/config'
+
+gsap.registerPlugin(DrawSVGPlugin)
+
+type IntroWindow = Window & {
+  introTl?: gsap.core.Timeline
+  __clevioIntroBoot?: { skip: boolean; watchdog: number }
+}
+
+const isDevSkip = () => import.meta.env.DEV && new URLSearchParams(window.location.search).has('skipintro')
+const shouldSkip = () => isDevSkip() || (window as IntroWindow).__clevioIntroBoot?.skip || window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+export function IntroPreloader() {
+  const root = useRef<HTMLDivElement>(null)
+  const generation = useRef(0)
+  const [visible, setVisible] = useState(() => !shouldSkip())
+
+  useGSAP((context) => {
+    const run = ++generation.current
+    const introWindow = window as IntroWindow
+    const html = document.documentElement
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const hero = document.querySelector<HTMLElement>('.hero')
+    let active = true
+    let complete = false
+    let preloadTimer = 0
+    let master: gsap.core.Timeline | undefined
+    let releaseLock = () => {}
+
+    const clearWatchdog = () => window.clearTimeout(introWindow.__clevioIntroBoot?.watchdog)
+    const unlock = () => {
+      window.clearTimeout(preloadTimer)
+      html.classList.remove('intro-pending', 'intro-revealing')
+      const release = releaseLock
+      releaseLock = () => {}
+      release()
+    }
+    const finish = (failed = false) => {
+      if (!active || complete) return
+      complete = true
+      if (failed) html.classList.add('intro-failed')
+      reducedMotion.removeEventListener('change', onReducedMotion)
+      window.removeEventListener('clevio:intro-abort', failOpen)
+      clearWatchdog()
+      unlock()
+      setVisible(false)
+    }
+    const fadeHero = () => {
+      if (!hero) return
+      context.add(() => {
+        gsap.fromTo(hero, { opacity: 0 }, {
+          opacity: 1,
+          duration: INTRO_CONFIG.duration.reducedFade,
+          ease: INTRO_CONFIG.ease.exit,
+          onComplete: () => { gsap.set(hero, { clearProps: 'opacity' }) },
+        })
+      })
+    }
+    const failOpen = () => {
+      if (!active || complete) return
+      master?.kill()
+      finish(true)
+    }
+    const onReducedMotion = () => {
+      if (!reducedMotion.matches || complete) return
+      master?.kill()
+      finish()
+      fadeHero()
+    }
+    const cleanup = () => {
+      active = false
+      master?.kill()
+      reducedMotion.removeEventListener('change', onReducedMotion)
+      window.removeEventListener('clevio:intro-abort', failOpen)
+      unlock()
+      if (introWindow.introTl === master) delete introWindow.introTl
+      // Keep the bootstrap safety timer through StrictMode's immediate second setup.
+      queueMicrotask(() => { if (generation.current === run) clearWatchdog() })
+    }
+
+    // Reduced motion and the development flag never hold the page behind a loader.
+    if (shouldSkip() || html.classList.contains('intro-failed')) {
+      finish()
+      if (reducedMotion.matches && !isDevSkip()) fadeHero()
+      return cleanup
+    }
+
+    try {
+      html.classList.add('intro-pending')
+      const previousOverflow = document.body.style.getPropertyValue('overflow')
+      const previousPriority = document.body.style.getPropertyPriority('overflow')
+      const lockedElements = [...document.querySelectorAll<HTMLElement>('.site-header, #main-content, .site-footer, .skip-link')]
+        .map((element) => ({ element, inert: element.getAttribute('inert') }))
+      releaseLock = () => {
+        if (previousOverflow) document.body.style.setProperty('overflow', previousOverflow, previousPriority)
+        else document.body.style.removeProperty('overflow')
+        lockedElements.forEach(({ element, inert }) => {
+          if (inert === null) element.removeAttribute('inert')
+          else element.setAttribute('inert', inert)
+        })
+      }
+      document.body.style.setProperty('overflow', 'hidden')
+      lockedElements.forEach(({ element }) => element.setAttribute('inert', ''))
+      reducedMotion.addEventListener('change', onReducedMotion)
+      window.addEventListener('clevio:intro-abort', failOpen)
+
+      const shapes = root.current?.querySelectorAll<SVGGeometryElement>('.intro-logo__shape')
+      if (!root.current || !shapes?.length) throw new Error('Intro logo unavailable')
+      gsap.set(shapes, { drawSVG: '0%' })
+
+      // Part 1: draw the exact logo, hold briefly, then hand off to the current hero.
+      master = gsap.timeline({ paused: true, onComplete: () => finish() })
+        .addLabel('outline', 0)
+        .call(() => root.current?.setAttribute('data-intro-phase', 'outline'), [], 'outline')
+        .to(shapes, {
+          drawSVG: '100%',
+          duration: Math.max(0.1, INTRO_CONFIG.duration.outline - INTRO_CONFIG.duration.stagger * (shapes.length - 1)),
+          stagger: INTRO_CONFIG.duration.stagger,
+          ease: INTRO_CONFIG.ease.outline,
+        }, 'outline')
+        .addLabel('hold', INTRO_CONFIG.duration.outline)
+        .call(() => root.current?.setAttribute('data-intro-phase', 'hold'), [], 'hold')
+        .addLabel('exit', INTRO_CONFIG.duration.minimum)
+        .to(root.current, {
+          opacity: 0,
+          duration: INTRO_CONFIG.duration.exit,
+          ease: INTRO_CONFIG.ease.exit,
+          onStart: () => { html.classList.add('intro-revealing'); root.current?.setAttribute('data-intro-phase', 'exit') },
+        }, 'exit')
+      introWindow.introTl = master
+
+      preloadTimer = window.setTimeout(failOpen, INTRO_CONFIG.duration.preloadTimeout)
+      const heroImages = [...document.querySelectorAll<HTMLImageElement>('.hero__artwork img')]
+      const decodeImage = async (image: HTMLImageElement) => {
+        let lastError: unknown
+        // Responsive source selection can cancel an early decode during layout.
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const selected = image.currentSrc
+          try {
+            await image.decode()
+            await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()))
+            if (image.complete && image.naturalWidth > 0 && (!selected || selected === image.currentSrc)) return
+          } catch (error) { lastError = error }
+          await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()))
+        }
+        throw lastError || new Error('Hero image did not settle')
+      }
+      Promise.all([document.fonts.ready, ...heroImages.map(decodeImage)])
+        .then(() => {
+          if (!active || complete) return
+          window.clearTimeout(preloadTimer)
+          master?.play(0)
+        })
+        .catch(failOpen)
+    } catch {
+      failOpen()
+    }
+    return cleanup
+  }, { scope: root })
+
+  if (!visible) return null
+
+  return (
+    <div id="preloader" data-intro-phase="preloading" className="intro-preloader" ref={root} role="status" aria-label="جارٍ تجهيز التجربة" style={{ backgroundColor: INTRO_CONFIG.color.navy }}>
+      <svg className="intro-logo" viewBox="0 0 372.19 107.26" aria-hidden="true" fill="none" stroke={INTRO_CONFIG.color.lime} strokeWidth="1.4" strokeLinejoin="round">
+        <path className="intro-logo__shape" d="M172.2,69.83c-4.83,8.35-13.87,13.98-24.21,13.98-15.44,0-27.96-12.51-27.96-27.96s12.51-27.95,27.96-27.95c10.12,0,18.98,5.38,23.89,13.43l-10.07,5.91c-2.87-4.61-7.99-7.67-13.82-7.67-9,0-16.29,7.29-16.29,16.28s7.29,16.28,16.29,16.28c6.06,0,11.35-3.31,14.14-8.22l10.07,5.91Z"/>
+        <path className="intro-logo__shape" d="M344.24,27.91c-15.44,0-27.95,12.51-27.95,27.95s12.51,27.96,27.95,27.96,27.95-12.51,27.95-27.96-12.51-27.95-27.95-27.95ZM344.24,72.14c-9,0-16.28-7.29-16.28-16.28s7.29-16.28,16.28-16.28,16.28,7.29,16.28,16.28-7.29,16.28-16.28,16.28Z"/>
+        <path className="intro-logo__shape" d="M246.97,59.71c.17-1.26.27-2.54.27-3.85,0-15.43-12.51-27.95-27.96-27.95s-27.95,12.51-27.95,27.95,12.51,27.96,27.95,27.96c10.08,0,18.91-5.33,23.84-13.33l-10.41-5.4c-2.93,4.26-7.85,7.06-13.42,7.06-7.67,0-14.1-5.3-15.82-12.43h43.51ZM203.64,51.29c1.97-6.77,8.22-11.71,15.63-11.71s13.66,4.94,15.63,11.71h-31.26Z"/>
+        <rect className="intro-logo__shape" x="174.76" y="8.42" width="12.59" height="73.66"/>
+        <path className="intro-logo__shape" d="M311.16,25.53v7.87c-2.37.04-6.1.43-9.94,2.55-4.85,2.68-8.58,7.18-11.26,11.95-3.83,6.82-7.16,13.91-11,20.72-3.3,5.86-7.16,12.09-13.88,14.38-1.28.44-2.48.68-3.5.82l-20.45-53.78h13.06l14.38,37.82c1.57-1.91,3.16-4.14,4.62-6.73,7.25-12.77,11.49-32.33,28.38-35.6,4.02-.78,7.43-.41,9.57,0Z"/>
+        <path className="intro-logo__shape" d="M311.16,36.69v47.12h-12.46v-35.16c0-4.47,2.38-8.67,6.29-10.62.21-.1.42-.2.63-.29,2.22-.96,4.25-1.09,5.53-1.05Z"/>
+        <path className="intro-logo__shape" d="M313.4,13.65c0,4.06-3.29,7.35-7.35,7.35s-7.35-3.29-7.35-7.35,3.29-7.35,7.35-7.35,7.35,3.29,7.35,7.35Z"/>
+        <path className="intro-logo__shape" d="M100.12,31.94c-.82,12.42-14.59,16.62-24.83,12.55-8.64-3.43-14.43-11.81-21.36-17.62-1.57-1.32-3.22-2.55-4.99-3.59-1.29-.76-2.64-1.41-4.05-1.92-.41-.15-.82-.28-1.23-.41-6.78-2.06-12.58-.81-14.93-.26-9.74,2.24-15.59,8.55-18.09,11.33C1.76,41.86.42,53.35.14,57.58c-.09-1.3-.14-2.62-.14-3.95C0,24.01,24.01,0,53.63,0c7.47,0,14.91,1.56,21.74,4.59,4.91,2.18,9.67,5.16,13.83,8.68,4.1,3.47,8.68,7.72,10.28,13.01.55,1.82.77,3.76.64,5.66Z"/>
+        <path className="intro-logo__shape" d="M102.36,76.26c-2.21,5.78-6.31,11.01-10.58,15.17-2.54,2.48-5.31,4.73-8.25,6.72-8.52,5.75-18.64,8.92-28.91,9.1-.33,0-.66,0-1,0-23.94,0-44.22-15.69-51.11-37.35,1.63,3.41,4.19,7.75,8.17,12.06,1.47,1.59,8.61,9.11,20.55,13.26,15.67,5.45,29.52,1.62,34.43,0-2.66-.44-6.33-1.16-10.63-2.37-6.11-1.72-11.45-3.22-17.3-6.76-3.93-2.38-11.26-6.95-15.37-15.72-1.14-2.42-2.76-6.01-2.37-10.8.11-1.41.53-5.78,3.86-9.83,5.44-6.62,15.41-8.06,22.95-4.43,6.76,3.26,12.01,8.92,18.74,12.23,3.26,1.6,6.81,2.51,10.46,2.22,6.41-.52,12.5-4.23,18.97-3.71,7.25.59,9.64,7.57,8.94,13.92-.24,2.15-.78,4.26-1.56,6.3Z"/>
+      </svg>
+    </div>
+  )
+}

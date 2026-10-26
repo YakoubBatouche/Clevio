@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { MotionConfig } from 'motion/react'
 import { Header } from './components/Header'
 import { Hero } from './components/Hero'
+import { IntroPreloader } from './components/IntroPreloader'
 import { SelectedWork } from './components/SelectedWork'
 import { Partners } from './components/Partners'
 import { ContactSection } from './components/ContactSection'
@@ -33,6 +34,7 @@ export function App() {
 
   return (
     <MotionConfig reducedMotion="user">
+      <IntroPreloader />
       <a className="skip-link" href="#hero-heading">انتقل إلى المحتوى</a>
       <Header onNavigate={navigate} />
       <main id="main-content">

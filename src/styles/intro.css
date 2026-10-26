@@ -1,0 +1,78 @@
+html.js {
+  scrollbar-gutter: stable;
+}
+
+html.intro-pending {
+  overflow: hidden;
+}
+
+.intro-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  background: radial-gradient(ellipse at center, #052150 0%, #031330 28%, #020b24 64%);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.intro-logo {
+  display: block;
+  width: 156px;
+  height: auto;
+  overflow: visible;
+  fill: none;
+  filter: drop-shadow(0 0 7px rgb(213 255 72 / 18%));
+}
+
+.intro-logo__shape {
+  fill: none;
+  stroke: var(--lime, #d5ff48);
+  stroke-width: 1.6px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.intro-preloader__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+html.intro-failed .intro-preloader {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js.intro-pending:not(.intro-failed):not(.intro-revealing) :is(.hero, .site-header) {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  html.intro-pending:not(.intro-failed) .hero__float {
+    animation-play-state: paused;
+  }
+}
+
+@media (max-width: 760px) {
+  .intro-logo {
+    width: 96px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-preloader {
+    display: none;
+  }
+}
+

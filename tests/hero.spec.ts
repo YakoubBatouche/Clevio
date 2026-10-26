@@ -2,6 +2,100 @@ import fs from 'node:fs/promises'
 import { expect, test, type Locator } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
+test('intro waits for hero assets, unlocks the unchanged scene, and replays on reload', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1672, height: 941 })
+  let releaseAsset = () => {}
+  const assetGate = new Promise<void>((resolve) => { releaseAsset = resolve })
+  const criticalImage = '**/hero-layers/separated/main-c-*.png'
+  await page.route(criticalImage, async (route) => {
+    await assetGate
+    await route.continue()
+  })
+
+  try {
+    await page.goto('/', { waitUntil: 'domcontentloaded' })
+    const loader = page.locator('#preloader')
+    const lockedContent = page.locator('.site-header, #main-content, .site-footer, .skip-link')
+    await expect(loader).toBeVisible()
+    await expect(lockedContent).toHaveCount(4)
+    await expect.poll(() => lockedContent.evaluateAll((elements) => elements.every((element) => (element as HTMLElement).inert))).toBe(true)
+    await expect(page.locator('body')).toHaveCSS('overflow', 'hidden')
+    await expect.poll(() => page.evaluate(() => {
+      const timeline = (window as Window & { introTl?: { paused(): boolean; progress(): number } }).introTl
+      return timeline ? { paused: timeline.paused(), progress: timeline.progress() } : null
+    })).toEqual({ paused: true, progress: 0 })
+
+    const piece = page.locator('[data-hero-piece="main-c"]')
+    expect(await piece.evaluate((image) => (image as HTMLImageElement).complete)).toBe(false)
+    const before = await piece.evaluate((element) => {
+      const { x, y, width, height } = element.getBoundingClientRect()
+      return { x, y, width, height }
+    })
+    await expect(piece).toHaveCSS('animation-name', 'none')
+    releaseAsset()
+
+    await expect(loader).toBeHidden({ timeout: 15000 })
+    expect(await page.evaluate(() => performance.now())).toBeGreaterThanOrEqual(2100)
+    await expect.poll(() => lockedContent.evaluateAll((elements) => elements.every((element) => !(element as HTMLElement).inert))).toBe(true)
+    await expect(page.locator('html')).not.toHaveClass(/intro-pending/)
+    await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden')
+    await expect(page.locator('h1')).toBeVisible()
+    await expect(piece).toHaveCSS('transform', 'none')
+    await expect(piece).toHaveCSS('animation-name', 'none')
+    const after = await piece.evaluate((element) => {
+      const { x, y, width, height } = element.getBoundingClientRect()
+      return { x, y, width, height }
+    })
+    for (const key of ['x', 'y', 'width', 'height'] as const) {
+      expect(Math.abs(after[key] - before[key])).toBeLessThan(0.2)
+    }
+    await expect.poll(() => page.evaluate(() => {
+      const timeline = (window as Window & { introTl?: { labels: Record<string, number>; progress(): number; duration(): number } }).introTl
+      return timeline ? { labels: timeline.labels, progress: timeline.progress(), duration: timeline.duration() } : null
+    })).toEqual({ labels: expect.objectContaining({ outline: 0, hold: 1.6, exit: 2.2 }), progress: 1, duration: 2.45 })
+
+    await page.unroute(criticalImage)
+    await page.reload({ waitUntil: 'domcontentloaded' })
+    await expect(loader).toBeVisible()
+    await expect.poll(() => lockedContent.evaluateAll((elements) => elements.every((element) => (element as HTMLElement).inert))).toBe(true)
+    await expect(loader).toBeHidden({ timeout: 15000 })
+    await expect.poll(() => lockedContent.evaluateAll((elements) => elements.every((element) => !(element as HTMLElement).inert))).toBe(true)
+  } finally {
+    releaseAsset()
+  }
+})
+
+test('development bypass and reduced motion leave content unlocked without the loader', async ({ page }) => {
+  const criticalImage = '**/hero-layers/separated/main-c-*.png'
+  for (const mode of [
+    { url: '/?skipintro', reducedMotion: 'no-preference' },
+    { url: '/', reducedMotion: 'reduce' },
+  ] as const) {
+    await page.emulateMedia({ reducedMotion: mode.reducedMotion })
+    let releaseAsset = () => {}
+    const assetGate = new Promise<void>((resolve) => { releaseAsset = resolve })
+    await page.route(criticalImage, async (route) => {
+      await assetGate
+      await route.continue()
+    })
+    try {
+      await page.goto(mode.url, { waitUntil: 'domcontentloaded' })
+      await expect(page.locator('#preloader')).toBeHidden()
+      const content = page.locator('.site-header, #main-content, .site-footer, .skip-link')
+      await expect(content).toHaveCount(4)
+      await expect.poll(() => content.evaluateAll((elements) => elements.every((element) => !(element as HTMLElement).inert))).toBe(true)
+      await expect(page.locator('html')).not.toHaveClass(/intro-pending/)
+      await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden')
+      await expect(page.locator('h1')).toBeVisible()
+      await expect(page.locator('#home')).toHaveCSS('opacity', '1')
+    } finally {
+      releaseAsset()
+      await page.unroute(criticalImage)
+    }
+  }
+})
+
 test('desktop hero uses selectable Arabic text and individually interactive actions', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 1672, height: 941 })
   const errors: string[] = []
@@ -199,6 +293,7 @@ test('floating artwork moves gently while the background and headline stay still
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.setViewportSize({ width: 1672, height: 941 })
   await page.goto('/')
+  await expect(page.locator('html')).not.toHaveClass(/intro-pending/, { timeout: 15000 })
   await page.evaluate(() => document.fonts.ready)
   for (const line of await page.locator('.hero__line').all()) {
     await expect(line).toHaveCSS('opacity', '1')
@@ -233,6 +328,7 @@ test('pointer movement stays subtle and resets when leaving the artwork', async 
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.setViewportSize({ width: 1672, height: 941 })
   await page.goto('/')
+  await expect(page.locator('html')).not.toHaveClass(/intro-pending/, { timeout: 15000 })
   const scene = await page.locator('.hero__artwork').boundingBox()
   expect(scene).not.toBeNull()
   const translations = () => page.locator('.hero__float-track[data-hero-parallax]').evaluateAll((elements) =>
