@@ -57,7 +57,7 @@ export function Header({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
 
   return (
     <header className="site-header">
-      <Brand />
+      <Brand vector />
       <nav className="desktop-nav" aria-label="التنقل الرئيسي">{items()}</nav>
       <button ref={menuButton} type="button" className="menu-toggle" aria-label="فتح القائمة"
         aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(true)}>
