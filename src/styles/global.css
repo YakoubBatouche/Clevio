@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'NaN SuperX Display';
+  src: url('/fonts/NaNSuperXSansDisplay-Bold-TRIAL.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'NaN SuperX Display';
+  src: url('/fonts/NaNSuperXSansDisplay-Black-TRIAL.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
 :root {
   font-family: 'Cairo Variable', sans-serif;
   color: #f8faff;
@@ -8,7 +22,7 @@
   --navy: #020b24;
   --lime: #d5ff48;
   --blue: #3887ff;
-  --font-display: 'Alexandria Variable', sans-serif;
+  --font-display: 'NaN SuperX Display', 'Alexandria Variable', sans-serif;
 }
 * { box-sizing: border-box; }
 html { min-width: 320px; }

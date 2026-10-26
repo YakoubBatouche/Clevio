@@ -50,3 +50,8 @@ This pass implements the hero only. The other homepage sections will be added ne
 The approved image supplies layout, colors and artwork. The original font files were not supplied, so the editable heading uses the closest installed Arabic display family and will be compared visually. A raster reference cannot establish a literal pixel-identical font match.
 
 GitHub Actions installs the locked dependencies, builds the project, and checks Chromium, Firefox and WebKit. Successful runs place desktop, tablet and mobile screenshots on the `visual-review` branch and save a build/review ZIP as a workflow artifact. This does not publish a public live website.
+
+## Supplied display fonts
+
+NaN SuperX Sans Display is registered for large headings at weights 700 and 900. These supplied files contain no Arabic glyphs, so Arabic headings keep the Alexandria fallback. Subtitles and buttons retain Cairo.
+
