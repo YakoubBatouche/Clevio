@@ -35,5 +35,5 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 }
 .icon-button svg { width: 22px; height: 22px; }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
 }
