@@ -22,7 +22,7 @@ export function Header({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
   }, [menuOpen])
 
   useEffect(() => {
-    const media = window.matchMedia('(min-width: 768px)')
+    const media = window.matchMedia('(min-width: 980px)')
     const closeOnDesktop = () => { if (media.matches) setMenuOpen(false) }
     media.addEventListener('change', closeOnDesktop)
     return () => media.removeEventListener('change', closeOnDesktop)

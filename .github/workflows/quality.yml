@@ -51,7 +51,7 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const branch = 'visual-review';
-            const paths = (await fs.readdir('artifacts')).filter(name => name.endsWith('.png'));
+            const paths = (await fs.readdir('artifacts')).filter(name => name.endsWith('.png') || name.endsWith('.jpg'));
             const tree = [];
             for (const path of paths) {
               const content = await fs.readFile('artifacts/' + path);

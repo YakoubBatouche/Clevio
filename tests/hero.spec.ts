@@ -19,7 +19,7 @@ test('desktop hero uses selectable Arabic text and individually interactive acti
   expect(errors).toEqual([])
   if (testInfo.project.name === 'chromium') {
     await fs.mkdir('artifacts', { recursive: true })
-    await page.screenshot({ path: 'artifacts/hero-desktop.png', fullPage: true })
+    await page.screenshot({ path: 'artifacts/hero-desktop.jpg', type: 'jpeg', quality: 94, fullPage: true })
     console.log('DESKTOP_METRICS', await page.locator('.hero__heading').evaluate((el) => {
       const box = el.getBoundingClientRect()
       return { x: box.x, y: box.y, width: box.width, height: box.height, font: getComputedStyle(el).fontFamily }
@@ -37,6 +37,10 @@ for (const width of [320, 390, 768, 1024, 1440, 1920]) {
     expect(title).not.toBeNull()
     expect(title!.x).toBeGreaterThanOrEqual(0)
     expect(title!.x + title!.width).toBeLessThanOrEqual(width + 1)
+    if (width < 980) {
+      const artwork = await page.locator('.hero__artwork').boundingBox()
+      expect(artwork!.y).toBeGreaterThan(title!.y + title!.height)
+    }
     const action = page.getByRole('button', { name: 'لنبدأ مشروعك', exact: true })
     await expect(action).toBeVisible()
     const rect = await action.boundingBox()
@@ -44,11 +48,11 @@ for (const width of [320, 390, 768, 1024, 1440, 1920]) {
     expect(rect!.height).toBeGreaterThanOrEqual(44)
     if (width === 390 && testInfo.project.name === 'chromium') {
       await fs.mkdir('artifacts', { recursive: true })
-      await page.screenshot({ path: 'artifacts/hero-mobile.png', fullPage: true })
+      await page.screenshot({ path: 'artifacts/hero-mobile.jpg', type: 'jpeg', quality: 94, fullPage: true })
     }
     if (width === 768 && testInfo.project.name === 'chromium') {
       await fs.mkdir('artifacts', { recursive: true })
-      await page.screenshot({ path: 'artifacts/hero-tablet.png', fullPage: true })
+      await page.screenshot({ path: 'artifacts/hero-tablet.jpg', type: 'jpeg', quality: 94, fullPage: true })
     }
   })
 }
