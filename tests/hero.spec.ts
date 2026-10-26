@@ -131,6 +131,64 @@ test('homepage and project details pass automated accessibility checks', async (
   expect(project.violations).toEqual([])
 })
 
+test('floating artwork moves gently while the background and headline stay still', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1672, height: 941 })
+  await page.goto('/')
+  await page.evaluate(() => document.fonts.ready)
+  for (const line of await page.locator('.hero__line').all()) {
+    await expect(line).toHaveCSS('opacity', '1')
+  }
+
+  const floats = page.locator('.hero__float')
+  const positions = () => floats.evaluateAll((elements) => elements.map((element) => {
+    const { x, y } = element.getBoundingClientRect()
+    return { x, y }
+  }))
+  const initial = await positions()
+  expect(initial).toHaveLength(3)
+  const background = await page.locator('.hero__background').boundingBox()
+  const headline = await page.locator('.hero__line').last().boundingBox()
+
+  await expect.poll(async () => (await positions()).every((position, index) =>
+    Math.hypot(position.x - initial[index].x, position.y - initial[index].y) > 0.3,
+  ), { timeout: 6000 }).toBe(true)
+
+  for (const [selector, initialBox] of [
+    ['.hero__background', background],
+    ['.hero__line:last-child', headline],
+  ] as const) {
+    const current = await page.locator(selector).boundingBox()
+    expect(initialBox).not.toBeNull()
+    expect(current).not.toBeNull()
+    expect(Math.hypot(current!.x - initialBox!.x, current!.y - initialBox!.y)).toBeLessThan(0.5)
+  }
+})
+
+test('pointer movement stays subtle and resets when leaving the artwork', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1672, height: 941 })
+  await page.goto('/')
+  const scene = await page.locator('.hero__artwork').boundingBox()
+  expect(scene).not.toBeNull()
+  const translations = () => page.locator('.hero__float-track[data-hero-parallax]').evaluateAll((elements) =>
+    elements.map((element) => {
+      const transform = getComputedStyle(element).transform
+      const matrix = new DOMMatrixReadOnly(transform === 'none' ? undefined : transform)
+      return Math.hypot(matrix.m41, matrix.m42)
+    }),
+  )
+
+  await page.mouse.move(scene!.x + scene!.width * 0.15, scene!.y + scene!.height * 0.25)
+  await expect.poll(async () => {
+    const distances = await translations()
+    return distances.length === 3 && distances.every((distance) => distance > 0.3 && distance < 20)
+  }).toBe(true)
+
+  await page.mouse.move(scene!.x + scene!.width * 0.85, scene!.y + scene!.height * 0.55)
+  await expect.poll(async () => (await translations()).every((distance) => distance < 0.1)).toBe(true)
+})
+
 test('reduced motion leaves the full headline and actions visible', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
@@ -138,5 +196,14 @@ test('reduced motion leaves the full headline and actions visible', async ({ pag
   expect(await page.evaluate(() => document.getAnimations().filter((animation) => animation.playState === 'running').length)).toBe(0)
   for (const line of await page.locator('.hero__line').all()) {
     await expect(line).toHaveCSS('opacity', '1')
+  }
+  const baseline = await page.locator('.hero__background').boundingBox()
+  expect(baseline).not.toBeNull()
+  for (const image of await page.locator('.hero__float').all()) {
+    const box = await image.boundingBox()
+    expect(box).not.toBeNull()
+    expect(Math.hypot(box!.x - baseline!.x, box!.y - baseline!.y)).toBeLessThan(0.1)
+    expect(Math.abs(box!.width - baseline!.width)).toBeLessThan(0.1)
+    expect(Math.abs(box!.height - baseline!.height)).toBeLessThan(0.1)
   }
 })

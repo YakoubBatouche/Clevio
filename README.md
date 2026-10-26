@@ -21,7 +21,7 @@ The development command prepares the shared logo assets and starts Vite. The pro
 - Project inquiry form with required-field and email/phone validation.
 - Responsive footer with working section links and contact actions.
 
-Work and contact navigation moves to the real homepage sections. Services and agency information remain available in dialogs. Interactions use simple hover feedback and the existing restrained hero entrance; no advanced scroll or 3D animation is enabled.
+Work and contact navigation moves to the real homepage sections. Services and agency information remain available in dialogs. Interactions use simple hover feedback, a restrained hero entrance, and slow independent drifting on the three floating hero PNGs. A small, eased pointer response runs only over the artwork with a mouse. Decorative motion pauses offscreen or in a hidden tab and respects reduced-motion preferences. No advanced scroll or 3D animation is enabled.
 
 ## Inquiry delivery and content
 

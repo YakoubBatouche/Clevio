@@ -23,6 +23,7 @@
   background: var(--navy);
 }
 .hero__artwork { position: absolute; z-index: -1; inset: 0; display: block; }
+.hero__float-track { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .hero__artwork img { position: absolute; inset: 0; display: block; pointer-events: none; user-select: none; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
 .hero__content {
   position: absolute; top: 17.4%; right: 7.7%; width: 32%;
@@ -96,4 +97,37 @@
   .action--primary { min-width: 0; padding: 10px 12px; font-size: 14px; }
   .action--secondary { font-size: 14px; gap: 8px; }
   .action svg { width: 19px; height: 19px; min-width: 19px; min-height: 19px; }
+}
+
+/* Idle motion stays on the PNG; pointer response belongs to its outer track. */
+@keyframes hero-idle-drift {
+  0%, 100% { transform: translate(0, 0); }
+  35% { transform: translate(var(--hero-idle-x), var(--hero-idle-y)); }
+  70% { transform: translate(calc(var(--hero-idle-x) * -0.5), calc(var(--hero-idle-y) * 0.45)); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero__float--blue {
+    --hero-idle-x: -2px;
+    --hero-idle-y: -9px;
+    animation: hero-idle-drift 8.4s ease-in-out 0s infinite both;
+  }
+  .hero__float--cube {
+    --hero-idle-x: 3px;
+    --hero-idle-y: -11px;
+    animation: hero-idle-drift 9s ease-in-out 0.7s infinite both;
+  }
+  .hero__float--lime {
+    --hero-idle-x: -2px;
+    --hero-idle-y: -8px;
+    animation: hero-idle-drift 7.4s ease-in-out 1.4s infinite both;
+  }
+  .hero[data-hero-motion='paused'] .hero__float { animation-play-state: paused; }
+}
+@media (max-width: 979px) and (prefers-reduced-motion: no-preference) {
+  .hero__float--blue { --hero-idle-x: -1px; --hero-idle-y: -5px; }
+  .hero__float--cube { --hero-idle-x: 1.5px; --hero-idle-y: -4px; }
+  .hero__float--lime { --hero-idle-x: -1px; --hero-idle-y: -3.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__float { animation: none; transform: none; }
 }
