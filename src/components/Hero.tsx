@@ -3,6 +3,9 @@ import { gsap, useGSAP } from '../lib/animation'
 import { ActionButton } from './ActionButton'
 import type { Panel } from '../content/site'
 
+const heroImageSizes = '(max-width: 979px) min(187vw, 1210px), (max-aspect-ratio: 16/9) 178svh, 100vw'
+const heroSources = (name: string, type = 'png') => [['2k', 1920], ['4k', 3840], ['8k', 7680]].map(([size, width]) => import.meta.env.BASE_URL + 'hero-layers/hires/' + name + '-' + size + '.' + type + ' ' + width + 'w').join(', ')
+
 export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
   const root = useRef<HTMLElement>(null)
 
@@ -18,10 +21,12 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
   return (
     <main>
       <section id="home" className="hero" ref={root} aria-labelledby="hero-heading">
-        <picture className="hero__artwork" aria-hidden="true">
-          <source srcSet={import.meta.env.BASE_URL + 'images/hero-scene-1000.webp 1000w, ' + import.meta.env.BASE_URL + 'images/hero-scene.webp 1672w'} sizes="100vw" type="image/webp" />
-          <img src={import.meta.env.BASE_URL + 'images/hero-scene.webp'} alt="" width="1672" height="941" fetchPriority="high" decoding="async" />
-        </picture>
+        <div className="hero__artwork" aria-hidden="true">
+          <img className="hero__background" src={import.meta.env.BASE_URL + 'hero-layers/hires/hero-background-2k.webp'} srcSet={heroSources('hero-background', 'webp')} sizes={heroImageSizes} alt="" width="7680" height="4320" fetchPriority="high" decoding="async" />
+          <img className="hero__float hero__float--blue" data-hero-object="blue-bubble" src={import.meta.env.BASE_URL + 'hero-layers/hires/bubble-blue-2k.png'} srcSet={heroSources('bubble-blue')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
+          <img className="hero__float hero__float--cube" data-hero-object="cube" src={import.meta.env.BASE_URL + 'hero-layers/hires/floating-cube-2k.png'} srcSet={heroSources('floating-cube')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
+          <img className="hero__float hero__float--lime" data-hero-object="lime-bubble" src={import.meta.env.BASE_URL + 'hero-layers/hires/bubble-lime-2k.png'} srcSet={heroSources('bubble-lime')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
+        </div>
         <div className="hero__content">
           <h1 id="hero-heading" className="hero__heading" aria-label="أفكار خارج الإطار">
             <span className="hero__line">أفكار</span>

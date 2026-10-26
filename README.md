@@ -53,5 +53,8 @@ GitHub Actions installs the locked dependencies, builds the project, and checks 
 
 ## Supplied display fonts
 
-NaN SuperX Sans Display is registered for large headings at weights 700 and 900. These supplied files contain no Arabic glyphs, so Arabic headings keep the Alexandria fallback. Subtitles and buttons retain Cairo.
+NaN SuperX Serif Text Arabic is registered at weights 700 and 900 and used for Arabic display headings. The supplied Arabic fonts cover all characters in the hero headline. NaN SuperX Sans Display remains available for supported Latin headings. Subtitles and buttons retain Cairo.
 
+## High-resolution layered hero
+
+The hero uses separate full-frame background, cube and bubble images. Responsive 2K/4K/8K sources are selected for rendered scene size and display density. The 8K exports are 7680 x 4320 enhanced/upscaled assets, not native 8K source renders. Floating objects were upscaled from their original transparent cutouts to preserve shape and placement. The earlier source images remain available as backups.
