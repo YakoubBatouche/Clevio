@@ -17,7 +17,8 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    container: mcr.microsoft.com/playwright:v1.64.1-noble
+    timeout-minutes: 15
     permissions:
       contents: write
     steps:
@@ -29,7 +30,6 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
-      - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run test:e2e
       - name: Save build and browser review files
         if: always()
