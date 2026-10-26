@@ -18,6 +18,18 @@ export function scrollToSection(id: SectionId) {
 export function useSectionNavigation() {
   useEffect(() => {
     let frame = 0
+    let initialFrame = 0
+    let disposed = false
+    let initialInterrupted = false
+    const initialHash = window.location.hash
+    const initialId = initialHash.slice(1)
+
+    function interruptInitialAlignment() { initialInterrupted = true }
+    function alignInitialHash() {
+      if (disposed || initialInterrupted || window.location.hash !== initialHash || !sectionIds.has(initialId)) return
+      // React inserts the fragment after the browser's first native hash lookup.
+      document.getElementById(initialId)?.scrollIntoView({ behavior: 'auto', block: 'start' })
+    }
     function onAnchorClick(event: MouseEvent) {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
       const anchor = event.target instanceof Element ? event.target.closest('a') : null
@@ -27,6 +39,7 @@ export function useSectionNavigation() {
       const id = href.slice(1) as SectionId
       if (!document.getElementById(id)) return
       event.preventDefault()
+      initialInterrupted = true
       // Let a mobile menu close and release its scroll lock before navigating.
       window.cancelAnimationFrame(frame)
       frame = window.requestAnimationFrame(() => {
@@ -35,9 +48,21 @@ export function useSectionNavigation() {
       })
     }
     document.addEventListener('click', onAnchorClick)
+    window.addEventListener('wheel', interruptInitialAlignment, { passive: true })
+    window.addEventListener('pointerdown', interruptInitialAlignment, { passive: true })
+    window.addEventListener('keydown', interruptInitialAlignment)
+    alignInitialHash()
+    void document.fonts.ready.then(() => {
+      if (!disposed) initialFrame = window.requestAnimationFrame(alignInitialHash)
+    })
     return () => {
+      disposed = true
       document.removeEventListener('click', onAnchorClick)
+      window.removeEventListener('wheel', interruptInitialAlignment)
+      window.removeEventListener('pointerdown', interruptInitialAlignment)
+      window.removeEventListener('keydown', interruptInitialAlignment)
       window.cancelAnimationFrame(frame)
+      window.cancelAnimationFrame(initialFrame)
     }
   }, [])
 }

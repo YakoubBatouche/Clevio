@@ -35,6 +35,7 @@ export function useSectionTransitions() {
       if (group.owner && !previousMarkers.has(group.owner)) previousMarkers.set(group.owner, group.owner.getAttribute('data-section-revealed'))
     }
     let observer: IntersectionObserver | null = null
+    let pointerActive = false
 
     function markOwner(group: RevealGroup) {
       if (group.owner?.getAttribute('data-section-revealed') !== 'true') group.owner?.setAttribute('data-section-revealed', 'true')
@@ -89,8 +90,11 @@ export function useSectionTransitions() {
       }
     }
 
+    function onPointerDown() { pointerActive = true }
+    function onPointerEnd() { pointerActive = false }
     function onFocus(event: FocusEvent) {
-      if (!(event.target instanceof Node)) return
+      // Keep a link under the pointer stable between pointerdown and click.
+      if (pointerActive || !(event.target instanceof Node)) return
       const target = event.target
       for (const group of groups) {
         const focusedHeading = target === group.owner && group.elements.some((element) => element.querySelector('h2'))
@@ -114,6 +118,10 @@ export function useSectionTransitions() {
         if (group.started || visible) finish(group)
       }
     }
+    document.addEventListener('pointerdown', onPointerDown, true)
+    document.addEventListener('pointerup', onPointerEnd, true)
+    document.addEventListener('pointercancel', onPointerEnd, true)
+    document.addEventListener('keydown', onPointerEnd, true)
     document.addEventListener('focusin', onFocus, true)
     document.addEventListener('visibilitychange', onVisibilityChange)
     window.addEventListener('hashchange', onHashChange)
@@ -121,6 +129,10 @@ export function useSectionTransitions() {
 
     return () => {
       observer?.disconnect()
+      document.removeEventListener('pointerdown', onPointerDown, true)
+      document.removeEventListener('pointerup', onPointerEnd, true)
+      document.removeEventListener('pointercancel', onPointerEnd, true)
+      document.removeEventListener('keydown', onPointerEnd, true)
       document.removeEventListener('focusin', onFocus, true)
       document.removeEventListener('visibilitychange', onVisibilityChange)
       window.removeEventListener('hashchange', onHashChange)
