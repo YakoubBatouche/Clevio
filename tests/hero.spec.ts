@@ -109,8 +109,8 @@ test('reduced motion leaves the full headline and actions visible', async ({ pag
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await expect(page.locator('h1')).toHaveCSS('opacity', '1')
+  expect(await page.evaluate(() => document.getAnimations().filter((animation) => animation.playState === 'running').length)).toBe(0)
   for (const line of await page.locator('.hero__line').all()) {
     await expect(line).toHaveCSS('opacity', '1')
-    await expect(line).toHaveCSS('transform', 'none')
   }
 })

@@ -2,7 +2,7 @@
   position: absolute; z-index: 10; top: 2.25vw; left: 5%; width: 90%;
   display: flex; direction: ltr; align-items: center; justify-content: space-between;
 }
-.brand { display: block; width: 11.1vw; max-width: 210px; min-width: 140px; line-height: 0; }
+.brand { display: block; width: 10.53vw; max-width: 210px; min-width: 140px; line-height: 0; }
 .brand svg { display: block; width: 100%; height: auto; mix-blend-mode: lighten; }
 .desktop-nav { display: flex; direction: rtl; align-items: center; gap: 3.15vw; }
 .desktop-nav > a, .desktop-nav > button {
@@ -30,12 +30,15 @@
 }
 .hero__heading {
   margin: 0; color: var(--lime); font-family: var(--font-display); font-weight: 900;
-  font-size: 8.55vw; line-height: 0.99;
+  font-size: 8.55vw; line-height: 0.916; padding-top: 1.5vw;
 }
-.hero__line { display: block; }
-.hero__description { margin: 2.15vw 0 0; font-size: 1.34vw; line-height: 1.78; font-weight: 600; }
+.hero__line { display: block; transform: scaleY(0.76); transform-origin: right center; }
+.hero__line:first-child { transform: scale(1.18, 0.76); }
+.hero__line:nth-child(2) { transform: scale(1.02, 0.76); }
+.hero__line:nth-child(3) { transform: scale(1.03, 0.76); }
+.hero__description { margin: 1.85vw 0 0; font-size: 1.34vw; line-height: 1.78; font-weight: 600; }
 .hero__description span { display: block; white-space: nowrap; }
-.hero__actions { display: flex; direction: rtl; align-items: center; gap: 2.65vw; margin-top: 2.55vw; }
+.hero__actions { display: flex; direction: rtl; align-items: center; gap: 2.65vw; margin-top: 2.25vw; }
 .action {
   display: inline-flex; direction: rtl; align-items: center; justify-content: space-between; gap: 1.65vw;
   flex: none; min-height: 44px; padding: 0; background: none; white-space: nowrap; font-weight: 800;
