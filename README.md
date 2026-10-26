@@ -33,7 +33,7 @@ The current project imagery and partner marks are explicitly labeled as illustra
 
 ## Images and typography
 
-Large Arabic headings use the supplied NaN SuperX Serif Text Arabic Black font at weight 900. Body text and buttons use Cairo.
+Large Arabic headings use the supplied NaN SuperX Sans Text Arabic Black font at weight 900. Body text and buttons use Cairo.
 
 The hero's 7680×4320 exports are enhanced/upscaled artwork, not native 8K renders. Responsive 2K, 4K and 8K sources are selected for scene size and display density. Floating elements remain independent transparent PNGs. The original artwork is preserved.
 
