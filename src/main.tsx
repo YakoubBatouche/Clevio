@@ -18,3 +18,5 @@ import './styles/partners.css'
 import './styles/contact-section.css'
 
 import './styles/footer.css'
+
+import './styles/section-transitions.css'

@@ -8,21 +8,18 @@ import { ContactSection } from './components/ContactSection'
 import { Footer } from './components/Footer'
 import { ContentDialog } from './components/ContentDialog'
 import type { Panel } from './content/site'
+import { scrollToSection, useSectionNavigation } from './hooks/useSectionNavigation'
+import { useSectionTransitions } from './hooks/useSectionTransitions'
 
 export function App() {
+  useSectionNavigation()
+  useSectionTransitions()
   const [panel, setPanel] = useState<Panel | null>(null)
   const [destination, setDestination] = useState<{ id: 'work' | 'contact' } | null>(null)
 
   useEffect(() => {
     if (!destination) return
-    const section = document.getElementById(destination.id)
-    if (!section) return
-    if (window.location.hash !== '#' + destination.id) {
-      window.history.pushState(null, '', '#' + destination.id)
-    }
-    section.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' })
-    const focusTarget = destination.id === 'contact' ? section.querySelector<HTMLElement>('input') : section
-    focusTarget?.focus({ preventScroll: true })
+    scrollToSection(destination.id)
   }, [destination])
 
   function navigate(next: Panel) {

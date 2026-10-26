@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises'
-import { expect, test } from '@playwright/test'
+import { expect, test, type Locator } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 test('desktop hero uses selectable Arabic text and individually interactive actions', async ({ page }, testInfo) => {
@@ -129,6 +129,70 @@ test('homepage and project details pass automated accessibility checks', async (
   await page.getByRole('button', { name: 'عرض تجربة رقمية تفاعلية', exact: true }).click()
   const project = await new AxeBuilder({ page }).analyze()
   expect(project.violations).toEqual([])
+})
+
+async function expectFullyRevealed(target: Locator) {
+  await expect(target).toBeVisible()
+  await expect.poll(() => target.evaluate((element) => {
+    for (let current: Element | null = element; current && current.tagName !== 'MAIN'; current = current.parentElement) {
+      const style = getComputedStyle(current)
+      if (style.opacity !== '1' || style.transform !== 'none') return false
+    }
+    return true
+  }), { timeout: 4000 }).toBe(true)
+}
+
+test('normal-motion navigation reveals work and contact with visible focus', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1672, height: 941 })
+  await page.goto('/')
+  await page.getByRole('button', { name: 'اكتشف أعمالنا', exact: true }).click()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveURL(/#work$/)
+  await expect(page.locator('#work')).toBeFocused()
+  const workHeading = page.getByRole('heading', { name: 'أعمال مختارة', exact: true })
+  await expect(workHeading).toBeInViewport({ ratio: 1 })
+  await expectFullyRevealed(workHeading)
+  for (const card of await page.locator('#work .work-card').all()) {
+    await expectFullyRevealed(card)
+  }
+
+  await page.getByRole('button', { name: 'لنصنع عملك القادم', exact: true }).click()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveURL(/#contact$/)
+  const input = page.locator('#contact input[name="name"]')
+  await expect(input).toBeFocused()
+  await expect(input).toBeInViewport({ ratio: 1 })
+  await expectFullyRevealed(input)
+  await expectFullyRevealed(page.getByRole('form', { name: 'تفاصيل مشروع جديد' }))
+})
+
+test('footer home link returns to the hero and restores section focus', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1672, height: 941 })
+  await page.goto('/#contact')
+  await page.getByRole('contentinfo').getByRole('link', { name: 'الرئيسية', exact: true }).click()
+  await expect(page).toHaveURL(/#home$/)
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(2)
+  await expect(page.locator('#home')).toBeFocused()
+  await expect(page.locator('h1')).toBeInViewport({ ratio: 1 })
+  await expectFullyRevealed(page.locator('h1'))
+})
+
+test('direct contact links reveal content and keep a focused field on screen', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1672, height: 941 })
+  await page.goto('/#contact')
+  await expect(page).toHaveURL(/#contact$/)
+  const heading = page.getByRole('heading', { name: 'لديك فكرة؟ لنحوّلها إلى شيء مميز.', exact: true })
+  await expect(heading).toBeInViewport({ ratio: 1 })
+  await expectFullyRevealed(heading)
+  const input = page.locator('#contact input[name="name"]')
+  await input.focus()
+  await expect(input).toBeFocused()
+  await expect(input).toBeInViewport({ ratio: 1 })
+  await expectFullyRevealed(input)
+  await expectFullyRevealed(page.getByRole('form', { name: 'تفاصيل مشروع جديد' }))
 })
 
 test('floating artwork moves gently while the background and headline stay still', async ({ page }) => {
