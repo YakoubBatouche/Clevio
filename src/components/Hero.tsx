@@ -1,5 +1,7 @@
 import { useRef } from 'react'
 import { heroStaticLayers } from '../content/hero-layers'
+import { CRYSTAL_SURFACE_MASK_URL } from '../content/crystal-geometry'
+import { HeroCrystalDefinitions, HeroOrbit } from './HeroOrbit'
 import { useHeroFloatInteraction } from '../hooks/useHeroFloatInteraction'
 import { useHeroCrystalIdle } from '../hooks/useHeroCrystalIdle'
 import { ActionButton } from './ActionButton'
@@ -13,18 +15,32 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
   useHeroFloatInteraction(root)
   useHeroCrystalIdle(root)
 
+  function sceneImage(part: typeof heroStaticLayers[number], glow = false) {
+    if (glow) return <div key="crystal-glow" className="hero__part hero__crystal-glow" data-hero-glow=""
+      style={{ left: part.x + '%', top: part.y + '%', width: part.width + '%', height: part.height + '%' }} />
+    const surface = part.name === 'main-c'
+    const mask = surface ? CRYSTAL_SURFACE_MASK_URL : undefined
+    return <img key={part.name}
+      className={'hero__part' + (surface ? ' hero__crystal-surface' : '')}
+      data-hero-piece={part.name}
+      src={import.meta.env.BASE_URL + 'hero-layers/separated/' + part.name + '-2k.png'}
+      srcSet={part.sources.map((source) => import.meta.env.BASE_URL + 'hero-layers/separated/' + part.name + '-' + source.size + '.png ' + source.width + 'w').join(', ')}
+      sizes={'(max-width: 979px) min(' + (187 * part.width / 100) + 'vw, ' + (1210 * part.width / 100) + 'px), (max-aspect-ratio: 16/9) ' + (178 * part.width / 100) + 'svh, ' + part.width + 'vw'}
+      style={{ left: part.x + '%', top: part.y + '%', width: part.width + '%', height: part.height + '%', maskImage: mask, WebkitMaskImage: mask }}
+      alt="" width={part.sources[2].width} height={part.sources[2].height} decoding="async" fetchPriority={surface ? 'high' : 'auto'} />
+  }
+
 
   return (
       <section id="home" className="hero" tabIndex={-1} ref={root} aria-labelledby="hero-heading">
+        <HeroCrystalDefinitions />
         <div className="hero__artwork" aria-hidden="true">
           <img key="background" className="hero__background" src={import.meta.env.BASE_URL + 'hero-layers/separated/background-2k.webp'} srcSet={[1920, 3840, 7680].map((width, index) => import.meta.env.BASE_URL + 'hero-layers/separated/background-' + ['2k', '4k', '8k'][index] + '.webp ' + width + 'w').join(', ')} sizes={heroImageSizes} alt="" width="7680" height="4320" fetchPriority="high" decoding="async" />
           <div key="scene" className="hero__scene" data-hero-scene="separated">
-            {heroStaticLayers.map((part) => <img key={part.name} className="hero__part" data-hero-piece={part.name}
-              src={import.meta.env.BASE_URL + 'hero-layers/separated/' + part.name + '-2k.png'}
-              srcSet={part.sources.map((source) => import.meta.env.BASE_URL + 'hero-layers/separated/' + part.name + '-' + source.size + '.png ' + source.width + 'w').join(', ')}
-              sizes={'(max-width: 979px) min(' + (187 * part.width / 100) + 'vw, ' + (1210 * part.width / 100) + 'px), (max-aspect-ratio: 16/9) ' + (178 * part.width / 100) + 'svh, ' + part.width + 'vw'}
-              style={{ left: part.x + '%', top: part.y + '%', width: part.width + '%', height: part.height + '%' }}
-              alt="" width={part.sources[2].width} height={part.sources[2].height} decoding="async" fetchPriority={part.name === 'main-c' ? 'high' : 'auto'} />)}
+            {sceneImage(heroStaticLayers.find((part) => part.name === 'main-c')!, true)}
+            <HeroOrbit part="back" />
+            {heroStaticLayers.filter((part) => part.name === 'stage' || part.name === 'main-c').map((part) => sceneImage(part))}
+            <HeroOrbit part="front" />
           </div>
           <div key="blue-bubble" className="hero__float-track hero__float-track--blue" data-hero-parallax="blue">
             <div className="hero__float-intro">

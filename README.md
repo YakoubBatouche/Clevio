@@ -56,12 +56,12 @@ Browser checks cover Chromium, Firefox and WebKit, responsive widths, keyboard b
 
 ## Separated hero scene
 
-The main glass C, pedestal and lime orbital light are independent static PNG layers. The light has back/front pieces to preserve its overlap with the C. All are registered to the original 7680×4320 master. Visible opaque surface pixels are retained; only the newly exposed background is inpainted. Soft lighting mattes reproduce the source within one RGB level (mean difference below 0.05/255).
+The main glass C and pedestal use independent PNG layers. The lime orbit uses smooth front/back SVG paths with the original perspective and overlap. A precise C silhouette clips the surface and its shine; a separate static lighting layer fades on after landing. All are registered to the original 7680×4320 master. Visible opaque surface pixels are retained; only the newly exposed background is inpainted. Soft lighting mattes reproduce the source within one RGB level (mean difference below 0.05/255).
 
 The site uses tightly cropped 2K/4K/8K PNG exports and a lossless background, positioned inside a shared cover frame. This preserves both desktop and mobile object placement while avoiding full-canvas PNG decode overhead. The intro animates these registered layers into place, then restores their original positions and styles. Existing floating cube/bubble motion resumes after the intro. Full-canvas masters and the reconstruction report are saved with the chat outputs.
 
 ## Crystal Forms intro
 
-The complete four-part intro runs on every normal open/reload: a larger lime outline logo, blue glass fill and light sweep, a center-out tile transition with a measured logo-to-C handoff, then a staggered reveal of the hero. The desktop sequence lasts about 7.6s; mobile uses about 6.3s. Arabic is animated in complete lines. The existing final design is preserved.
+The complete four-part intro runs on every normal open/reload: a larger lime outline logo, blue glass fill and light sweep, a center-out tile transition with a measured logo-to-C handoff, then a staggered reveal of the hero. The desktop sequence lasts about 7.6s; mobile uses about 6.3s. Arabic is animated in complete lines. The existing final design is preserved. After landing, the C stays static while a restrained shine passes only across its clipped surface; the separate cube and bubbles retain their gentle floating motion.
 
 Images and fonts are decoded before playback. The page is locked during the sequence, with safety fallbacks that always restore access. Reduced motion skips the loader; development supports `?skipintro`. Timing lives in `src/intro/config.ts`, and `window.introTl` exposes the master timeline. No new dependencies or 3D rendering were added. See `docs/intro-plan.md` for the four parts, timing and fallbacks.

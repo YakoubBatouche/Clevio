@@ -5,6 +5,7 @@ import { INTRO_CONFIG } from '../intro/config'
 import { addGlassPhase } from '../intro/glass'
 import { setupCrystalTransition } from '../intro/transition'
 import { setupHeroReveal } from '../intro/hero'
+import { startIntroProfile } from '../intro/performance'
 
 gsap.registerPlugin(DrawSVGPlugin)
 
@@ -33,6 +34,7 @@ export function IntroPreloader() {
     let master: gsap.core.Timeline | undefined
     let releaseLock = () => {}
     let releaseScene = () => {}
+    let stopProfile = () => {}
     let playingSize: { width: number; height: number } | undefined
 
     const clearWatchdog = () => window.clearTimeout(introWindow.__clevioIntroBoot?.watchdog)
@@ -56,6 +58,7 @@ export function IntroPreloader() {
       window.removeEventListener('clevio:intro-abort', failOpen)
       window.removeEventListener('resize', onResize)
       clearWatchdog()
+      stopProfile()
       restoreScene()
       unlock()
       setVisible(false)
@@ -87,6 +90,7 @@ export function IntroPreloader() {
     }
     const cleanup = () => {
       active = false
+      stopProfile()
       master?.kill()
       reducedMotion.removeEventListener('change', onReducedMotion)
       window.removeEventListener('clevio:intro-abort', failOpen)
@@ -177,11 +181,12 @@ export function IntroPreloader() {
                 .call(() => { html.classList.add('intro-revealing'); phase('shatter')() }, [], 'shatter')
               crystal.addTo(timeline, timing.shatter, timing.handoff)
               timeline.addLabel('hero', timing.hero).call(phase('hero'), [], 'hero')
-              scene.addTo(timeline, timing.hero, timing.shatter)
+              scene.addTo(timeline, timing.hero, timing.shatter, timing.shatter + timing.handoff + 0.12)
               timeline.addLabel('exit', timing.exit)
                 .call(phase('exit'), [], 'exit')
                 .to(overlay, { opacity: 0, duration: INTRO_CONFIG.duration.exit, ease: INTRO_CONFIG.ease.exit }, 'exit')
               playingSize = { width: window.innerWidth, height: window.innerHeight }
+              if (import.meta.env.DEV && new URLSearchParams(window.location.search).has('profileintro')) stopProfile = startIntroProfile()
               timeline.play(0)
             } catch { failOpen() }
           })

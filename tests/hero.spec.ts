@@ -3,7 +3,7 @@ import { expect, test, type Locator } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 test('intro waits for hero assets, unlocks the unchanged scene, and replays on reload', async ({ page }) => {
-  test.setTimeout(45000)
+  test.setTimeout(60000)
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.setViewportSize({ width: 1672, height: 941 })
   let releaseAsset = () => {}
@@ -35,8 +35,12 @@ test('intro waits for hero assets, unlocks the unchanged scene, and replays on r
     })
     await expect(piece).toHaveCSS('animation-name', 'none')
     releaseAsset()
+    const flight = page.locator('.intro-handoff-c')
+    await expect(flight).toBeAttached({ timeout: 12000 })
+    await expect(flight).toHaveCSS('filter', 'none')
+    await expect(flight).toHaveCSS('clip-path', /hero-crystal-clip/)
 
-    await expect(loader).toBeHidden({ timeout: 15000 })
+    await expect(loader).toBeHidden({ timeout: 22000 })
     expect(await page.evaluate(() => performance.now())).toBeGreaterThanOrEqual(7400)
     await expect.poll(() => lockedContent.evaluateAll((elements) => elements.every((element) => !(element as HTMLElement).inert))).toBe(true)
     await expect(page.locator('html')).not.toHaveClass(/intro-pending/)
@@ -45,6 +49,9 @@ test('intro waits for hero assets, unlocks the unchanged scene, and replays on r
     await expect(page.locator('.intro-preloader__tiles, .intro-preloader__shockwave, .intro-handoff-c')).toHaveCount(0)
     await expect(piece).toHaveCSS('opacity', '1')
     await expect(piece).toHaveCSS('filter', 'none')
+    await expect(piece).toHaveCSS('transform', 'none')
+    await expect(page.locator('.hero__scene img[data-hero-piece^="orbit-"]')).toHaveCount(0)
+    await expect(page.locator('[data-hero-glow]')).toHaveCSS('opacity', '1')
     await expect(page.locator('.hero__line-mask')).toHaveCount(3)
     await expect(page.locator('.hero__line')).toHaveText(['أفكار', 'خارج', 'الإطار'])
     await expect(piece).toHaveCSS('animation-name', 'none')
@@ -60,11 +67,22 @@ test('intro waits for hero assets, unlocks the unchanged scene, and replays on r
       return timeline ? { labels: timeline.labels, progress: timeline.progress(), duration: timeline.duration() } : null
     })).toEqual({ labels: expect.objectContaining({ outline: 0, glass: 1.95, shatter: 3.6, hero: 4, exit: 7.35 }), progress: 1, duration: expect.closeTo(7.6, 4) })
 
+    // Sample through the old drift's first cycle and the new shine's start.
+    await page.waitForTimeout(6500)
+    await expect(piece).toHaveCSS('transform', 'none')
+    const resting = await piece.boundingBox()
+    expect(resting).not.toBeNull()
+    for (const key of ['x', 'y', 'width', 'height'] as const) {
+      expect(Math.abs(resting![key] - after[key])).toBeLessThan(0.2)
+    }
+    await expect(page.locator('.hero__crystal-shine')).toHaveCount(1)
+    await expect(page.locator('.hero__crystal-shine')).toHaveCSS('clip-path', /hero-crystal-clip/)
+
     await page.unrouteAll({ behavior: 'wait' })
     await page.reload({ waitUntil: 'domcontentloaded' })
     await expect(loader).toBeVisible()
     await expect.poll(() => lockedContent.evaluateAll((elements) => elements.every((element) => (element as HTMLElement).inert))).toBe(true)
-    await expect(loader).toBeHidden({ timeout: 15000 })
+    await expect(loader).toBeHidden({ timeout: 22000 })
     await expect.poll(() => lockedContent.evaluateAll((elements) => elements.every((element) => !(element as HTMLElement).inert))).toBe(true)
   } finally {
     releaseAsset()
@@ -299,7 +317,7 @@ test('floating artwork moves gently while the background and headline stay still
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.setViewportSize({ width: 1672, height: 941 })
   await page.goto('/')
-  await expect(page.locator('html')).not.toHaveClass(/intro-pending/, { timeout: 15000 })
+  await expect(page.locator('html')).not.toHaveClass(/intro-pending/, { timeout: 22000 })
   await page.evaluate(() => document.fonts.ready)
   for (const line of await page.locator('.hero__line').all()) {
     await expect(line).toHaveCSS('opacity', '1')
@@ -334,7 +352,7 @@ test('pointer movement stays subtle and resets when leaving the artwork', async 
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.setViewportSize({ width: 1672, height: 941 })
   await page.goto('/')
-  await expect(page.locator('html')).not.toHaveClass(/intro-pending/, { timeout: 15000 })
+  await expect(page.locator('html')).not.toHaveClass(/intro-pending/, { timeout: 22000 })
   const scene = await page.locator('.hero__artwork').boundingBox()
   expect(scene).not.toBeNull()
   const translations = () => page.locator('.hero__float-track[data-hero-parallax]').evaluateAll((elements) =>

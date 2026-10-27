@@ -2,8 +2,8 @@
   position: absolute;
   inset: 0;
   display: grid;
-  grid-template-columns: repeat(var(--intro-columns, 12), minmax(0, 1fr));
-  grid-template-rows: repeat(var(--intro-rows, 7), minmax(0, 1fr));
+  grid-template-columns: repeat(var(--intro-columns, 8), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--intro-rows, 6), minmax(0, 1fr));
   pointer-events: none;
   visibility: hidden;
   z-index: -1;
@@ -46,9 +46,11 @@
   object-fit: fill;
   pointer-events: none;
   user-select: none;
+  backface-visibility: hidden;
 }
 
 @media (max-width: 760px) {
   .intro-preloader__shockwave { width: 85px; height: 85px; }
 }
+
 

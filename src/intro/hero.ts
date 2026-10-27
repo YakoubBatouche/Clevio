@@ -18,9 +18,9 @@ export function setupHeroReveal(mobile: boolean) {
   const elements = [...background, ...stage, ...orbits, ...floats, ...brand, ...links, ...lines, ...description, ...primary, ...secondary, ...underlines, ...heading]
   const original = new Map(elements.map((element) => [element, element.getAttribute('style')]))
 
-  gsap.set(background, { scale: 1.08, filter: 'brightness(0.38)', transformOrigin: '50% 100%', willChange: 'transform, opacity' })
+  gsap.set(background, { scale: 1.05, opacity: 0.38, transformOrigin: '50% 100%', willChange: 'transform, opacity' })
   gsap.set(stage, { y: mobile ? 40 : 65, opacity: 0, willChange: 'transform, opacity' })
-  gsap.set(orbits, { scale: 0.94, rotation: -5, opacity: 0, transformOrigin: 'center', willChange: 'transform, opacity' })
+  gsap.set(orbits, { opacity: 0, willChange: 'opacity' })
   gsap.set(floats, {
     y: (index: number) => (index === 2 ? 22 : -26), scale: 0.88,
     rotation: (index: number) => index === 1 ? -6 : 0, opacity: 0,
@@ -34,12 +34,12 @@ export function setupHeroReveal(mobile: boolean) {
   gsap.set(underlines, { '--intro-underline': 0 })
 
   return {
-    addTo(timeline: gsap.core.Timeline, start: number, backgroundStart: number) {
+    addTo(timeline: gsap.core.Timeline, start: number, backgroundStart: number, landing: number) {
       const pace = mobile ? 0.82 : 1
       const at = (offset: number) => start + offset * pace
-      timeline.to(background, { scale: 1, filter: 'brightness(1)', duration: 1.8 * pace, ease: 'expo.out' }, backgroundStart)
+      timeline.to(background, { scale: 1, opacity: 1, duration: 1.8 * pace, ease: 'expo.out' }, backgroundStart)
       timeline.to(stage, { y: 0, opacity: 1, duration: 1.15 * pace, ease: 'power3.out' }, start)
-      timeline.to(orbits, { scale: 1, rotation: 0, opacity: 1, duration: 1.1 * pace, ease: 'power3.out' }, at(0.28))
+      timeline.to(orbits, { opacity: 1, duration: 0.9 * pace, ease: 'sine.inOut' }, landing + 0.05)
       timeline.to(floats, { y: 0, scale: 1, rotation: 0, opacity: 1, duration: 1.08 * pace, stagger: 0.14 * pace, ease: 'back.out(1.25)' }, at(0.35))
       timeline.to(brand, { y: 0, opacity: 1, duration: 0.8 * pace, ease: 'power3.out' }, at(0.5))
       // Navigation's DOM order already starts at the rightmost Arabic item.
