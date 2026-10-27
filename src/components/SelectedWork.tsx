@@ -90,13 +90,12 @@ export function SelectedWork({ onStartProject }: { onStartProject: () => void })
               className={'work-card' + (index === 0 ? ' work-card--featured' : '')}
               type="button"
               key={project.id}
-              aria-label={'عرض ' + project.category + ' ' + project.title + ' ' + project.description}
               onClick={(event) => {
                 triggerRef.current = event.currentTarget
                 setSelected(project)
               }}
             >
-              <img src={workImage(project.image)} alt={project.alt} loading="lazy" decoding="async"
+              <img src={workImage(project.image)} alt="" loading="lazy" decoding="async"
                 width={index === 0 ? 1122 : 1672} height={index === 0 ? 1402 : 941} />
               <span className="work-card__shade" aria-hidden="true" />
               <span className="work-card__badge">{project.category}</span>
