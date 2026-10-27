@@ -1,0 +1,62 @@
+/* A landing is one complete scene beneath the fixed navigation, never a short strip. */
+#services, #contact { min-height: calc(100svh - var(--header-offset)); }
+#contact { display: flex; align-items: center; }
+#services {
+  height: calc(100svh - var(--header-offset));
+  padding-block: clamp(18px, 3svh, 34px);
+}
+.services-section__shell { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.services-section__header { flex: none; margin-bottom: clamp(14px, 2svh, 24px); }
+.services-section__grid {
+  flex: 1; min-height: 0;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.6svh, 18px);
+}
+.service-card { min-height: 0; padding-block: clamp(14px, 2svh, 24px); }
+@media(max-width:900px) {
+  .services-section__grid { grid-template-rows: repeat(4, minmax(0, 1fr)); }
+}
+@media(max-width:580px) {
+  #services { padding-block: clamp(12px, 2.2svh, 20px); }
+  .services-section__header { flex-direction: row; align-items: flex-end; gap: 12px; margin-bottom: 12px; }
+  .services-section__intro { display: none; }
+  .services-section__eyebrow { font-size: 11px; line-height: 1.4; margin-bottom: 4px; }
+  .services-section h2 { font-size: 32px; line-height: 1.2; }
+  .services-section__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0,1fr)); gap: 8px; }
+  .service-card, .service-card:nth-last-child(2), .service-card:last-child { grid-column: auto; }
+  .service-card { flex-direction: column; justify-content: center; text-align: center; padding: 9px 8px; gap: 4px; border-radius: 14px; }
+  .service-card__glass { width: 48px; height: 48px; }
+  .service-card__body { align-items: center; gap: 5px; }
+  .service-card__body strong { font-size: 14px; line-height: 1.35; }
+  .service-card__explore { font-size: 10px; line-height: 1.2; gap: 5px; }
+  .service-card__explore svg { width: 14px; height: 14px; }
+  .service-card__number { top: 8px; left: 9px; font-size: 8px; }
+}
+@media(max-height:620px) {
+  #services { padding-block: 10px; }
+  .services-section__eyebrow, .services-section__intro { display: none; }
+  .services-section h2 { font-size: 28px; line-height: 1.2; }
+  .services-section__header { margin-bottom: 10px; }
+  .services-section__grid { gap: 7px; }
+  .service-card { padding-block: 8px; gap: 5px; }
+  .service-card__glass { width: 48px; height: 48px; }
+  .service-card__body { gap: 5px; }
+  .service-card__body strong { font-size: 14px; line-height: 1.3; }
+}
+@media(max-height:620px) and (max-width:580px) {
+  .service-card { gap: 2px; padding: 3px 6px; }
+  .service-card__glass { width: 24px; height: 24px; }
+  .service-card__body { gap: 2px; }
+  .service-card__body strong { font-size: 12px; line-height: 1.2; }
+  .service-card__explore { font-size: 0; line-height: 0; gap: 0; }
+  .service-card__explore svg { width: 12px; height: 12px; }
+}
+@media(max-height:620px) and (min-aspect-ratio:11/10) and (max-width:979px) {
+  .services-section__grid { grid-template-columns: repeat(4, minmax(0,1fr)); grid-template-rows: repeat(2, minmax(0,1fr)); gap: 8px; }
+  .service-card, .service-card:nth-last-child(2), .service-card:last-child { grid-column: auto; }
+  .service-card { flex-direction: row; text-align: right; padding: 8px; gap: 6px; }
+  .service-card__glass { width: 38px; height: 38px; }
+  .service-card__body { align-items: stretch; gap: 4px; }
+  .service-card__body strong { font-size: 12px; }
+  .service-card__explore { font-size: 10px; line-height: 1.2; gap: 5px; }
+}

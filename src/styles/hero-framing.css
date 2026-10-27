@@ -1,0 +1,98 @@
+/* One canonical 16:9 frame owns every bitmap and vector: crop them together. */
+.hero {
+  height: 100svh;
+  min-height: 0;
+}
+.hero__artwork {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 35% 78%, #05204a 0%, #020b24 68%);
+}
+.hero__registered-frame {
+  --hero-art-lift: clamp(16px, 3.5svh, 44px);
+  position: absolute;
+  top: calc(-1 * var(--hero-art-lift));
+  left: 50%;
+  width: calc(100cqh * 16 / 9);
+  height: 100cqh;
+  transform: translateX(-50%);
+  container-type: size;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 97%, transparent 100%), linear-gradient(to right, transparent 0%, #000 3%, #000 97%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 97%, transparent 100%), linear-gradient(to right, transparent 0%, #000 3%, #000 97%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+.hero__scene { left: 50%; width: 100cqw; height: 100cqh; bottom: 0; transform: translateX(-50%); }
+.hero__registered-frame > .hero__background { object-fit: fill; }
+.hero__registered-frame .hero__float { object-fit: fill; }
+.hero__content { top: max(16.8%, var(--header-offset)); }
+.hero__heading { font-size: clamp(68px, min(7.6vw, 12.5svh), 154px); }
+.hero__description { margin-top: clamp(18px, 1.85vw, 36px); }
+.hero__actions { margin-top: clamp(20px, 2.25vw, 42px); }
+
+@media (min-width: 980px) and (max-height: 760px) {
+  .hero__content { top: max(14%, var(--header-offset)); }
+  .hero__heading { font-size: clamp(54px, min(7vw, 12svh), 94px); }
+  .hero__description { font-size: clamp(14px, 1.1vw, 17px); line-height: 1.65; margin-top: 14px; }
+  .hero__actions { margin-top: 18px; gap: 18px; }
+  .hero .action--primary { min-height: 46px; padding-block: 8px; }
+}
+
+@media (max-width: 979px) {
+  .hero {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 4px;
+    padding-top: calc(var(--header-offset) + 8px);
+    padding-bottom: 0;
+    height: 100svh;
+    min-height: 0;
+  }
+  .hero__content { position: relative; top: auto; right: auto; width: 88%; margin: 0 auto; order: 0; }
+  .hero__heading { font-size: clamp(42px, min(12vw, 8.5svh), 82px); line-height: 1.04; }
+  .hero__description { font-size: clamp(13px, 2.8vw, 17px); line-height: 1.65; margin-top: 11px; }
+  .hero__actions { margin-top: 13px; gap: 14px; }
+  .hero .action--primary { min-height: 46px; padding-block: 7px; }
+  .hero .action--secondary { min-height: 44px; }
+  .hero__artwork { position: relative; inset: auto; height: 100%; min-height: 0; width: 100%; max-height: none; margin: 0; order: 1; z-index: 0; }
+  .hero__registered-frame { --hero-art-lift: clamp(4px, 1.2svh, 10px); left: 50%; transform: translateX(-32.5%); }
+  .hero__artwork::after { inset: 0; background: linear-gradient(to bottom, var(--navy), transparent 13%); }
+  .hero__scene { left: 50%; transform: translateX(-50%); }
+  .hero__scroll-indicator { bottom: 5px; min-height: 48px; width: 42px; }
+  .hero__scroll-indicator svg { width: 21px; height: 43px; }
+}
+@media (max-width: 979px) and (max-height: 620px) {
+  .hero { padding-top: calc(var(--header-offset) + 4px); gap: 0; }
+  .hero__heading { font-size: clamp(36px, 10.6vw, 56px); line-height: 1.02; }
+  .hero__description { font-size: 12.5px; line-height: 1.6; margin-top: 7px; }
+  .hero__actions { margin-top: 9px; gap: 12px; }
+  .hero .action--primary { min-height: 44px; font-size: 13px; padding: 6px 12px; }
+  .hero .action--secondary { font-size: 12.5px; min-height: 44px; gap: 8px; }
+}
+@media (max-width: 979px) and (max-height: 620px) and (min-aspect-ratio: 11/10) {
+  .hero { display: block; padding: 0; }
+  .hero__content { position: absolute; top: calc(var(--header-offset) + 8px); right: 4.5%; width: 44%; margin: 0; }
+  .hero__heading { font-size: clamp(32px, min(6vw, 10svh), 56px); line-height: 1.02; }
+  .hero__description { font-size: 12px; line-height: 1.5; margin-top: 9px; }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 10px; }
+  .hero .action--primary { min-width: 142px; min-height: 42px; }
+  .hero .action--secondary { min-height: 42px; }
+  .hero__artwork { position: absolute; inset: calc(var(--header-offset) - 28px) 47% 0 0; width: auto; height: auto; order: initial; }
+  .hero__registered-frame { --hero-art-lift: 8px; transform: translateX(-32.5%); }
+  .hero__scroll-indicator { left: 50%; bottom: 4px; }
+}
+
+/* A classic scrollbar must not force a 320px layout into a 305px scrollport. */
+@media (max-width: 374px) { html, body { min-width: 0; } }
+/* Only the backdrop gets a wider ultrawide blend; glass and rock stay untouched. */
+@media (min-aspect-ratio: 16/9) {
+  .hero__registered-frame > .hero__background {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  }
+}

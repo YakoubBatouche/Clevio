@@ -61,10 +61,18 @@ export function useSectionPaging() {
       previousDirection = direction
       const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1)
       const sections = [...document.querySelectorAll<HTMLElement>('#home, #services, #partners, #contact, .site-footer')]
-        .map((element) => ({
-          top: sectionScrollTop(element),
-          bottom: element.getBoundingClientRect().bottom + window.scrollY,
-        }))
+        .map((element) => {
+          const selector = element.id === 'contact' ? '.contact-section__content, .contact-section__art'
+            : element.id === 'services' ? '.services-section__grid'
+              : element.id === 'partners' ? '.partners__group'
+                : element.id === 'home' ? '.hero__content, .hero__artwork' : '.site-footer__inner'
+          const content = [...element.querySelectorAll<HTMLElement>(selector)].filter((item) => item.getClientRects().length)
+          return {
+            top: sectionScrollTop(element),
+            bottom: element.getBoundingClientRect().bottom + window.scrollY,
+            contentBottom: Math.max(...content.map((item) => item.getBoundingClientRect().bottom + window.scrollY), 0),
+          }
+        })
       if (!sections.length) return
       const y = window.scrollY
       let index = 0
@@ -72,7 +80,10 @@ export function useSectionPaging() {
       const current = sections[index]
       const readingEnd = Math.max(current.top, current.bottom - window.innerHeight)
       // A tall service grid or form can be read normally until its visible content ends.
-      if (direction > 0 && y < readingEnd - 4) {
+      const tailAllowance = Math.max(64, window.innerHeight * 0.08)
+      // Small decorative floor/padding tails must not consume an extra wheel gesture.
+      const decorativeTail = readingEnd - y <= tailAllowance && current.contentBottom <= y + window.innerHeight + 2
+      if (direction > 0 && y < readingEnd - 4 && !decorativeTail) {
         if (delta < readingEnd - y - 4) { accumulated = 0; return }
         event.preventDefault()
         moveTo(readingEnd)

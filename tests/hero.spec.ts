@@ -241,7 +241,7 @@ test('eight service categories use three desktop columns and accessible details'
   await page.goto('/#services')
   await expect(cards).toHaveCount(8)
   const mobile = await cards.evaluateAll((items) => items.slice(0, 3).map((item) => Math.round(item.getBoundingClientRect().x)))
-  expect(new Set(mobile).size).toBe(1)
+  expect(new Set(mobile).size).toBe(2)
 })
 
 test('services navigation reaches the real homepage section', async ({ page }) => {
@@ -438,14 +438,9 @@ test('separated C, pedestal and orbit keep the original cover registration', asy
     const frame = await page.locator('.hero__scene').boundingBox()
     expect(background).not.toBeNull()
     expect(frame).not.toBeNull()
-    const scale = Math.max(background!.width / 7680, background!.height / 4320)
-    const sceneWidth = 7680 * scale
-    const sceneHeight = 4320 * scale
-    const expectedX = background!.x + (background!.width - sceneWidth) * (width < 980 ? 0.02 : 0.5)
-    expect(Math.abs(frame!.x - expectedX)).toBeLessThan(0.15)
-    expect(Math.abs(frame!.y - (background!.y + background!.height - sceneHeight))).toBeLessThan(0.15)
-    expect(Math.abs(frame!.width - sceneWidth)).toBeLessThan(0.15)
-    expect(Math.abs(frame!.height - sceneHeight)).toBeLessThan(0.15)
+    for (const key of ['x', 'y', 'width', 'height'] as const) {
+      expect(Math.abs(frame![key] - background![key])).toBeLessThan(0.15)
+    }
     for (const orbit of await orbits.all()) {
       await expect(orbit).toHaveAttribute('viewBox', '0 0 7680 4320')
       const box = await orbit.boundingBox()
@@ -507,11 +502,12 @@ test('hero mouse cue navigates to services and the contact communication visual 
   await expect(page).toHaveURL(/#services$/)
   await page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true }).getByRole('link', { name: 'تواصل معنا', exact: true }).click()
   const art = page.locator('.contact-section__art')
-  await expect(art.locator('svg')).toHaveCount(1)
-  await expect(art.locator('img')).toHaveCount(0)
+  await expect(art.locator('svg')).toHaveCount(0)
+  await expect(art.locator('img')).toHaveCount(1)
   await expect(art).toHaveCSS('animation-name', 'none')
   await expect(art).toHaveCSS('transform', 'none')
-  await expect(art.locator('[data-contact-piece="envelope"]')).toHaveCount(1)
+  await expect(art.locator('[data-contact-piece="crystal-plane"]')).toHaveCount(1)
+  await expect.poll(() => art.locator('img').evaluate((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0)).toBe(true)
 })
 
 test('service panels reassemble when returning after a full section exit', async ({ page }) => {
@@ -530,4 +526,100 @@ test('service panels reassemble when returning after a full section exit', async
   await nav.getByRole('link', { name: 'خدماتنا', exact: true }).click()
   await expect(card).toHaveCSS('opacity', '1')
   await expect(card).toHaveCSS('transform', 'none')
+})
+
+test('services occupy one available viewport without clipping cards or exposing the next scene', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  for (const viewport of [
+    { width: 320, height: 480 }, { width: 390, height: 844 },
+    { width: 844, height: 390 }, { width: 1920, height: 1080 },
+    { width: 2560, height: 1080 },
+  ]) {
+    await page.setViewportSize(viewport)
+    await page.goto('/?skipintro#services')
+    await page.evaluate(() => document.fonts.ready)
+    await expect(page.locator('#services-heading')).toBeInViewport({ ratio: 1 })
+    await expect(page.locator('#services .service-card')).toHaveCount(8)
+    await expect.poll(() => page.locator('#services').evaluate((element) => {
+      const inset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-offset'))
+      return Math.abs(element.getBoundingClientRect().top - inset)
+    })).toBeLessThan(2)
+    const scene = await page.evaluate(() => {
+      const section = document.querySelector('#services')!.getBoundingClientRect()
+      const header = document.querySelector('.site-header')!.getBoundingClientRect()
+      return {
+        top: section.top, bottom: section.bottom, headerBottom: header.bottom,
+        nextTop: document.querySelector('#partners')!.getBoundingClientRect().top,
+        overflow: document.documentElement.scrollWidth > innerWidth,
+        cards: [...document.querySelectorAll('#services .service-card')].map((card) => {
+          const box = card.getBoundingClientRect()
+          const title = card.querySelector('strong')!.getBoundingClientRect()
+          const body = card.querySelector('.service-card__body')!.getBoundingClientRect()
+          const icon = card.querySelector('.service-card__glass')!.getBoundingClientRect()
+          return { top: box.top, bottom: box.bottom, titleTop: title.top, titleBottom: title.bottom, bodyBottom: body.bottom, iconTop: icon.top }
+        }),
+      }
+    })
+    expect(scene.top).toBeGreaterThan(scene.headerBottom)
+    expect(scene.bottom).toBeLessThanOrEqual(viewport.height + 1)
+    expect(scene.nextTop).toBeGreaterThanOrEqual(viewport.height - 1)
+    expect(scene.overflow).toBe(false)
+    for (const card of scene.cards) {
+      expect(card.top).toBeGreaterThan(scene.headerBottom)
+      expect(card.bottom).toBeLessThanOrEqual(viewport.height + 1)
+      expect(card.titleTop).toBeGreaterThanOrEqual(card.top + 1)
+      expect(card.titleBottom).toBeLessThanOrEqual(card.bottom - 1)
+      expect(card.bodyBottom).toBeLessThanOrEqual(card.bottom - 1)
+      expect(card.iconTop).toBeGreaterThanOrEqual(card.top + 1)
+    }
+  }
+})
+
+test('a small work-section preview does not consume its reveal and deliberate entries replay', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1920, height: 1080 })
+  await page.goto('/?skipintro')
+  const nav = page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true })
+  const work = page.locator('#partners')
+  const card = page.locator('#partners .work-showcase__card').first()
+  await nav.getByRole('link', { name: 'خدماتنا', exact: true }).click()
+  await expectFullyRevealed(page.locator('#services .service-card').first())
+  const serviceLanding = await page.locator('#services').evaluate((element) =>
+    element.getBoundingClientRect().top + scrollY -
+    parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-offset')))
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(serviceLanding - 2)
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(serviceLanding + 2)
+  // Simulate a minor native scroll that exposes only a narrow preview at the bottom.
+  await page.evaluate((top) => window.scrollTo({ top: top + 64, behavior: 'auto' }), serviceLanding)
+  await page.waitForTimeout(250)
+  await expect(work).not.toHaveAttribute('data-section-revealed', 'true')
+  await expect(card).toHaveCSS('opacity', '0')
+  await nav.getByRole('link', { name: 'أعمالنا', exact: true }).click()
+  await expect(work).toHaveAttribute('data-section-revealed', 'true')
+  await expectFullyRevealed(card)
+  await nav.getByRole('link', { name: 'خدماتنا', exact: true }).click()
+  await expect(card).toHaveCSS('opacity', '0')
+  await nav.getByRole('link', { name: 'أعمالنا', exact: true }).click()
+  await expectFullyRevealed(card)
+})
+
+test('hero fits one screen with visible actions on wide and compact displays', async ({ page }) => {
+  for (const viewport of [
+    { width: 320, height: 480 }, { width: 390, height: 844 },
+    { width: 844, height: 390 }, { width: 1920, height: 1080 }, { width: 2560, height: 1080 },
+  ]) {
+    await page.setViewportSize(viewport)
+    await page.goto('/?skipintro#home')
+    await page.evaluate(() => document.fonts.ready)
+    const boxes = await page.evaluate(() => ({
+      height: document.querySelector('#home')!.getBoundingClientRect().height,
+      actions: document.querySelector('.hero__actions')!.getBoundingClientRect().bottom,
+      next: document.querySelector('#services')!.getBoundingClientRect().top,
+      overflow: document.documentElement.scrollWidth > innerWidth,
+    }))
+    expect(Math.abs(boxes.height - viewport.height)).toBeLessThan(1)
+    expect(boxes.actions).toBeLessThan(viewport.height)
+    expect(boxes.next).toBeGreaterThanOrEqual(viewport.height - 1)
+    expect(boxes.overflow).toBe(false)
+  }
 })

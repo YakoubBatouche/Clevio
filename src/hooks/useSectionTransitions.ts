@@ -32,6 +32,7 @@ export function useSectionTransitions() {
     const context = gsap.context(() => {})
     let observer: IntersectionObserver | null = null
     let pointerActive = false
+    let entryFrame = 0
     const headerInset = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-offset')) || 0
 
     function restore(group: Group) {
@@ -76,6 +77,23 @@ export function useSectionTransitions() {
         })
       })
     }
+    function readyToReveal(owner: HTMLElement) {
+      const bounds = owner.getBoundingClientRect()
+      const inset = headerInset()
+      const usable = Math.max(1, innerHeight - inset)
+      const visible = Math.max(0, Math.min(bounds.bottom, innerHeight) - Math.max(bounds.top, inset))
+      // A narrow glimpse of the following section is never an entry.
+      return bounds.top <= inset + usable * 0.25 && visible >= Math.min(usable * 0.45, bounds.height * 0.55)
+    }
+    function checkEntries() {
+      entryFrame = 0
+      for (const owner of owners) {
+        if (readyToReveal(owner) && groups.some((group) => group.owner === owner && group.prepared && !group.playing)) showOwner(owner)
+      }
+    }
+    function scheduleEntries() {
+      if (!entryFrame) entryFrame = window.requestAnimationFrame(checkEntries)
+    }
     function showOwner(owner: HTMLElement) {
       owner.setAttribute('data-section-revealed', 'true')
       groups.filter((group) => group.owner === owner).forEach(reveal)
@@ -85,8 +103,7 @@ export function useSectionTransitions() {
     }
     const target = hashTarget()
     for (const owner of owners) {
-      const bounds = owner.getBoundingClientRect()
-      const visible = bounds.bottom > headerInset() + 1 && bounds.top < innerHeight - 1
+      const visible = readyToReveal(owner)
       if (!visible && !owner.contains(target) && !reduced.matches && !document.hidden && typeof IntersectionObserver !== 'undefined') {
         groups.filter((group) => group.owner === owner).forEach(prepare)
         owner.removeAttribute('data-section-revealed')
@@ -98,7 +115,7 @@ export function useSectionTransitions() {
       observer = new IntersectionObserver((entries) => {
         for (const entry of entries) {
           const owner = entry.target as HTMLElement
-          if (entry.isIntersecting) showOwner(owner)
+          if (entry.isIntersecting) { if (readyToReveal(owner)) showOwner(owner) }
           else {
             const bounds = owner.getBoundingClientRect()
             // Re-arm only after the entire owner has left: no blinking between internal rows.
@@ -108,11 +125,12 @@ export function useSectionTransitions() {
             }
           }
         }
-      }, { rootMargin: '-' + (headerInset() + 1) + 'px 0px -1px 0px', threshold: 0 })
+      }, { rootMargin: '-' + (headerInset() + 1) + 'px 0px -1px 0px', threshold: [0, 0.1, 0.25, 0.45, 0.65, 0.85, 1] })
       owners.forEach((owner) => observer?.observe(owner))
     }
     observeOwners()
     window.addEventListener('resize', observeOwners)
+    window.addEventListener('scroll', scheduleEntries, { passive: true })
     function onPointerDown() { pointerActive = true }
     function onPointerEnd() { pointerActive = false }
     function onFocus(event: FocusEvent) {
@@ -145,6 +163,8 @@ export function useSectionTransitions() {
     return () => {
       observer?.disconnect()
       window.removeEventListener('resize', observeOwners)
+      window.removeEventListener('scroll', scheduleEntries)
+      window.cancelAnimationFrame(entryFrame)
       document.removeEventListener('pointerdown', onPointerDown, true)
       document.removeEventListener('pointerup', onPointerEnd, true)
       document.removeEventListener('pointercancel', onPointerEnd, true)
