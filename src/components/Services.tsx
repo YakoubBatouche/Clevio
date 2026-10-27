@@ -113,6 +113,7 @@ export function Services({ onStartProject }: { onStartProject: () => void }) {
           <span className="service-card__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
           <ServiceGlassIcon index={index} />
           <span className="service-card__body"><strong>{category}</strong><span className="service-card__explore">استكشف الخدمات <ArrowUpLeft aria-hidden="true" strokeWidth={1.5} /></span></span>
+          <span className="service-card__facet" aria-hidden="true" />
           <span className="service-card__corner" aria-hidden="true" />
         </button>)}
       </div>

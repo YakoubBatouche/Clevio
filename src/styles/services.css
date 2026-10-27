@@ -63,3 +63,26 @@
   .service-card__glass, .service-card__shine { animation: none; transform: none; }
   .service-card__shine { opacity: 0; }
 }
+
+/* A crisp diagonal glass plane and a left-to-right reflection, beneath readable content. */
+.service-card__facet {
+  position: absolute; z-index: 0; pointer-events: none;
+  top: -35%; left: -22%; width: 58%; height: 165%; transform: rotate(28deg);
+  border-right: 1px solid rgb(163 219 255 / 24%);
+  background: linear-gradient(100deg, transparent, rgb(109 183 255 / 4%), transparent);
+}
+.service-card__glass, .service-card__body { position: relative; z-index: 1; }
+.service-card__number, .service-card__corner { z-index: 1; }
+.service-card::after {
+  content: ''; position: absolute; inset: -40% -70%; z-index: 0; pointer-events: none;
+  background: linear-gradient(110deg, transparent 43%, rgb(179 224 255 / 2%) 47%, rgb(205 239 255 / 17%) 50%, rgb(179 224 255 / 2%) 53%, transparent 57%);
+  transform: translateX(-55%); opacity: 0;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .service-card::after { transition: transform 850ms cubic-bezier(.22,1,.36,1), opacity 350ms ease; }
+  .service-card:hover::after { transform: translateX(55%); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .service-card::after { display: none; } }
+
+/* Entrance transforms are controlled by the reveal timeline, without a second CSS interpolation. */
+.service-card[style*="will-change"] { transition-property: border-color, box-shadow; }

@@ -411,7 +411,7 @@ test('reduced motion leaves the full headline and actions visible', async ({ pag
   for (const line of await page.locator('.hero__line').all()) {
     await expect(line).toHaveCSS('opacity', '1')
   }
-  const baseline = await page.locator('.hero__background').boundingBox()
+  const baseline = await page.locator('.hero__registered-frame').boundingBox()
   expect(baseline).not.toBeNull()
   for (const image of await page.locator('.hero__float').all()) {
     const box = await image.boundingBox()
@@ -434,7 +434,7 @@ test('separated C, pedestal and orbit keep the original cover registration', asy
     await expect(images).toHaveCount(2)
     await expect(orbits).toHaveCount(2)
     await expect.poll(() => images.evaluateAll((items) => items.every((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true)
-    const background = await page.locator('.hero__background').boundingBox()
+    const background = await page.locator('.hero__registered-frame').boundingBox()
     const frame = await page.locator('.hero__scene').boundingBox()
     expect(background).not.toBeNull()
     expect(frame).not.toBeNull()
@@ -622,4 +622,37 @@ test('hero fits one screen with visible actions on wide and compact displays', a
     expect(boxes.next).toBeGreaterThanOrEqual(viewport.height - 1)
     expect(boxes.overflow).toBe(false)
   }
+})
+
+test('desktop footer is fully revealed at the end of the page', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1920, height: 1080 })
+  await page.goto('/?skipintro#contact')
+  await page.keyboard.press('End')
+  const footer = page.locator('.site-footer')
+  await expect(footer).toBeInViewport({ ratio: 1 })
+  await expect(footer).toHaveAttribute('data-section-revealed', 'true')
+  for (const column of await footer.locator('.site-footer__column').all()) await expectFullyRevealed(column)
+  await expectFullyRevealed(footer.locator('.site-footer__bottom'))
+})
+
+test('glass cards preserve their sheen and work cards tilt with the pointer then settle', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/?skipintro#services')
+  const service = page.locator('.service-card').first()
+  await expect(service.locator('.service-card__facet')).toHaveCount(1)
+  await service.hover()
+  await expect.poll(() => service.evaluate((el) => getComputedStyle(el, '::after').opacity)).toBe('1')
+  await page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true }).getByRole('link', { name: 'أعمالنا', exact: true }).click()
+  const card = page.locator('.work-showcase__card').first()
+  await expectFullyRevealed(card)
+  const box = await card.boundingBox()
+  expect(box).not.toBeNull()
+  await page.mouse.move(box!.x + box!.width * 0.85, box!.y + box!.height * 0.2)
+  await expect(card).toHaveAttribute('data-work-tilt', '')
+  await expect.poll(() => card.evaluate((el) => parseFloat((el as HTMLElement).style.getPropertyValue('--work-tilt-angle')))).toBeGreaterThan(1)
+  await page.mouse.move(0, 0)
+  await expect(card).not.toHaveAttribute('data-work-tilt')
+  await expect.poll(() => card.evaluate((el) => getComputedStyle(el).rotate)).toMatch(/(?:^none$|0deg$)/)
 })

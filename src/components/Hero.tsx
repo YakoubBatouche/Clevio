@@ -35,8 +35,8 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
       <section id="home" className="hero" tabIndex={-1} ref={root} aria-labelledby="hero-heading">
         <HeroCrystalDefinitions />
         <div className="hero__artwork" aria-hidden="true">
-          <div className="hero__registered-frame">
           <img key="background" className="hero__background" src={import.meta.env.BASE_URL + 'hero-layers/separated/background-2k.webp'} srcSet={[1920, 3840, 7680].map((width, index) => import.meta.env.BASE_URL + 'hero-layers/separated/background-' + ['2k', '4k', '8k'][index] + '.webp ' + width + 'w').join(', ')} sizes={heroImageSizes} alt="" width="7680" height="4320" fetchPriority="high" decoding="async" />
+          <div className="hero__registered-frame">
           <div key="scene" className="hero__scene" data-hero-scene="separated">
             {sceneImage(heroStaticLayers.find((part) => part.name === 'main-c')!, true)}
             <HeroOrbit part="back" />

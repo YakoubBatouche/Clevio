@@ -82,8 +82,11 @@ export function useSectionTransitions() {
       const inset = headerInset()
       const usable = Math.max(1, innerHeight - inset)
       const visible = Math.max(0, Math.min(bounds.bottom, innerHeight) - Math.max(bounds.top, inset))
+      const visibleEnough = visible >= Math.min(usable * 0.45, bounds.height * 0.55)
+      // A short footer cannot reach the top landing when the document ends.
+      if (owner.matches('footer')) return visibleEnough
       // A narrow glimpse of the following section is never an entry.
-      return bounds.top <= inset + usable * 0.25 && visible >= Math.min(usable * 0.45, bounds.height * 0.55)
+      return bounds.top <= inset + usable * 0.25 && visibleEnough
     }
     function checkEntries() {
       entryFrame = 0

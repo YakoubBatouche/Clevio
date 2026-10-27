@@ -1,4 +1,4 @@
-/* One canonical 16:9 frame owns every bitmap and vector: crop them together. */
+/* Keep foreground layers registered while the backdrop covers the viewport. */
 .hero {
   height: 100svh;
   min-height: 0;
@@ -22,13 +22,20 @@
   height: 100cqh;
   transform: translateX(-50%);
   container-type: size;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 97%, transparent 100%), linear-gradient(to right, transparent 0%, #000 3%, #000 97%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 97%, transparent 100%), linear-gradient(to right, transparent 0%, #000 3%, #000 97%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 .hero__scene { left: 50%; width: 100cqw; height: 100cqh; bottom: 0; transform: translateX(-50%); }
-.hero__registered-frame > .hero__background { object-fit: fill; }
+.hero__artwork > .hero__background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
 .hero__registered-frame .hero__float { object-fit: fill; }
 .hero__content { top: max(16.8%, var(--header-offset)); }
 .hero__heading { font-size: clamp(68px, min(7.6vw, 12.5svh), 154px); }
@@ -89,10 +96,3 @@
 
 /* A classic scrollbar must not force a 320px layout into a 305px scrollport. */
 @media (max-width: 374px) { html, body { min-width: 0; } }
-/* Only the backdrop gets a wider ultrawide blend; glass and rock stay untouched. */
-@media (min-aspect-ratio: 16/9) {
-  .hero__registered-frame > .hero__background {
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%);
-  }
-}

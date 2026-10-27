@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+import { useWorkCardTilt } from '../hooks/useWorkCardTilt'
 import { services } from '../content/site'
 
 const partnerMarks = [
@@ -39,7 +41,9 @@ const partnerMarks = [
 const workVisuals = ['brand-identity.webp', 'digital-experience.webp', 'digital-experience.webp', 'visual-story.webp', 'brand-identity.webp', 'digital-experience.webp', 'visual-story.webp', 'digital-experience.webp']
 
 function WorkShowcase() {
-  return <div id="work" className="work-showcase" role="group" tabIndex={-1} aria-labelledby="work-heading">
+  const root = useRef<HTMLDivElement>(null)
+  useWorkCardTilt(root)
+  return <div ref={root} id="work" className="work-showcase" role="group" tabIndex={-1} aria-labelledby="work-heading">
     <div className="work-showcase__header">
       <div><p className="work-showcase__eyebrow">بصماتنا في كل مجال</p><h2 id="work-heading">أعمالنا</h2></div>
       <p className="work-showcase__intro">أفكار تأخذ شكلها.<br />وتجارب تترك أثرها.</p>
