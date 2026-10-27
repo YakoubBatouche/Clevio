@@ -268,7 +268,7 @@ test('a desktop wheel gesture glides to the next section without skipping it', a
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/?skipintro')
-  const target = await page.locator('#services').evaluate((element) => (element as HTMLElement).offsetTop)
+  const target = await page.locator('#services').evaluate((element) => Math.max(0, (element as HTMLElement).offsetTop - parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-offset'))))
   await page.mouse.move(720, 500)
   await page.mouse.wheel(0, 420)
   await page.mouse.wheel(0, 60)
@@ -456,4 +456,22 @@ test('separated C, pedestal and orbit keep the original cover registration', asy
     }
     for (const part of await parts.all()) await expect(part).toHaveCSS('animation-name', 'none')
   }
+})
+
+test('fixed glass navigation keeps section headings clear and groups work above partners', async ({ page }) => {
+  await page.goto('/#services')
+  const header = page.locator('.site-header')
+  await expect(header).toHaveCSS('position', 'fixed')
+  await expect(page.locator('#services-heading')).toBeInViewport()
+  const headerBottom = await header.evaluate((element) => element.getBoundingClientRect().bottom)
+  expect(await page.locator('#services-heading').evaluate((element) => element.getBoundingClientRect().top)).toBeGreaterThan(headerBottom)
+  await page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true }).getByRole('link', { name: 'أعمالنا', exact: true }).click()
+  await expect(page).toHaveURL(/#work$/)
+  await expect(page.locator('#work-heading')).toBeInViewport()
+  await expect(page.locator('#partners .work-showcase__card')).toHaveCount(8)
+  await expect(page.locator('.work-showcase__card button, .work-showcase__card a')).toHaveCount(0)
+  expect(await page.locator('#work-heading').evaluate((element) => element.getBoundingClientRect().top)).toBeGreaterThan(headerBottom)
+  const lastCard = await page.locator('.work-showcase__card').last().boundingBox()
+  const partnersTitle = await page.locator('#partners-heading').boundingBox()
+  expect(partnersTitle!.y).toBeGreaterThan(lastCard!.y + lastCard!.height)
 })

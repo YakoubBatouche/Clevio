@@ -3,16 +3,23 @@ import { useEffect } from 'react'
 type SectionId = 'home' | 'services' | 'partners' | 'work' | 'contact'
 const sectionIds = new Set(['home', 'services', 'partners', 'work', 'contact'])
 
+export function sectionScrollTop(element: HTMLElement) {
+  if (element.id === 'home') return 0
+  const inset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-offset')) || 112
+  const surface = element.id === 'work' ? element.closest<HTMLElement>('section') ?? element : element
+  return Math.max(0, surface.getBoundingClientRect().top + window.scrollY - inset)
+}
+
 export function scrollToSection(requestedId: SectionId) {
-  const id = requestedId === 'work' ? 'services' : requestedId
+  const id = requestedId
   const section = document.getElementById(id)
   if (!section) return
   if (window.location.hash !== '#' + id) window.history.pushState(null, '', '#' + id)
   const focusTarget = id === 'contact' ? section.querySelector<HTMLElement>('input') : section
   focusTarget?.focus({ preventScroll: true })
-  section.scrollIntoView({
+  window.scrollTo({
+    top: sectionScrollTop(section),
     behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-    block: 'start',
   })
 }
 
@@ -23,13 +30,14 @@ export function useSectionNavigation() {
     let disposed = false
     let initialInterrupted = false
     const initialHash = window.location.hash
-    const initialId = initialHash === '#work' ? 'services' : initialHash.slice(1)
+    const initialId = initialHash.slice(1)
 
     function interruptInitialAlignment() { initialInterrupted = true }
     function alignInitialHash() {
       if (disposed || initialInterrupted || window.location.hash !== initialHash || !sectionIds.has(initialId)) return
       // React inserts the fragment after the browser's first native hash lookup.
-      document.getElementById(initialId)?.scrollIntoView({ behavior: 'auto', block: 'start' })
+      const section = document.getElementById(initialId)
+      if (section) window.scrollTo({ top: sectionScrollTop(section), behavior: 'auto' })
     }
     function onAnchorClick(event: MouseEvent) {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
@@ -37,7 +45,7 @@ export function useSectionNavigation() {
       if (!anchor || anchor.hasAttribute('download') || (anchor.target && anchor.target !== '_self')) return
       const href = anchor.getAttribute('href')
       if (!href?.startsWith('#') || !sectionIds.has(href.slice(1))) return
-      const id = (href === '#work' ? 'services' : href.slice(1)) as SectionId
+      const id = href.slice(1) as SectionId
       if (!document.getElementById(id)) return
       event.preventDefault()
       initialInterrupted = true

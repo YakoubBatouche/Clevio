@@ -17,6 +17,7 @@ export function Footer({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
               <ul>
                 <li><a href="#home">الرئيسية</a></li>
                 <li><a href="#services">خدماتنا</a></li>
+                <li><a href="#work">أعمالنا</a></li>
                 <li><button type="button" onClick={() => onNavigate('about')}>من نحن</button></li>
                 <li><a href="#contact">تواصل معنا</a></li>
               </ul>

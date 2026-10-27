@@ -3,6 +3,7 @@ export type Panel = 'services' | 'work' | 'about' | 'contact'
 export const navigation: { label: string; panel: Panel | null }[] = [
   { label: 'الرئيسية', panel: null },
   { label: 'خدماتنا', panel: 'services' },
+  { label: 'أعمالنا', panel: 'work' },
   { label: 'من نحن', panel: 'about' },
   { label: 'تواصل معنا', panel: 'contact' },
 ]

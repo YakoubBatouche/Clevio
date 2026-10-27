@@ -28,3 +28,7 @@ import './styles/footer.css'
 import './styles/section-transitions.css'
 
 import './styles/hero-seam-fix.css'
+
+import './styles/layout-spacing.css'
+
+import './styles/header-glass.css'

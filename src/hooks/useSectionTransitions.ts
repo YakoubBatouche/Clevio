@@ -4,6 +4,8 @@ import { gsap } from '../lib/animation'
 const revealSelectors = [
   '#services .services-section__header',
   '#services .service-card',
+  '#partners .work-showcase__header',
+  '#partners .work-showcase__card',
   '#partners .partners__header',
   '#partners .partners__marks',
   '#contact .contact-section__content',

@@ -1,3 +1,5 @@
+import { services } from '../content/site'
+
 const partnerMarks = [
   <g key="orbit-petals" fill="none" stroke="currentColor" strokeWidth="2.4">
     <ellipse cx="48" cy="48" rx="14" ry="31" transform="rotate(45 48 48)" />
@@ -33,10 +35,36 @@ const partnerMarks = [
   </g>,
 ]
 
+
+const workVisuals = ['brand-identity.webp', 'digital-experience.webp', 'digital-experience.webp', 'visual-story.webp', 'brand-identity.webp', 'digital-experience.webp', 'visual-story.webp', 'digital-experience.webp']
+
+function WorkShowcase() {
+  return <div id="work" className="work-showcase" role="group" tabIndex={-1} aria-labelledby="work-heading">
+    <div className="work-showcase__header">
+      <div><p className="work-showcase__eyebrow">بصماتنا في كل مجال</p><h2 id="work-heading">أعمالنا</h2></div>
+      <p className="work-showcase__intro">أفكار تأخذ شكلها.<br />وتجارب تترك أثرها.</p>
+    </div>
+    <div className="work-showcase__grid">
+      {services.map((category, index) => <article className={'work-showcase__card work-showcase__card--' + index} key={category}>
+        <div className="work-showcase__visual" aria-hidden="true">
+          <img src={import.meta.env.BASE_URL + 'work/' + workVisuals[index]} alt="" loading="lazy" decoding="async" width="1122" height="941" />
+          <span className="work-showcase__glass" />
+          <span className="work-showcase__orbit" />
+        </div>
+        <span className="work-showcase__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+        <h3>{category}</h3>
+      </article>)}
+    </div>
+    <p className="work-showcase__note">نماذج بصرية توضيحية</p>
+  </div>
+}
+
 export function Partners() {
   return (
-    <section id="partners" className="partners" aria-labelledby="partners-heading" aria-describedby="partners-note">
+    <section id="partners" className="partners" aria-labelledby="work-heading">
       <div className="partners__inner">
+        <WorkShowcase />
+        <div className="partners__group" role="group" aria-labelledby="partners-heading">
         <div className="partners__header">
           <h2 id="partners-heading" className="partners__heading">شركاء صنعنا معهم الفرق</h2>
           <p id="partners-note" className="partners__note">نماذج لشعارات توضيحية</p>
@@ -48,7 +76,9 @@ export function Partners() {
             </span>
           ))}
         </div>
+        </div>
       </div>
     </section>
   )
 }
+

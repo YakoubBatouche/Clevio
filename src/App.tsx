@@ -18,7 +18,7 @@ export function App() {
   useSectionPaging()
   useSectionTransitions()
   const [panel, setPanel] = useState<Panel | null>(null)
-  const [destination, setDestination] = useState<{ id: 'services' | 'contact' } | null>(null)
+  const [destination, setDestination] = useState<{ id: 'services' | 'work' | 'contact' } | null>(null)
 
   useEffect(() => {
     if (!destination) return
@@ -28,7 +28,7 @@ export function App() {
   function navigate(next: Panel) {
     if (next === 'services' || next === 'work' || next === 'contact') {
       setPanel(null)
-      setDestination({ id: next === 'work' ? 'services' : next })
+      setDestination({ id: next })
     } else {
       setPanel(next)
     }

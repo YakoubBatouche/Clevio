@@ -7,6 +7,7 @@ import type { Panel } from '../content/site'
 
 export function Header({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [activePanel, setActivePanel] = useState<Panel | null>(null)
   const dialog = useRef<HTMLDialogElement>(null)
   const menuButton = useRef<HTMLButtonElement>(null)
 
@@ -29,6 +30,41 @@ export function Header({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
     return () => media.removeEventListener('change', closeOnDesktop)
   }, [])
 
+  useEffect(() => {
+    let frame = 0
+    let disposed = false
+    const sections = [
+      { id: 'home', panel: null },
+      { id: 'services', panel: 'services' },
+      { id: 'partners', panel: 'work' },
+      { id: 'contact', panel: 'contact' },
+    ] as const
+    function update() {
+      frame = 0
+      if (disposed) return
+      const offset = document.querySelector('.site-header')?.getBoundingClientRect().bottom ?? 100
+      let current: Panel | null = null
+      for (const section of sections) {
+        const element = document.getElementById(section.id)
+        if (element && element.getBoundingClientRect().top <= offset + 32) current = section.panel
+      }
+      setActivePanel(current)
+    }
+    function schedule() { if (!frame) frame = window.requestAnimationFrame(update) }
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    window.addEventListener('hashchange', schedule)
+    schedule()
+    void document.fonts.ready.then(() => { if (!disposed) schedule() })
+    return () => {
+      disposed = true
+      window.cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+      window.removeEventListener('hashchange', schedule)
+    }
+  }, [])
+
   function closeMenu() {
     setMenuOpen(false)
     menuButton.current?.focus()
@@ -45,10 +81,10 @@ export function Header({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
 
   function items() {
     return navigation.map(({ label, panel }) => {
-      if (panel === null || panel === 'services' || panel === 'contact') {
+      if (panel === null || panel === 'services' || panel === 'work' || panel === 'contact') {
         return <a key={label} href={panel ? '#' + panel : '#home'}
-          className={panel === null ? 'is-active' : undefined}
-          aria-current={panel === null ? 'page' : undefined}
+          className={panel === activePanel ? 'is-active' : undefined}
+          aria-current={panel === activePanel ? 'location' : undefined}
           onClick={(event) => choose(panel, event)}>{label}</a>
       }
       return <button key={label} type="button" onClick={() => choose(panel)}>{label}</button>

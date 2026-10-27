@@ -1,0 +1,25 @@
+:root {
+  --header-offset: 112px;
+  --section-space: clamp(64px, 6vw, 100px);
+  --section-shell: min(1380px, 88.8%);
+}
+html { scroll-padding-top: var(--header-offset); }
+:is(#home, #services, #partners, #work, #contact, .site-footer) { scroll-margin-top: 0; }
+:is(.services-section, .partners, .contact-section) { padding-block: var(--section-space); }
+:is(.services-section__shell, .partners__inner, .contact-section__shell, .site-footer__inner) {
+  width: var(--section-shell);
+  margin-inline: auto;
+}
+.partners { min-height: 0; display: block; align-content: normal; }
+.site-footer { padding-top: clamp(48px, 4.5vw, 72px); }
+.site-footer__grid { padding-bottom: clamp(36px, 3.7vw, 60px); }
+@media (min-width: 980px) {
+  .hero__content { top: max(17.4%, var(--header-offset)); }
+}
+@media (max-width: 979px) {
+  :root { --header-offset: 92px; --section-space: clamp(48px, 7vw, 64px); }
+}
+@media (max-width: 580px) {
+  .services-section__header { margin-bottom: 24px; }
+  .contact-section__intro { margin-bottom: 24px; }
+}

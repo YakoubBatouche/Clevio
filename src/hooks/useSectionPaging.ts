@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 import { gsap } from '../lib/animation'
+import { sectionScrollTop } from './useSectionNavigation'
 
 gsap.registerPlugin(ScrollToPlugin)
 
@@ -60,13 +61,16 @@ export function useSectionPaging() {
       previousDirection = direction
       const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1)
       const sections = [...document.querySelectorAll<HTMLElement>('#home, #services, #partners, #contact, .site-footer')]
-        .map((element) => ({ top: element.getBoundingClientRect().top + window.scrollY, height: element.offsetHeight }))
+        .map((element) => ({
+          top: sectionScrollTop(element),
+          bottom: element.getBoundingClientRect().bottom + window.scrollY,
+        }))
       if (!sections.length) return
       const y = window.scrollY
       let index = 0
       sections.forEach((section, candidate) => { if (section.top <= y + 8) index = candidate })
       const current = sections[index]
-      const readingEnd = Math.max(current.top, current.top + current.height - window.innerHeight)
+      const readingEnd = Math.max(current.top, current.bottom - window.innerHeight)
       // A tall service grid or form can be read normally until its visible content ends.
       if (direction > 0 && y < readingEnd - 4) {
         if (delta < readingEnd - y - 4) { accumulated = 0; return }
