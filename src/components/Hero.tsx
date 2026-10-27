@@ -73,6 +73,13 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
             <ActionButton variant="secondary" onClick={() => onNavigate('services')}>اكتشف خدماتنا</ActionButton>
           </div>
         </div>
+        <a className="hero__scroll-indicator" href="#services" aria-label="انتقل إلى خدماتنا">
+          <svg viewBox="0 0 32 60" aria-hidden="true" fill="none">
+            <rect x="5" y="2" width="22" height="36" rx="11" stroke="currentColor" strokeWidth="1.4" />
+            <path className="hero__scroll-wheel" d="M16 10v7" stroke="#d5ff48" strokeWidth="2.3" strokeLinecap="round" />
+            <path className="hero__scroll-chevron" d="m11 46 5 5 5-5m-10 7 5 5 5-5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
       </section>
   )
 }

@@ -1,0 +1,26 @@
+/* Decorative hover responds inside the card, leaving its section-reveal transform free. */
+.work-showcase__card { cursor: default; transition: border-color 260ms ease, box-shadow 300ms ease; }
+.work-showcase__visual { transition: transform 650ms cubic-bezier(.22,1,.36,1); }
+.work-showcase__glass { transition: transform 700ms cubic-bezier(.22,1,.36,1); }
+.work-showcase__card h3 { z-index: 2; transition: transform 300ms ease, color 300ms ease; }
+.work-showcase__index { z-index: 2; }
+.work-showcase__card::after {
+  content: ''; position: absolute; inset: -40% -70%; z-index: 1; pointer-events: none;
+  background: linear-gradient(110deg, transparent 43%, rgb(179 224 255 / 2%) 47%, rgb(205 239 255 / 16%) 50%, rgb(179 224 255 / 2%) 53%, transparent 57%);
+  transform: translateX(55%); opacity: 0;
+  transition: transform 850ms cubic-bezier(.22,1,.36,1), opacity 350ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .work-showcase__card:hover { border-color: #8fb95b; box-shadow: inset 0 0 0 1px rgb(213 255 72 / 8%), 0 9px 24px rgb(0 13 45 / 20%); }
+  .work-showcase__card:hover h3 { color: #e7ffad; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .work-showcase__card:hover .work-showcase__visual { transform: scale(1.045); }
+  .work-showcase__card:hover .work-showcase__glass { transform: rotate(28deg) translateX(12px); }
+  .work-showcase__card:hover h3 { transform: translateY(-3px); }
+  .work-showcase__card:hover::after { transform: translateX(-55%); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .work-showcase__card, .work-showcase__visual, .work-showcase__glass, .work-showcase__card h3, .work-showcase__card::after { transition: none; }
+  .work-showcase__card::after { display: none; }
+}

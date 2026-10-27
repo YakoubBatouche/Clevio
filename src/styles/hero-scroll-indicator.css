@@ -1,0 +1,18 @@
+.hero__scroll-indicator {
+  position: absolute; z-index: 3; bottom: clamp(12px, 2.1svh, 25px); left: 50%;
+  display: grid; place-items: center; width: 56px; min-height: 70px;
+  transform: translateX(-50%); color: #b8d8ff; border-radius: 28px;
+  background: linear-gradient(180deg, rgb(3 15 40 / 8%), rgb(3 15 40 / 38%));
+  transition: color 200ms ease;
+}
+.hero__scroll-indicator svg { width: 27px; height: 54px; }
+.hero__scroll-indicator:hover { color: var(--lime); }
+@keyframes hero-scroll-wheel { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 75%,100% { transform: translateY(9px); opacity: 0; } }
+@keyframes hero-scroll-chevron { 0%,100% { opacity: .35; transform: translateY(0); } 50% { opacity: .85; transform: translateY(3px); } }
+@media (prefers-reduced-motion: no-preference) {
+  .hero__scroll-wheel { animation: hero-scroll-wheel 1.9s ease-in-out infinite; }
+  .hero__scroll-chevron { animation: hero-scroll-chevron 1.9s ease-in-out infinite; }
+}
+html.intro-pending .hero__scroll-indicator { visibility: hidden; pointer-events: none; }
+.hero[data-hero-motion='paused'] .hero__scroll-indicator * { animation-play-state: paused; }
+@media(max-width:979px) { .hero__scroll-indicator { bottom: 10px; min-height: 58px; width: 48px; }.hero__scroll-indicator svg { width: 23px; height: 48px; } }

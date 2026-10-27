@@ -1,37 +1,16 @@
 .site-footer { position: relative; }
-
+.services-section__grid, .work-showcase__grid, .partners__marks, .site-footer__grid { perspective: 1200px; }
 :where(#services, #partners, #contact, .site-footer)::before {
-  content: '';
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  width: min(1480px, 88.8%);
-  height: 1px;
-  margin-inline: auto;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgb(56 135 255 / 18%) 22%, rgb(92 159 255 / 36%) 49%, rgb(213 255 72 / 20%) 68%, transparent);
-  opacity: var(--section-seam-opacity, 0.55);
-  transform-origin: center;
+  content: ''; position: absolute; inset-inline: 0; top: 0;
+  width: min(1380px,88.8%); height: 1px; margin-inline: auto; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(56 135 255 / 18%) 22%, rgb(92 159 255 / 50%) 49%, rgb(213 255 72 / 30%) 68%, transparent);
+  opacity: .65; transform-origin: right center;
 }
-
-#services::before { --section-seam-opacity: 0.32; }
-
 @media (prefers-reduced-motion: no-preference) {
-  :where(#services, #partners, #contact, .site-footer)::before {
-    opacity: 0;
-    transform: scaleX(0.7);
-    transition: opacity 800ms ease, transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  :where(#services, #partners, #contact, .site-footer)[data-section-revealed='true']::before {
-    opacity: var(--section-seam-opacity, 0.6);
-    transform: scaleX(1);
-  }
+  :where(#services, #partners, #contact, .site-footer)::before { opacity: 0; transform: scaleX(.08); transition: opacity 650ms ease, transform 1050ms cubic-bezier(.22,1,.36,1); }
+  :where(#services, #partners, #contact, .site-footer)[data-section-revealed='true']::before { opacity: .75; transform: scaleX(1); }
 }
-
 @media (prefers-reduced-motion: reduce) {
-  :where(#services, #partners, #contact, .site-footer)::before {
-    opacity: var(--section-seam-opacity, 0.55);
-    transform: none;
-    transition: none;
-  }
+  .services-section__grid, .work-showcase__grid, .partners__marks, .site-footer__grid { perspective: none; }
+  :where(#services, #partners, #contact, .site-footer)::before { opacity: .65; transform: none; transition: none; }
 }

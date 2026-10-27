@@ -1,0 +1,74 @@
+/* Work and partners compose one viewport beneath the fixed glass navigation. */
+#partners {
+  --work-scene-pad: clamp(12px, 2.4svh, 26px);
+  height: calc(100svh - var(--header-offset));
+  min-height: 0;
+  padding-block: var(--work-scene-pad);
+}
+#partners .partners__inner {
+  height: 100%; min-height: 0; display: grid;
+  grid-template-rows: minmax(0, 1fr) auto; gap: clamp(12px, 1.8svh, 22px);
+}
+#work { min-height: 0; display: flex; flex-direction: column; scroll-margin-top: var(--work-scene-pad); }
+.work-showcase__header { flex: none; gap: 16px; margin-bottom: clamp(10px, 1.8svh, 19px); }
+.work-showcase__eyebrow { font-size: 11px; line-height: 1.4; margin-bottom: 4px; }
+.work-showcase h2 { font-size: clamp(28px, 3.1vw, 48px); line-height: 1.2; }
+.work-showcase__intro { font-size: 13px; line-height: 1.6; }
+.work-showcase__grid {
+  flex: 1; min-height: 0; grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr)); gap: clamp(8px, 1.3svh, 15px);
+}
+.work-showcase__card { height: auto; min-height: 0; border-radius: 15px; }
+.work-showcase__card h3 {
+  bottom: 12px; right: 13px; left: 13px;
+  font-size: clamp(13px, 1.17vw, 18px); line-height: 1.4;
+}
+.work-showcase__index { top: 10px; left: 12px; font-size: 9px; }
+.work-showcase__note { flex: none; margin: 7px 0 0; font-size: 10px; line-height: 1.35; }
+.partners__group { margin: 0; padding-top: clamp(9px, 1.3svh, 16px); min-height: 0; }
+.partners__header { display: flex; align-items: center; gap: 10px; }
+.partners__heading { font-size: clamp(18px, 1.65vw, 27px); line-height: 1.3; }
+.partners__note { margin: 0; font-size: 10px; line-height: 1.4; white-space: normal; }
+.partners__marks { margin-top: clamp(7px, 1.1svh, 14px); grid-template-columns: repeat(8, minmax(0, 1fr)); row-gap: 0; }
+.partners__mark { min-height: 0; height: clamp(28px, 4.8svh, 54px); }
+.partners__mark svg { width: clamp(25px, 3.3svh, 43px); height: clamp(25px, 3.3svh, 43px); }
+.partners__mark:nth-child(5) { border-inline-start: 1px solid rgb(121 160 238 / 18%); }
+@media(max-width:680px) {
+  #partners { --work-scene-pad: clamp(10px, 2.2svh, 18px); }
+  .work-showcase__header { flex-direction: row; align-items: flex-end; margin-bottom: 11px; }
+  .work-showcase__intro { display: none; }
+  .work-showcase h2 { font-size: clamp(26px, 6.5vw, 34px); }
+  .work-showcase__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .work-showcase__card { border-radius: 11px; }
+  .work-showcase__card h3 { bottom: 8px; right: 9px; left: 9px; font-size: 12.5px; line-height: 1.35; }
+  .work-showcase__index { top: 7px; left: 8px; font-size: 8px; }
+  .work-showcase__note { margin-top: 5px; font-size: 9px; }
+  .partners__heading { font-size: 18px; }
+  .partners__note { font-size: 9px; max-width: 90px; }
+  .partners__mark svg { width: 25px; height: 25px; }
+}
+@media(max-height:620px) {
+  #partners { --work-scene-pad: 9px; }
+  #partners .partners__inner { gap: 8px; }
+  .work-showcase__eyebrow, .work-showcase__note, .work-showcase__intro { display: none; }
+  .work-showcase__header { margin-bottom: 8px; }
+  .work-showcase h2 { font-size: 26px; }
+  .partners__group { padding-top: 7px; }
+  .partners__marks { margin-top: 5px; }
+  .partners__mark { height: 24px; }
+  .partners__mark svg { width: 22px; height: 22px; }
+  .partners__heading { font-size: 17px; }
+  .work-showcase__card h3 { bottom: 6px; right: 7px; left: 7px; font-size: 12px; line-height: 1.3; }
+  .work-showcase__index { top: 5px; left: 6px; font-size: 7px; }
+}
+@media(max-height:620px) and (min-aspect-ratio:11/10) {
+  .work-showcase__grid { grid-template-columns: repeat(4, minmax(0,1fr)); grid-template-rows: repeat(2,minmax(0,1fr)); gap: 7px; }
+}
+@media(max-height:460px) {
+  .work-showcase h2 { font-size: 22px; }
+  .work-showcase__header { margin-bottom: 6px; }
+  .work-showcase__grid { gap: 5px; }
+  .work-showcase__card h3 { font-size: 11.5px; line-height: 1.25; bottom: 4px; }
+  .work-showcase__index { display: none; }
+  .partners__note { display: none; }
+}

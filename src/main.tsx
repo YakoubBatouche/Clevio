@@ -32,3 +32,9 @@ import './styles/hero-seam-fix.css'
 import './styles/layout-spacing.css'
 
 import './styles/header-glass.css'
+
+import './styles/work-hover.css'
+
+import './styles/hero-scroll-indicator.css'
+
+import './styles/work-scene-fit.css'

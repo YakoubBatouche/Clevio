@@ -34,6 +34,12 @@ function ServiceGlassIcon({ index }: { index: number }) {
       <linearGradient id={id + '-edge'} x1="0" y1="1" x2="1" y2="0">
         <stop stopColor="#165cff" /><stop offset="0.5" stopColor="#61caff" /><stop offset="1" stopColor="#efffff" />
       </linearGradient>
+      <mask id={id + '-shine-mask'} maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
+        <path d={shapes[index]} fill={index === 0 || index === 1 || index === 3 || index === 4 ? 'white' : 'none'} fillRule="evenodd" stroke="white" strokeWidth="7" strokeLinejoin="round" strokeLinecap="round" />
+      </mask>
+      <linearGradient id={id + '-shine'}>
+        <stop stopColor="white" stopOpacity="0" /><stop offset=".5" stopColor="#efffff" stopOpacity=".75" /><stop offset="1" stopColor="white" stopOpacity="0" />
+      </linearGradient>
       <radialGradient id={id + '-floor'}><stop stopColor="#146aff" stopOpacity="0.55" /><stop offset="1" stopColor="#146aff" stopOpacity="0" /></radialGradient>
     </defs>
     <ellipse cx="60" cy="103" rx="48" ry="11" fill={'url(#' + id + '-floor)'} />
@@ -41,6 +47,9 @@ function ServiceGlassIcon({ index }: { index: number }) {
     <path d="M18 37 62 62 106 37 M62 62 62 109" fill="none" stroke="#7bcfff" strokeOpacity="0.15" />
     <g transform="translate(4 5)" opacity="0.75"><path d={shapes[index]} fill="none" stroke="#0437a7" strokeWidth="8" strokeLinejoin="round" strokeLinecap="round" /></g>
     <path d={shapes[index]} fill={index === 0 || index === 1 || index === 3 || index === 4 ? 'url(#' + id + ')' : 'none'} fillRule="evenodd" stroke={'url(#' + id + '-edge)'} strokeWidth="3.1" strokeLinejoin="round" strokeLinecap="round" />
+    <g mask={'url(#' + id + '-shine-mask)'}>
+      <rect className="service-card__shine" x="-40" y="0" width="28" height="120" fill={'url(#' + id + '-shine)'} />
+    </g>
     <path d="M26 36 62 16 79 25" fill="none" stroke="#dcfbff" strokeOpacity="0.3" strokeWidth="1.2" />
     <circle cx="98" cy="25" r="3" fill="#d5ff48" />
   </svg>
@@ -48,6 +57,7 @@ function ServiceGlassIcon({ index }: { index: number }) {
 
 export function Services({ onStartProject }: { onStartProject: () => void }) {
   const [selected, setSelected] = useState<number | null>(null)
+  const section = useRef<HTMLElement>(null)
   const dialog = useRef<HTMLDialogElement>(null)
   const trigger = useRef<HTMLButtonElement | null>(null)
 
@@ -63,13 +73,36 @@ export function Services({ onStartProject }: { onStartProject: () => void }) {
     }
   }, [selected])
 
+  useEffect(() => {
+    const element = section.current
+    if (!element) return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const initial = element.getBoundingClientRect()
+    let visible = initial.bottom > 0 && initial.top < window.innerHeight
+    const update = () => element.setAttribute('data-services-motion', visible && !document.hidden && !reduced.matches ? 'running' : 'paused')
+    const observer = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting
+      update()
+    }, { threshold: 0 })
+    observer?.observe(element)
+    document.addEventListener('visibilitychange', update)
+    reduced.addEventListener('change', update)
+    update()
+    return () => {
+      observer?.disconnect()
+      document.removeEventListener('visibilitychange', update)
+      reduced.removeEventListener('change', update)
+      element.removeAttribute('data-services-motion')
+    }
+  }, [])
+
   function close() {
     dialog.current?.close()
     setSelected(null)
     trigger.current?.focus()
   }
 
-  return <section id="services" className="services-section" aria-labelledby="services-heading" tabIndex={-1}>
+  return <section ref={section} id="services" className="services-section" aria-labelledby="services-heading" tabIndex={-1}>
     <div className="services-section__shell">
       <header className="services-section__header">
         <div><p className="services-section__eyebrow">خبرات تتكامل. أفكار تتحوّل.</p><h2 id="services-heading">خدماتنا</h2></div>

@@ -36,3 +36,30 @@
 @media(max-width:900px) { .services-section__grid { grid-template-columns: repeat(2,minmax(0,1fr)); }.service-card,.service-card:nth-last-child(2),.service-card:last-child { grid-column: auto; }.service-card { min-height: 170px; gap: 16px; padding: 22px; }.service-card__glass { width: 90px; }.services-section__intro { font-size: 14px; } }
 @media(max-width:580px) { .services-section { padding: 52px 0; }.services-section__header { align-items: flex-start; gap: 12px; flex-direction: column; margin-bottom: 25px; }.services-section__intro br { display: none; }.services-section__grid { grid-template-columns: minmax(0,1fr); gap: 13px; }.service-card { min-height: 156px; padding: 21px; gap: 22px; }.service-card__glass { width: 96px; }.service-card__body strong { font-size: 20px; }.services-dialog__body { padding: 28px 22px; } }
 @media(prefers-reduced-motion:reduce) { .service-card,.service-card__explore,.service-card__explore svg { transition: none; }.service-card:hover,.service-card:hover .service-card__explore svg { transform: none; } }
+
+/* Quiet crystal life: the card entrance owns its parent; icons own only their local drift. */
+@keyframes service-glass-float {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-3px) rotate(-1deg); }
+}
+@keyframes service-glass-shine {
+  0%, 14% { transform: translateX(0) skewX(-18deg); opacity: 0; }
+  18% { opacity: .7; }
+  36% { transform: translateX(190px) skewX(-18deg); opacity: 0; }
+  100% { transform: translateX(190px) skewX(-18deg); opacity: 0; }
+}
+.service-card__shine { opacity: 0; pointer-events: none; transform-origin: center; }
+@media (prefers-reduced-motion: no-preference) {
+  .service-card__glass { animation: service-glass-float 6s ease-in-out infinite; animation-play-state: paused; transform-origin: 50% 60%; }
+  .service-card__shine { animation: service-glass-shine 8s ease-in-out infinite; animation-play-state: paused; }
+  [data-services-motion="running"] .service-card__glass,
+  [data-services-motion="running"] .service-card__shine { animation-play-state: running; }
+  .service-card:nth-child(2n) .service-card__glass { animation-delay: -2.3s; }
+  .service-card:nth-child(3n) .service-card__glass { animation-delay: -4.1s; }
+  .service-card:nth-child(2n) .service-card__shine { animation-delay: -2s; }
+  .service-card:nth-child(3n) .service-card__shine { animation-delay: -4s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .service-card__glass, .service-card__shine { animation: none; transform: none; }
+  .service-card__shine { opacity: 0; }
+}

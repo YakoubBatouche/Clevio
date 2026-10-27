@@ -475,3 +475,59 @@ test('fixed glass navigation keeps section headings clear and groups work above 
   const partnersTitle = await page.locator('#partners-heading').boundingBox()
   expect(partnersTitle!.y).toBeGreaterThan(lastCard!.y + lastCard!.height)
 })
+
+test('work and partner marks fit together below the navbar on compact and wide screens', async ({ page }) => {
+  for (const viewport of [
+    { width: 320, height: 480 }, { width: 390, height: 844 },
+    { width: 844, height: 390 }, { width: 768, height: 1024 },
+    { width: 1440, height: 900 }, { width: 1920, height: 1080 },
+  ]) {
+    await page.setViewportSize(viewport)
+    await page.goto('/?skipintro#work')
+    await page.evaluate(() => document.fonts.ready)
+    await expect(page.locator('.work-showcase__card')).toHaveCount(8)
+    const bounds = await page.evaluate(() => ({
+      header: document.querySelector('.site-header')!.getBoundingClientRect().bottom,
+      heading: document.querySelector('#work-heading')!.getBoundingClientRect().top,
+      marks: document.querySelector('.partners__marks')!.getBoundingClientRect().bottom,
+      overflow: document.documentElement.scrollWidth > innerWidth,
+    }))
+    expect(bounds.heading).toBeGreaterThan(bounds.header)
+    expect(bounds.marks).toBeLessThanOrEqual(viewport.height + 1)
+    expect(bounds.overflow).toBe(false)
+  }
+})
+
+test('hero mouse cue navigates to services and the contact communication visual remains static', async ({ page }) => {
+  await page.goto('/?skipintro')
+  const cue = page.getByRole('link', { name: 'انتقل إلى خدماتنا', exact: true })
+  await expect(cue).toHaveCount(1)
+  await expect(page.locator('#home .hero__scroll-indicator')).toHaveCount(1)
+  await cue.click()
+  await expect(page).toHaveURL(/#services$/)
+  await page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true }).getByRole('link', { name: 'تواصل معنا', exact: true }).click()
+  const art = page.locator('.contact-section__art')
+  await expect(art.locator('svg')).toHaveCount(1)
+  await expect(art.locator('img')).toHaveCount(0)
+  await expect(art).toHaveCSS('animation-name', 'none')
+  await expect(art).toHaveCSS('transform', 'none')
+  await expect(art.locator('[data-contact-piece="envelope"]')).toHaveCount(1)
+})
+
+test('service panels reassemble when returning after a full section exit', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/?skipintro')
+  const card = page.locator('#services .service-card').first()
+  await expect(card).toHaveCSS('opacity', '0')
+  const nav = page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true })
+  await nav.getByRole('link', { name: 'خدماتنا', exact: true }).click()
+  await expect(card).toHaveCSS('opacity', '1')
+  await expect(card).toHaveCSS('transform', 'none')
+  await nav.getByRole('link', { name: 'أعمالنا', exact: true }).click()
+  await expect(page.locator('#work-heading')).toBeInViewport()
+  await expect(card).toHaveCSS('opacity', '0')
+  await nav.getByRole('link', { name: 'خدماتنا', exact: true }).click()
+  await expect(card).toHaveCSS('opacity', '1')
+  await expect(card).toHaveCSS('transform', 'none')
+})
