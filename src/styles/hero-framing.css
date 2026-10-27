@@ -127,3 +127,8 @@
   .hero__content { top: calc(var(--header-offset) + 8px); }
   .hero__heading { font-size: clamp(48px, min(8.3vw, 15svh), 78px); }
 }
+
+/* Keep large-monitor copy inside the navbar’s centered 1480px frame. */
+@media (min-width: 1700px) {
+  .hero__content { right: max(7.7%, calc(50% - 740px + 24px)); }
+}
