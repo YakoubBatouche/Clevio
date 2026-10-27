@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import type { RefObject } from 'react'
 import { gsap } from '../lib/animation'
-import { CRYSTAL_SURFACE_MASK_URL } from '../content/crystal-geometry'
 
 // The C remains completely static. Only a clipped highlight band moves after landing.
 export function useHeroCrystalIdle(root: RefObject<HTMLElement | null>) {
@@ -23,9 +22,10 @@ export function useHeroCrystalIdle(root: RefObject<HTMLElement | null>) {
     function syncShine() {
       if (!shine || !crystal) return
       for (const property of ['left', 'top', 'width', 'height'] as const) shine.style[property] = crystal.style[property]
-      // Share the C's exact surface mask, including removal of the baked orbit strip.
-      shine.style.maskImage = CRYSTAL_SURFACE_MASK_URL
-      shine.style.setProperty('-webkit-mask-image', CRYSTAL_SURFACE_MASK_URL)
+      // The rendered PNG alpha also confines the highlight to the exact new glass contour.
+      const surfaceMask = `url("${crystal.currentSrc || crystal.src}")`
+      shine.style.maskImage = surfaceMask
+      shine.style.setProperty('-webkit-mask-image', surfaceMask)
     }
 
     function stop() {
@@ -43,7 +43,7 @@ export function useHeroCrystalIdle(root: RefObject<HTMLElement | null>) {
       shine.setAttribute('aria-hidden', 'true')
       Object.assign(shine.style, {
         position: 'absolute', pointerEvents: 'none', overflow: 'hidden',
-        clipPath: 'url(#hero-crystal-clip)',
+        clipPath: 'none',
         maskSize: '100% 100%', maskRepeat: 'no-repeat', maskMode: 'alpha',
       })
       shine.style.setProperty('-webkit-mask-size', '100% 100%')

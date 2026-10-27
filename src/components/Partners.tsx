@@ -73,12 +73,16 @@ export function Partners() {
           <h2 id="partners-heading" className="partners__heading">شركاء صنعنا معهم الفرق</h2>
           <p id="partners-note" className="partners__note">نماذج لشعارات توضيحية</p>
         </div>
-        <div className="partners__marks" aria-hidden="true">
-          {partnerMarks.map((mark, index) => (
-            <span key={index} className="partners__mark">
-              <svg viewBox="0 0 96 96" focusable="false" aria-hidden="true">{mark}</svg>
-            </span>
-          ))}
+        <div className="partners__marks partners__marks--marquee" aria-hidden="true">
+          <div className="partners__track">
+            {[0, 1].map((copy) => <div className="partners__sequence" key={copy} aria-hidden="true">
+              {partnerMarks.map((mark, index) => (
+                <span key={index} className="partners__mark">
+                  <svg viewBox="0 0 96 96" focusable="false" aria-hidden="true">{mark}</svg>
+                </span>
+              ))}
+            </div>)}
+          </div>
         </div>
         </div>
       </div>

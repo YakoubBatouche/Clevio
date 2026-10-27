@@ -8,7 +8,7 @@ test('intro waits for hero assets, unlocks the unchanged scene, and replays on r
   await page.setViewportSize({ width: 1672, height: 941 })
   let releaseAsset = () => {}
   const assetGate = new Promise<void>((resolve) => { releaseAsset = resolve })
-  const criticalImage = '**/hero-layers/separated/main-c-*.png'
+  const criticalImage = '**/hero-layers/regenerated/main-c-clean-v2-*.png'
   await page.route(criticalImage, async (route) => {
     await assetGate
     await route.continue()
@@ -38,7 +38,8 @@ test('intro waits for hero assets, unlocks the unchanged scene, and replays on r
     const flight = page.locator('.intro-handoff-c')
     await expect(flight).toBeAttached({ timeout: 12000 })
     await expect(flight).toHaveCSS('filter', 'none')
-    await expect(flight).toHaveCSS('clip-path', /hero-crystal-clip/)
+    await expect(flight).toHaveCSS('clip-path', 'none')
+    await expect(flight).toHaveAttribute('src', /main-c-clean-v2-/)
 
     await expect(loader).toBeHidden({ timeout: 22000 })
     expect(await page.evaluate(() => performance.now())).toBeGreaterThanOrEqual(7400)
@@ -52,8 +53,8 @@ test('intro waits for hero assets, unlocks the unchanged scene, and replays on r
     await expect(piece).toHaveCSS('transform', 'none')
     await expect(page.locator('.hero__scene img[data-hero-piece^="orbit-"]')).toHaveCount(0)
     await expect(page.locator('[data-hero-glow]')).toHaveCSS('opacity', '1')
-    await expect(page.locator('.hero__line-mask')).toHaveCount(3)
-    await expect(page.locator('.hero__line')).toHaveText(['أفكار', 'خارج', 'الإطار'])
+    await expect(page.locator('.hero__line-mask')).toHaveCount(2)
+    await expect(page.locator('.hero__line')).toHaveText(['أفكار خارج', 'الإطار'])
     await expect(piece).toHaveCSS('animation-name', 'none')
     const after = await piece.evaluate((element) => {
       const { x, y, width, height } = element.getBoundingClientRect()
@@ -76,7 +77,8 @@ test('intro waits for hero assets, unlocks the unchanged scene, and replays on r
       expect(Math.abs(resting![key] - after[key])).toBeLessThan(0.2)
     }
     await expect(page.locator('.hero__crystal-shine')).toHaveCount(1)
-    await expect(page.locator('.hero__crystal-shine')).toHaveCSS('clip-path', /hero-crystal-clip/)
+    await expect(page.locator('.hero__crystal-shine')).toHaveCSS('clip-path', 'none')
+    await expect(page.locator('.hero__crystal-shine')).toHaveCSS('mask-image', /main-c-clean-v2-/)
 
     await page.unrouteAll({ behavior: 'wait' })
     await page.reload({ waitUntil: 'domcontentloaded' })
@@ -90,7 +92,7 @@ test('intro waits for hero assets, unlocks the unchanged scene, and replays on r
 })
 
 test('development bypass and reduced motion leave content unlocked without the loader', async ({ page }) => {
-  const criticalImage = '**/hero-layers/separated/main-c-*.png'
+  const criticalImage = '**/hero-layers/regenerated/main-c-clean-v2-*.png'
   for (const mode of [
     { url: '/?skipintro', reducedMotion: 'no-preference' },
     { url: '/', reducedMotion: 'reduce' },
@@ -659,4 +661,42 @@ test('glass cards preserve their sheen and work cards tilt with the pointer then
   await page.mouse.move(0, 0)
   await expect(card).not.toHaveAttribute('data-work-tilt')
   await expect.poll(() => card.evaluate((el) => getComputedStyle(el).rotate)).toMatch(/(?:^none$|0deg$)/)
+})
+
+test('hero title hierarchy and final navigation item match the new direction', async ({ page }) => {
+  await page.goto('/?skipintro')
+  const lead = page.locator('.hero__line-mask--lead')
+  const focus = page.locator('.hero__line-mask--focus')
+  await expect(lead).toHaveText('أفكار خارج')
+  await expect(focus).toHaveText('الإطار')
+  await expect(lead).toHaveCSS('color', 'rgb(246, 248, 255)')
+  await expect(focus).toHaveCSS('color', 'rgb(213, 255, 72)')
+  const sizes = await page.locator('.hero__line-mask').evaluateAll((items) => items.map((el) => parseFloat(getComputedStyle(el).fontSize)))
+  expect(sizes[0]).toBeLessThan(sizes[1] * 0.6)
+  await expect(page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true }).locator('a,button').last()).toHaveText('من نحن')
+})
+
+test('service cards share pointer tilt and partner signatures form a seamless moving ribbon', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/?skipintro#services')
+  const service = page.locator('.service-card').first()
+  await expectFullyRevealed(service)
+  const box = await service.boundingBox()
+  expect(box).not.toBeNull()
+  await page.mouse.move(box!.x + box!.width * 0.82, box!.y + box!.height * 0.2)
+  await expect(service).toHaveAttribute('data-work-tilt', '')
+  await expect.poll(() => service.evaluate((el) => parseFloat((el as HTMLElement).style.getPropertyValue('--work-tilt-angle')))).toBeGreaterThan(1)
+  await page.mouse.move(0, 0)
+  await expect(service).not.toHaveAttribute('data-work-tilt')
+  await page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true }).getByRole('link', { name: 'أعمالنا', exact: true }).click()
+  await expectFullyRevealed(page.locator('.work-showcase__card').first())
+  const track = page.locator('.partners__track')
+  await expect(track.locator('.partners__sequence')).toHaveCount(2)
+  for (const sequence of await track.locator('.partners__sequence').all()) await expect(sequence.locator('.partners__mark')).toHaveCount(8)
+  const first = await track.evaluate((el) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41)
+  await expect.poll(() => track.evaluate((el) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41)).toBeLessThan(first - 2)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await expect(track).toHaveCSS('animation-name', 'none')
+  await expect(service).toHaveCSS('rotate', 'none')
 })

@@ -94,3 +94,16 @@
 .partners__group { margin-top: clamp(44px,5vw,70px); padding-top: clamp(28px,3vw,42px); border-top: 1px solid #6c97d52b; }
 @media(max-width:1000px) { .work-showcase__grid { grid-template-columns: repeat(2,minmax(0,1fr)); }.work-showcase__card { height: 210px; } }
 @media(max-width:580px) { .work-showcase__header { align-items: flex-start; flex-direction: column; gap: 13px; }.work-showcase__intro { font-size: 14px; }.work-showcase__intro br { display:none; }.work-showcase__grid { grid-template-columns: minmax(0,1fr); gap: 14px; }.work-showcase__card { height: 210px; }.work-showcase__card h3 { font-size: 20px; } }
+
+/* Two identical rows make one continuous right-to-left signature ribbon. */
+.partners__marks.partners__marks--marquee { display: block; overflow: hidden; direction: ltr; }
+.partners__track { display: flex; width: 200%; }
+.partners__sequence { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); flex: 0 0 50%; min-width: 0; }
+.partners__sequence + .partners__sequence .partners__mark:first-child { border-inline-start: 1px solid rgb(121 160 238 / 18%); }
+@keyframes partners-ribbon { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: no-preference) {
+  .partners__track { animation: partners-ribbon 44s linear infinite; }
+  #partners:not([data-section-revealed="true"]) .partners__track { animation-play-state: paused; }
+  .partners__marks--marquee:hover .partners__track { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: reduce) { .partners__track { transform: none; } }

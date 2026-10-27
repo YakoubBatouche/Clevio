@@ -35,9 +35,9 @@
   transform-origin: right center;
 }
 
-/* One precise surface boundary is shared by the seated C, flight and shine. */
+/* The regenerated PNG carries its own continuous alpha boundary. */
 .hero__crystal-surface {
-  clip-path: url(#hero-crystal-clip);
+  clip-path: none;
 }
 .hero__crystal-surface,
 .hero__crystal-glow {

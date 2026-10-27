@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { ArrowUpLeft, ArrowLeft, X } from 'lucide-react'
 import { services } from '../content/site'
+import { useCardTilt } from '../hooks/useWorkCardTilt'
 
 const offerings = [
   ['التصميم الجرافيكي', 'تصميم المطبوعات', 'المحتوى الإبداعي'],
@@ -58,6 +59,7 @@ function ServiceGlassIcon({ index }: { index: number }) {
 export function Services({ onStartProject }: { onStartProject: () => void }) {
   const [selected, setSelected] = useState<number | null>(null)
   const section = useRef<HTMLElement>(null)
+  useCardTilt(section, '.service-card')
   const dialog = useRef<HTMLDialogElement>(null)
   const trigger = useRef<HTMLButtonElement | null>(null)
 

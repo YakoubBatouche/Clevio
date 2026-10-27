@@ -96,3 +96,34 @@
 
 /* A classic scrollbar must not force a 320px layout into a 305px scrollport. */
 @media (max-width: 374px) { html, body { min-width: 0; } }
+
+/* Compact first phrase, with the final word as the lime focal point. */
+.hero__content { top: max(23%, var(--header-offset)); }
+.hero__heading { font-size: clamp(100px, min(10vw, 18svh), 200px); line-height: 1.05; gap: .035em; }
+.hero__line-mask--lead { color: #f6f8ff; font-size: .48em; line-height: 1.12; white-space: nowrap; }
+.hero__line-mask--focus { color: var(--lime); line-height: 1.06; white-space: nowrap; }
+
+/* A static soft ring breathes through opacity, keeping the CTA itself steady. */
+.hero .action--primary { position: relative; isolation: isolate; }
+.hero .action--primary::before { content: ''; position: absolute; z-index: -1; inset: -4px; border: 1px solid rgb(213 255 72 / 38%); border-radius: inherit; box-shadow: 0 0 22px 2px rgb(213 255 72 / 24%); opacity: .22; pointer-events: none; }
+@keyframes hero-cta-breathe { 0%, 100% { opacity: .12; } 50% { opacity: .58; } }
+@media (prefers-reduced-motion: no-preference) {
+  .hero .action--primary::before { animation: hero-cta-breathe 4.8s ease-in-out infinite; }
+  .hero[data-hero-motion='paused'] .action--primary::before, .intro-pending .hero .action--primary::before { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: reduce) { .hero .action--primary::before { animation: none; opacity: .18; } }
+@media (min-width: 980px) and (max-height: 760px) {
+  .hero__content { top: max(18%, var(--header-offset)); }
+  .hero__heading { font-size: clamp(70px, min(10vw, 17svh), 130px); }
+}
+@media (max-width: 979px) {
+  .hero__content { top: auto; }
+  .hero__heading { font-size: clamp(60px, min(17vw, 12svh), 126px); }
+}
+@media (max-width: 979px) and (max-height: 620px) {
+  .hero__heading { font-size: clamp(54px, min(17vw, 12svh), 78px); }
+}
+@media (max-width: 979px) and (max-height: 620px) and (min-aspect-ratio: 11/10) {
+  .hero__content { top: calc(var(--header-offset) + 8px); }
+  .hero__heading { font-size: clamp(48px, min(8.3vw, 15svh), 78px); }
+}

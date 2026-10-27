@@ -1,6 +1,5 @@
 import { useRef } from 'react'
 import { heroStaticLayers } from '../content/hero-layers'
-import { CRYSTAL_SURFACE_MASK_URL } from '../content/crystal-geometry'
 import { HeroCrystalDefinitions, HeroOrbit } from './HeroOrbit'
 import { useHeroFloatInteraction } from '../hooks/useHeroFloatInteraction'
 import { useHeroCrystalIdle } from '../hooks/useHeroCrystalIdle'
@@ -19,14 +18,14 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
     if (glow) return <div key="crystal-glow" className="hero__part hero__crystal-glow" data-hero-glow=""
       style={{ left: part.x + '%', top: part.y + '%', width: part.width + '%', height: part.height + '%' }} />
     const surface = part.name === 'main-c'
-    const mask = surface ? CRYSTAL_SURFACE_MASK_URL : undefined
+
     return <img key={part.name}
       className={'hero__part' + (surface ? ' hero__crystal-surface' : '')}
       data-hero-piece={part.name}
-      src={import.meta.env.BASE_URL + 'hero-layers/separated/' + part.name + '-2k.png'}
-      srcSet={part.sources.map((source) => import.meta.env.BASE_URL + 'hero-layers/separated/' + part.name + '-' + source.size + '.png ' + source.width + 'w').join(', ')}
+      src={import.meta.env.BASE_URL + (surface ? 'hero-layers/regenerated/main-c-clean-v2-1200.png' : 'hero-layers/separated/' + part.name + '-2k.png')}
+      srcSet={surface ? [1200, 1800].map((width) => import.meta.env.BASE_URL + 'hero-layers/regenerated/main-c-clean-v2-' + width + '.png ' + width + 'w').join(', ') : part.sources.map((source) => import.meta.env.BASE_URL + 'hero-layers/separated/' + part.name + '-' + source.size + '.png ' + source.width + 'w').join(', ')}
       sizes={'(max-width: 979px) min(' + (187 * part.width / 100) + 'vw, ' + (1210 * part.width / 100) + 'px), (max-aspect-ratio: 16/9) ' + (178 * part.width / 100) + 'svh, ' + part.width + 'vw'}
-      style={{ left: part.x + '%', top: part.y + '%', width: part.width + '%', height: part.height + '%', maskImage: mask, WebkitMaskImage: mask }}
+      style={{ left: part.x + '%', top: part.y + '%', width: part.width + '%', height: part.height + '%' }}
       alt="" width={part.sources[2].width} height={part.sources[2].height} decoding="async" fetchPriority={surface ? 'high' : 'auto'} />
   }
 
@@ -62,9 +61,8 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
         </div>
         <div className="hero__content">
           <h1 id="hero-heading" className="hero__heading" aria-label="أفكار خارج الإطار">
-            <span className="hero__line-mask"><span className="hero__line">أفكار</span></span>
-            <span className="hero__line-mask"><span className="hero__line">خارج</span></span>
-            <span className="hero__line-mask"><span className="hero__line">الإطار</span></span>
+            <span className="hero__line-mask hero__line-mask--lead"><span className="hero__line">أفكار خارج</span></span>
+            <span className="hero__line-mask hero__line-mask--focus"><span className="hero__line">الإطار</span></span>
           </h1>
           <p className="hero__description">
             <span>نحوّل أفكارك إلى هويات وتجارب رقمية مؤثرة،</span>

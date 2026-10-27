@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import type { RefObject } from 'react'
 
 /** Independent CSS rotation keeps pointer tilt separate from section entrance transforms. */
-export function useWorkCardTilt(root: RefObject<HTMLDivElement | null>) {
+export function useCardTilt(root: RefObject<HTMLElement | null>, selector = '.work-showcase__card') {
   useEffect(() => {
     const element = root.current
     if (!element) return
@@ -32,7 +32,7 @@ export function useWorkCardTilt(root: RefObject<HTMLDivElement | null>) {
     }
     function move(event: PointerEvent) {
       if (!available.matches || event.pointerType === 'touch' || !(event.target instanceof Element)) { reset(); return }
-      const card = event.target.closest<HTMLElement>('.work-showcase__card')
+      const card = event.target.closest<HTMLElement>(selector)
       if (!card || !element!.contains(card)) { reset(); return }
       if (active !== card) { reset(); active = card; active.setAttribute('data-work-tilt', '') }
       point = { x: event.clientX, y: event.clientY }
@@ -49,5 +49,8 @@ export function useWorkCardTilt(root: RefObject<HTMLDivElement | null>) {
       window.removeEventListener('scroll', reset)
       available.removeEventListener('change', reset)
     }
-  }, [root])
+  }, [root, selector])
 }
+
+// Preserve the existing work-card import while sharing the same behavior with services.
+export { useCardTilt as useWorkCardTilt }

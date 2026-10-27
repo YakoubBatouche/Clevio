@@ -86,3 +86,14 @@
 
 /* Entrance transforms are controlled by the reveal timeline, without a second CSS interpolation. */
 .service-card[style*="will-change"] { transition-property: border-color, box-shadow; }
+
+/* Services share the same paper tilt while their existing hover lift stays independent. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .services-section__grid { perspective: 1000px; }
+  .service-card {
+    rotate: var(--work-tilt-axis-x, 0) var(--work-tilt-axis-y, 1) 0 var(--work-tilt-angle, 0deg);
+    transition: transform 240ms ease, rotate 550ms cubic-bezier(.22,1,.36,1), border-color 240ms ease, box-shadow 240ms ease;
+  }
+  .service-card[data-work-tilt] { will-change: rotate; transition-duration: 240ms, 180ms, 240ms, 240ms; }
+  .service-card[style*="will-change"] { transition-property: rotate, border-color, box-shadow; transition-duration: 180ms, 240ms, 240ms; }
+}
