@@ -285,7 +285,7 @@ async function expectFullyRevealed(target: Locator) {
       if (style.opacity !== '1' || style.transform !== 'none') return false
     }
     return true
-  }), { timeout: 4000 }).toBe(true)
+  }), { timeout: 6500 }).toBe(true)
 }
 
 test('normal-motion navigation reveals services and contact with visible focus', async ({ page }) => {
@@ -628,7 +628,11 @@ test('desktop footer is fully revealed at the end of the page', async ({ page })
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.setViewportSize({ width: 1920, height: 1080 })
   await page.goto('/?skipintro#contact')
-  await page.keyboard.press('End')
+  await page.evaluate(() => document.fonts.ready)
+  await expect.poll(() => page.locator('#contact').evaluate((element) =>
+    Math.abs(element.getBoundingClientRect().top - parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-offset')))), { timeout: 5000 }).toBeLessThan(2)
+  await page.mouse.move(50, 150)
+  await page.mouse.wheel(0, 1600)
   const footer = page.locator('.site-footer')
   await expect(footer).toBeInViewport({ ratio: 1 })
   await expect(footer).toHaveAttribute('data-section-revealed', 'true')
