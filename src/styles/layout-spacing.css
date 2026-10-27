@@ -23,3 +23,6 @@ html { scroll-padding-top: var(--header-offset); }
   .services-section__header { margin-bottom: 24px; }
   .contact-section__intro { margin-bottom: 24px; }
 }
+
+/* Native fragment jumps include the combined section’s internal top spacing. */
+#work { scroll-margin-top: var(--section-space); }
