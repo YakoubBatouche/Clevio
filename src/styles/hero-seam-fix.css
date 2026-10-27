@@ -1,0 +1,16 @@
+/* Fade only the residual lighting at the cropped pedestal image's border.
+   The opaque rock starts below this narrow top transition and stays registered. */
+.hero__scene img[data-hero-piece="stage"] {
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0%, #000 4%, #000 100%),
+    linear-gradient(to right, transparent 0%, #000 1%, #000 99%, transparent 100%);
+  mask-image:
+    linear-gradient(to bottom, transparent 0%, #000 4%, #000 100%),
+    linear-gradient(to right, transparent 0%, #000 1%, #000 99%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}

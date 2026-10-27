@@ -25,3 +25,5 @@ import './styles/contact-section.css'
 import './styles/footer.css'
 
 import './styles/section-transitions.css'
+
+import './styles/hero-seam-fix.css'
