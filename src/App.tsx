@@ -3,7 +3,8 @@ import { MotionConfig } from 'motion/react'
 import { Header } from './components/Header'
 import { Hero } from './components/Hero'
 import { IntroPreloader } from './components/IntroPreloader'
-import { SelectedWork } from './components/SelectedWork'
+import { Services } from './components/Services'
+import { useSectionPaging } from './hooks/useSectionPaging'
 import { Partners } from './components/Partners'
 import { ContactSection } from './components/ContactSection'
 import { Footer } from './components/Footer'
@@ -14,9 +15,10 @@ import { useSectionTransitions } from './hooks/useSectionTransitions'
 
 export function App() {
   useSectionNavigation()
+  useSectionPaging()
   useSectionTransitions()
   const [panel, setPanel] = useState<Panel | null>(null)
-  const [destination, setDestination] = useState<{ id: 'work' | 'contact' } | null>(null)
+  const [destination, setDestination] = useState<{ id: 'services' | 'contact' } | null>(null)
 
   useEffect(() => {
     if (!destination) return
@@ -24,9 +26,9 @@ export function App() {
   }, [destination])
 
   function navigate(next: Panel) {
-    if (next === 'work' || next === 'contact') {
+    if (next === 'services' || next === 'work' || next === 'contact') {
       setPanel(null)
-      setDestination({ id: next })
+      setDestination({ id: next === 'work' ? 'services' : next })
     } else {
       setPanel(next)
     }
@@ -39,7 +41,7 @@ export function App() {
       <Header onNavigate={navigate} />
       <main id="main-content">
         <Hero onNavigate={navigate} />
-        <SelectedWork onStartProject={() => navigate('contact')} />
+        <Services onStartProject={() => navigate('contact')} />
         <Partners />
         <ContactSection />
       </main>

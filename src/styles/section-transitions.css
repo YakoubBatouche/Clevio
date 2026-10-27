@@ -1,6 +1,6 @@
 .site-footer { position: relative; }
 
-:where(#work, #partners, #contact, .site-footer)::before {
+:where(#services, #partners, #contact, .site-footer)::before {
   content: '';
   position: absolute;
   inset-inline: 0;
@@ -14,22 +14,22 @@
   transform-origin: center;
 }
 
-#work::before { --section-seam-opacity: 0.32; }
+#services::before { --section-seam-opacity: 0.32; }
 
 @media (prefers-reduced-motion: no-preference) {
-  :where(#work, #partners, #contact, .site-footer)::before {
+  :where(#services, #partners, #contact, .site-footer)::before {
     opacity: 0;
     transform: scaleX(0.7);
     transition: opacity 800ms ease, transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  :where(#work, #partners, #contact, .site-footer)[data-section-revealed='true']::before {
+  :where(#services, #partners, #contact, .site-footer)[data-section-revealed='true']::before {
     opacity: var(--section-seam-opacity, 0.6);
     transform: scaleX(1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where(#work, #partners, #contact, .site-footer)::before {
+  :where(#services, #partners, #contact, .site-footer)::before {
     opacity: var(--section-seam-opacity, 0.55);
     transform: none;
     transition: none;

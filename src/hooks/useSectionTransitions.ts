@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import { gsap } from '../lib/animation'
 
 const revealSelectors = [
-  '#work .selected-work__header',
-  '#work .work-card',
+  '#services .services-section__header',
+  '#services .service-card',
   '#partners .partners__header',
   '#partners .partners__marks',
   '#contact .contact-section__content',
@@ -146,3 +146,4 @@ export function useSectionTransitions() {
     }
   }, [])
 }
+

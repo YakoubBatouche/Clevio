@@ -16,12 +16,12 @@ The development command prepares the shared logo assets and starts Vite. The pro
 ## Page and behavior
 
 - Hero with editable Arabic text, independent actions, and separate background, cube and bubble images.
-- Asymmetric selected-work gallery with three illustrated concepts and accessible project-detail dialogs.
+- Eight service-category cards in a three-column desktop grid, with glass-style vector icons and accessible category previews.
 - Partner strip with clearly labeled sample marks.
 - Project inquiry form with required-field and email/phone validation.
 - Responsive footer with working section links and contact actions.
 
-Work and contact navigation moves to the real homepage sections. Services and agency information remain available in dialogs. Interactions use simple hover feedback, a restrained hero entrance, and slow independent drifting on the three floating hero PNGs. A small, eased pointer response runs only over the artwork with a mouse. Decorative motion pauses offscreen or in a hidden tab and respects reduced-motion preferences. Section navigation uses a native smooth glide, with restrained one-time content reveals and a faint gradient at section boundaries. Scrolling remains native, and keyboard focus, direct links and reduced-motion preferences are preserved. No scroll hijacking or 3D animation is enabled.
+Services and contact navigation moves to real homepage sections. Category cards provide a short accessible preview and a contact action; full category pages can be added later. Desktop wheel gestures move smoothly between adjacent sections, with native scrolling inside sections taller than the screen. Touch uses gentle proximity snapping. Form controls, open dialogs, keyboard access and reduced-motion preferences preserve native behavior. Decorative hero motion pauses offscreen or in a hidden tab.
 
 ## Inquiry delivery and content
 
@@ -29,7 +29,7 @@ The form prepares a draft for the visitor's email application. It does not submi
 
 Set `VITE_WHATSAPP_NUMBER` to an approved international number to enable WhatsApp. Otherwise the secondary action uses email. No invented phone or social accounts are shown.
 
-The current project imagery and partner marks are explicitly labeled as illustrative concepts. Replace them with approved client content before a public launch.
+The current partner marks are explicitly labeled as illustrative concepts. Replace them with approved client content before a public launch.
 
 ## Images and typography
 
@@ -37,7 +37,7 @@ Large Arabic headings use the supplied NaN SuperX Sans Text Arabic Black font at
 
 The hero's 7680×4320 exports are enhanced/upscaled artwork, not native 8K renders. Responsive 2K, 4K and 8K sources are selected for scene size and display density. Floating elements remain independent transparent PNGs. The original artwork is preserved.
 
-Navigation uses the supplied standalone SVG logo. The footer retains the original approved bitmap mark. Work thumbnails and the contact sculpture are optimized WebP assets.
+Navigation uses the supplied standalone SVG logo. The footer retains the original approved bitmap mark. The contact sculpture is an optimized WebP asset.
 
 ## Foundation
 
@@ -52,7 +52,7 @@ npx playwright install
 npm run test:e2e
 ```
 
-Browser checks cover Chromium, Firefox and WebKit, responsive widths, keyboard behavior, section navigation, project dialogs, inquiry validation, reduced motion and automated accessibility. Successful GitHub runs save desktop/tablet/mobile review screenshots on the `visual-review` branch and attach build/review files to the run.
+Browser checks cover Chromium, Firefox and WebKit, responsive widths, keyboard behavior, section navigation, service previews, inquiry validation, reduced motion and automated accessibility. Successful GitHub runs save desktop/tablet/mobile review screenshots on the `visual-review` branch and attach build/review files to the run.
 
 ## Separated hero scene
 

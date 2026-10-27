@@ -70,7 +70,7 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
           </p>
           <div className="hero__actions">
             <ActionButton onClick={() => onNavigate('contact')}>لنبدأ مشروعك</ActionButton>
-            <ActionButton variant="secondary" onClick={() => onNavigate('work')}>اكتشف أعمالنا</ActionButton>
+            <ActionButton variant="secondary" onClick={() => onNavigate('services')}>اكتشف خدماتنا</ActionButton>
           </div>
         </div>
       </section>

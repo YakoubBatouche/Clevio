@@ -45,7 +45,7 @@ export function Header({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
 
   function items() {
     return navigation.map(({ label, panel }) => {
-      if (panel === null || panel === 'work' || panel === 'contact') {
+      if (panel === null || panel === 'services' || panel === 'contact') {
         return <a key={label} href={panel ? '#' + panel : '#home'}
           className={panel === null ? 'is-active' : undefined}
           aria-current={panel === null ? 'page' : undefined}

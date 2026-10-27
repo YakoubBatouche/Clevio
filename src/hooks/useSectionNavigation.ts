@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
 
-type SectionId = 'home' | 'work' | 'contact'
-const sectionIds = new Set(['home', 'work', 'contact'])
+type SectionId = 'home' | 'services' | 'partners' | 'work' | 'contact'
+const sectionIds = new Set(['home', 'services', 'partners', 'work', 'contact'])
 
-export function scrollToSection(id: SectionId) {
+export function scrollToSection(requestedId: SectionId) {
+  const id = requestedId === 'work' ? 'services' : requestedId
   const section = document.getElementById(id)
   if (!section) return
   if (window.location.hash !== '#' + id) window.history.pushState(null, '', '#' + id)
@@ -22,7 +23,7 @@ export function useSectionNavigation() {
     let disposed = false
     let initialInterrupted = false
     const initialHash = window.location.hash
-    const initialId = initialHash.slice(1)
+    const initialId = initialHash === '#work' ? 'services' : initialHash.slice(1)
 
     function interruptInitialAlignment() { initialInterrupted = true }
     function alignInitialHash() {
@@ -36,7 +37,7 @@ export function useSectionNavigation() {
       if (!anchor || anchor.hasAttribute('download') || (anchor.target && anchor.target !== '_self')) return
       const href = anchor.getAttribute('href')
       if (!href?.startsWith('#') || !sectionIds.has(href.slice(1))) return
-      const id = href.slice(1) as SectionId
+      const id = (href === '#work' ? 'services' : href.slice(1)) as SectionId
       if (!document.getElementById(id)) return
       event.preventDefault()
       initialInterrupted = true
@@ -66,3 +67,4 @@ export function useSectionNavigation() {
     }
   }, [])
 }
+

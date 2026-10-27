@@ -128,7 +128,7 @@ test('desktop hero uses selectable Arabic text and individually interactive acti
   await expect(page.getByRole('heading', { name: 'أفكار خارج الإطار', exact: true })).toBeVisible()
   await expect(page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true })).toBeVisible()
   await expect(page.getByRole('button', { name: 'لنبدأ مشروعك', exact: true })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'اكتشف أعمالنا', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'اكتشف خدماتنا', exact: true })).toBeVisible()
   await expect(page.locator('.hero__background')).toHaveAttribute('alt', '')
   await expect.poll(() => page.locator('.hero__background').evaluate((element) => (element as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
   expect(await page.locator('h1').textContent()).toContain('أفكار')
@@ -211,41 +211,70 @@ test('hero contact action reaches the form and prepares a valid email draft', as
   await expect(draft).not.toBeVisible()
 })
 
-test('selected work opens accessible details and links to the project form', async ({ page }) => {
+test('eight service categories use three desktop columns and accessible details', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/')
-  await page.getByRole('button', { name: 'اكتشف أعمالنا', exact: true }).click()
-  await expect(page).toHaveURL(/#work$/)
-  const card = page.getByRole('button', { name: /هوية بصرية متكاملة/ })
+  await page.getByRole('button', { name: 'اكتشف خدماتنا', exact: true }).click()
+  await expect(page).toHaveURL(/#services$/)
+  const cards = page.locator('#services .service-card')
+  await expect(cards).toHaveCount(8)
+  const boxes = await cards.evaluateAll((items) => items.map((item) => {
+    const box = item.getBoundingClientRect()
+    return { x: box.x, y: box.y }
+  }))
+  expect(new Set(boxes.slice(0, 3).map((box) => Math.round(box.x))).size).toBe(3)
+  expect(Math.max(...boxes.slice(0, 3).map((box) => box.y)) - Math.min(...boxes.slice(0, 3).map((box) => box.y))).toBeLessThan(2)
+  const card = cards.filter({ hasText: 'التصميم الإبداعي' })
   await card.click()
-  const dialog = page.getByRole('dialog', { name: 'هوية بصرية متكاملة', exact: true })
+  const dialog = page.getByRole('dialog', { name: 'التصميم الإبداعي', exact: true })
   await expect(dialog).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(dialog).not.toBeVisible()
   await expect(card).toBeFocused()
   await card.click()
-  await dialog.getByRole('button', { name: 'لنتحدث عن مشروعك' }).click()
+  await dialog.getByRole('button', { name: 'لنتحدث عن مشروعك', exact: true }).click()
   await expect(dialog).not.toBeVisible()
   await expect(page).toHaveURL(/#contact$/)
   await expect(page.locator('#contact input[name="name"]')).toBeFocused()
+
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/#services')
+  await expect(cards).toHaveCount(8)
+  const mobile = await cards.evaluateAll((items) => items.slice(0, 3).map((item) => Math.round(item.getBoundingClientRect().x)))
+  expect(new Set(mobile).size).toBe(1)
 })
 
-test('service information remains reachable from the header', async ({ page }) => {
+test('services navigation reaches the real homepage section', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true }).getByRole('button', { name: 'خدماتنا', exact: true }).click()
-  await expect(page.getByRole('dialog', { name: 'خدماتنا', exact: true })).toBeVisible()
-  await page.keyboard.press('Escape')
-  await expect(page.getByRole('dialog', { name: 'خدماتنا', exact: true })).not.toBeVisible()
+  await page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true }).getByRole('link', { name: 'خدماتنا', exact: true }).click()
+  await expect(page).toHaveURL(/#services$/)
+  await expect(page.locator('#services-heading')).toBeInViewport()
+  await expect(page.locator('#services')).toBeFocused()
 })
 
-test('homepage and project details pass automated accessibility checks', async ({ page }) => {
+test('homepage and service details pass automated accessibility checks', async ({ page }) => {
   await page.goto('/')
   await page.evaluate(() => document.fonts.ready)
   expect(await page.locator('main').count()).toBe(1)
   const homepage = await new AxeBuilder({ page }).analyze()
   expect(homepage.violations).toEqual([])
-  await page.getByRole('button', { name: /تجربة رقمية تفاعلية/ }).click()
-  const project = await new AxeBuilder({ page }).analyze()
-  expect(project.violations).toEqual([])
+  await page.locator('#services .service-card').filter({ hasText: 'التطوير التقني' }).click()
+  await expect(page.getByRole('dialog', { name: 'التطوير التقني', exact: true })).toBeVisible()
+  const details = await new AxeBuilder({ page }).analyze()
+  expect(details.violations).toEqual([])
+})
+
+test('a desktop wheel gesture glides to the next section without skipping it', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto('/?skipintro')
+  const target = await page.locator('#services').evaluate((element) => (element as HTMLElement).offsetTop)
+  await page.mouse.move(720, 500)
+  await page.mouse.wheel(0, 420)
+  await page.mouse.wheel(0, 60)
+  await page.mouse.wheel(0, 40)
+  await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 5000 }).toBeGreaterThan(target - 4)
+  await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 5000 }).toBeLessThan(target + 4)
 })
 
 async function expectFullyRevealed(target: Locator) {
@@ -259,22 +288,23 @@ async function expectFullyRevealed(target: Locator) {
   }), { timeout: 4000 }).toBe(true)
 }
 
-test('normal-motion navigation reveals work and contact with visible focus', async ({ page }) => {
+test('normal-motion navigation reveals services and contact with visible focus', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.setViewportSize({ width: 1672, height: 941 })
   await page.goto('/')
-  await page.getByRole('button', { name: 'اكتشف أعمالنا', exact: true }).click()
+  await page.getByRole('button', { name: 'اكتشف خدماتنا', exact: true }).click()
   await page.mouse.move(0, 0)
-  await expect(page).toHaveURL(/#work$/)
-  await expect(page.locator('#work')).toBeFocused()
-  const workHeading = page.getByRole('heading', { name: 'أعمال مختارة', exact: true })
+  await expect(page).toHaveURL(/#services$/)
+  await expect(page.locator('#services')).toBeFocused()
+  const workHeading = page.locator('#services-heading')
   await expect(workHeading).toBeInViewport({ ratio: 1 })
   await expectFullyRevealed(workHeading)
-  for (const card of await page.locator('#work .work-card').all()) {
+  for (const card of await page.locator('#services .service-card').all()) {
     await expectFullyRevealed(card)
   }
 
-  await page.getByRole('button', { name: 'لنصنع عملك القادم', exact: true }).click()
+  await page.locator('#services .service-card').first().click()
+  await page.getByRole('dialog').getByRole('button', { name: 'لنتحدث عن مشروعك', exact: true }).click()
   await page.mouse.move(0, 0)
   await expect(page).toHaveURL(/#contact$/)
   const input = page.locator('#contact input[name="name"]')

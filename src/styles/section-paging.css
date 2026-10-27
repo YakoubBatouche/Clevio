@@ -1,0 +1,14 @@
+/* Touch keeps its native momentum and settles gently near a section boundary. */
+:where(#home, #services, #partners, #contact, .site-footer) {
+  scroll-snap-align: start;
+  scroll-margin-top: 0;
+}
+@media (max-width: 979px), (pointer: coarse) {
+  html.section-paging-ready { scroll-snap-type: y proximity; }
+}
+@media (min-width: 980px) and (prefers-reduced-motion: no-preference) {
+  #partners { min-height: 85svh; display: grid; align-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.section-paging-ready { scroll-snap-type: none; }
+}

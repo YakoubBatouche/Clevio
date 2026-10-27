@@ -16,8 +16,7 @@ export function Footer({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
             <nav aria-label="روابط سريعة">
               <ul>
                 <li><a href="#home">الرئيسية</a></li>
-                <li><a href="#work">أعمالنا</a></li>
-                <li><button type="button" onClick={() => onNavigate('services')}>خدماتنا</button></li>
+                <li><a href="#services">خدماتنا</a></li>
                 <li><button type="button" onClick={() => onNavigate('about')}>من نحن</button></li>
                 <li><a href="#contact">تواصل معنا</a></li>
               </ul>
@@ -35,7 +34,7 @@ export function Footer({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
             </button>
           </div>
           <div className="site-footer__column site-footer__work">
-            <h2>أعمالنا</h2>
+            <h2>خدماتنا</h2>
             <ul>
               {workCategories.map((category) => <li key={category}><button type="button" onClick={() => onNavigate('services')}>{category}</button></li>)}
             </ul>
