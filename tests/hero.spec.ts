@@ -399,7 +399,11 @@ test('separated C, pedestal and orbit keep the original cover registration', asy
     await page.goto('/')
     const parts = page.locator('[data-hero-piece]')
     await expect(parts).toHaveCount(4)
-    await expect.poll(() => parts.evaluateAll((images) => images.every((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true)
+    const images = page.locator('img[data-hero-piece]')
+    const orbits = page.locator('svg[data-hero-piece^="orbit-"]')
+    await expect(images).toHaveCount(2)
+    await expect(orbits).toHaveCount(2)
+    await expect.poll(() => images.evaluateAll((items) => items.every((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true)
     const background = await page.locator('.hero__background').boundingBox()
     const frame = await page.locator('.hero__scene').boundingBox()
     expect(background).not.toBeNull()
@@ -412,6 +416,14 @@ test('separated C, pedestal and orbit keep the original cover registration', asy
     expect(Math.abs(frame!.y - (background!.y + background!.height - sceneHeight))).toBeLessThan(0.15)
     expect(Math.abs(frame!.width - sceneWidth)).toBeLessThan(0.15)
     expect(Math.abs(frame!.height - sceneHeight)).toBeLessThan(0.15)
+    for (const orbit of await orbits.all()) {
+      await expect(orbit).toHaveAttribute('viewBox', '0 0 7680 4320')
+      const box = await orbit.boundingBox()
+      expect(box).not.toBeNull()
+      for (const key of ['x', 'y', 'width', 'height'] as const) {
+        expect(Math.abs(box![key] - frame![key])).toBeLessThan(0.15)
+      }
+    }
     for (const part of await parts.all()) await expect(part).toHaveCSS('animation-name', 'none')
   }
 })
