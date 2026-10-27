@@ -1,0 +1,36 @@
+.hero__float-intro {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero__heading { display: grid; }
+
+/* Extra room above/below each line preserves Arabic diacritics and descenders. */
+.hero__line-mask {
+  display: block;
+  overflow: clip;
+  padding-block: 0.12em;
+  margin-block: -0.12em;
+}
+
+.desktop-nav .is-active::after {
+  transform: scaleX(var(--intro-underline, 1));
+  transform-origin: right center;
+}
+
+.hero__actions .action--secondary {
+  position: relative;
+  border-bottom-color: transparent;
+}
+
+.hero__actions .action--secondary::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  inset-inline: 0;
+  height: 2px;
+  background: #217bff;
+  transform: scaleX(var(--intro-underline, 1));
+  transform-origin: right center;
+}

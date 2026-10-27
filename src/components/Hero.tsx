@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { heroStaticLayers } from '../content/hero-layers'
 import { useHeroFloatInteraction } from '../hooks/useHeroFloatInteraction'
-import { gsap, useGSAP } from '../lib/animation'
+import { useHeroCrystalIdle } from '../hooks/useHeroCrystalIdle'
 import { ActionButton } from './ActionButton'
 import type { Panel } from '../content/site'
 
@@ -11,16 +11,8 @@ const heroSources = (name: string, type = 'png') => [['2k', 1920], ['4k', 3840],
 export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
   const root = useRef<HTMLElement>(null)
   useHeroFloatInteraction(root)
+  useHeroCrystalIdle(root)
 
-  useGSAP(() => {
-    if (import.meta.env.DEV && new URLSearchParams(window.location.search).has('skipintro')) return
-    const media = gsap.matchMedia()
-    media.add('(prefers-reduced-motion: no-preference)', () => {
-      gsap.from('.hero__line', { y: 22, opacity: 0, stagger: 0.09, duration: 0.75, ease: 'power3.out' })
-      gsap.from('.hero__description, .hero__actions', { y: 14, opacity: 0, stagger: 0.12, duration: 0.65, delay: 0.25, ease: 'power2.out' })
-    })
-    return () => media.revert()
-  }, { scope: root })
 
   return (
       <section id="home" className="hero" tabIndex={-1} ref={root} aria-labelledby="hero-heading">
@@ -35,20 +27,26 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
               alt="" width={part.sources[2].width} height={part.sources[2].height} decoding="async" fetchPriority={part.name === 'main-c' ? 'high' : 'auto'} />)}
           </div>
           <div key="blue-bubble" className="hero__float-track hero__float-track--blue" data-hero-parallax="blue">
+            <div className="hero__float-intro">
             <img className="hero__float hero__float--blue" data-hero-object="blue-bubble" src={import.meta.env.BASE_URL + 'hero-layers/hires/bubble-blue-2k.png'} srcSet={heroSources('bubble-blue')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
+            </div>
           </div>
           <div key="cube" className="hero__float-track hero__float-track--cube" data-hero-parallax="cube">
+            <div className="hero__float-intro">
             <img className="hero__float hero__float--cube" data-hero-object="cube" src={import.meta.env.BASE_URL + 'hero-layers/hires/floating-cube-2k.png'} srcSet={heroSources('floating-cube')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
+            </div>
           </div>
           <div key="lime-bubble" className="hero__float-track hero__float-track--lime" data-hero-parallax="lime">
+            <div className="hero__float-intro">
             <img className="hero__float hero__float--lime" data-hero-object="lime-bubble" src={import.meta.env.BASE_URL + 'hero-layers/hires/bubble-lime-2k.png'} srcSet={heroSources('bubble-lime')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
+            </div>
           </div>
         </div>
         <div className="hero__content">
           <h1 id="hero-heading" className="hero__heading" aria-label="أفكار خارج الإطار">
-            <span className="hero__line">أفكار</span>
-            <span className="hero__line">خارج</span>
-            <span className="hero__line">الإطار</span>
+            <span className="hero__line-mask"><span className="hero__line">أفكار</span></span>
+            <span className="hero__line-mask"><span className="hero__line">خارج</span></span>
+            <span className="hero__line-mask"><span className="hero__line">الإطار</span></span>
           </h1>
           <p className="hero__description">
             <span>نحوّل أفكارك إلى هويات وتجارب رقمية مؤثرة،</span>

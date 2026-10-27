@@ -19,8 +19,10 @@ html.intro-pending {
 }
 
 .intro-logo {
+  position: relative;
+  z-index: 3;
   display: block;
-  width: 156px;
+  width: 190px;
   height: auto;
   overflow: visible;
   fill: none;
@@ -28,12 +30,18 @@ html.intro-pending {
 }
 
 .intro-logo__shape {
-  fill: none;
+  fill: url(#intro-glass-fill);
+  fill-opacity: 0;
   stroke: var(--lime, #d5ff48);
   stroke-width: 1.6px;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
+}
+
+.intro-logo__sweep {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .intro-preloader__status {
@@ -66,7 +74,7 @@ html.intro-failed .intro-preloader {
 
 @media (max-width: 760px) {
   .intro-logo {
-    width: 96px;
+    width: 116px;
   }
 }
 
@@ -75,4 +83,6 @@ html.intro-failed .intro-preloader {
     display: none;
   }
 }
+
+
 

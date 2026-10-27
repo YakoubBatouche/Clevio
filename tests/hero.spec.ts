@@ -3,6 +3,7 @@ import { expect, test, type Locator } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 test('intro waits for hero assets, unlocks the unchanged scene, and replays on reload', async ({ page }) => {
+  test.setTimeout(45000)
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.setViewportSize({ width: 1672, height: 941 })
   let releaseAsset = () => {}
@@ -36,12 +37,16 @@ test('intro waits for hero assets, unlocks the unchanged scene, and replays on r
     releaseAsset()
 
     await expect(loader).toBeHidden({ timeout: 15000 })
-    expect(await page.evaluate(() => performance.now())).toBeGreaterThanOrEqual(2100)
+    expect(await page.evaluate(() => performance.now())).toBeGreaterThanOrEqual(7400)
     await expect.poll(() => lockedContent.evaluateAll((elements) => elements.every((element) => !(element as HTMLElement).inert))).toBe(true)
     await expect(page.locator('html')).not.toHaveClass(/intro-pending/)
     await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden')
     await expect(page.locator('h1')).toBeVisible()
-    await expect(piece).toHaveCSS('transform', 'none')
+    await expect(page.locator('.intro-preloader__tiles, .intro-preloader__shockwave, .intro-handoff-c')).toHaveCount(0)
+    await expect(piece).toHaveCSS('opacity', '1')
+    await expect(piece).toHaveCSS('filter', 'none')
+    await expect(page.locator('.hero__line-mask')).toHaveCount(3)
+    await expect(page.locator('.hero__line')).toHaveText(['أفكار', 'خارج', 'الإطار'])
     await expect(piece).toHaveCSS('animation-name', 'none')
     const after = await piece.evaluate((element) => {
       const { x, y, width, height } = element.getBoundingClientRect()
@@ -53,9 +58,9 @@ test('intro waits for hero assets, unlocks the unchanged scene, and replays on r
     await expect.poll(() => page.evaluate(() => {
       const timeline = (window as Window & { introTl?: { labels: Record<string, number>; progress(): number; duration(): number } }).introTl
       return timeline ? { labels: timeline.labels, progress: timeline.progress(), duration: timeline.duration() } : null
-    })).toEqual({ labels: expect.objectContaining({ outline: 0, hold: 1.6, exit: 2.2 }), progress: 1, duration: 2.45 })
+    })).toEqual({ labels: expect.objectContaining({ outline: 0, glass: 1.95, shatter: 3.6, hero: 4, exit: 7.35 }), progress: 1, duration: expect.closeTo(7.6, 4) })
 
-    await page.unroute(criticalImage)
+    await page.unrouteAll({ behavior: 'wait' })
     await page.reload({ waitUntil: 'domcontentloaded' })
     await expect(loader).toBeVisible()
     await expect.poll(() => lockedContent.evaluateAll((elements) => elements.every((element) => (element as HTMLElement).inert))).toBe(true)
@@ -91,7 +96,7 @@ test('development bypass and reduced motion leave content unlocked without the l
       await expect(page.locator('#home')).toHaveCSS('opacity', '1')
     } finally {
       releaseAsset()
-      await page.unroute(criticalImage)
+      await page.unrouteAll({ behavior: 'wait' })
     }
   }
 })
@@ -192,7 +197,7 @@ test('selected work opens accessible details and links to the project form', asy
   await page.goto('/')
   await page.getByRole('button', { name: 'اكتشف أعمالنا', exact: true }).click()
   await expect(page).toHaveURL(/#work$/)
-  const card = page.getByRole('button', { name: 'عرض هوية بصرية متكاملة', exact: true })
+  const card = page.getByRole('button', { name: /هوية بصرية متكاملة/ })
   await card.click()
   const dialog = page.getByRole('dialog', { name: 'هوية بصرية متكاملة', exact: true })
   await expect(dialog).toBeVisible()
@@ -220,7 +225,7 @@ test('homepage and project details pass automated accessibility checks', async (
   expect(await page.locator('main').count()).toBe(1)
   const homepage = await new AxeBuilder({ page }).analyze()
   expect(homepage.violations).toEqual([])
-  await page.getByRole('button', { name: 'عرض تجربة رقمية تفاعلية', exact: true }).click()
+  await page.getByRole('button', { name: /تجربة رقمية تفاعلية/ }).click()
   const project = await new AxeBuilder({ page }).analyze()
   expect(project.violations).toEqual([])
 })
@@ -277,6 +282,7 @@ test('direct contact links reveal content and keep a focused field on screen', a
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.setViewportSize({ width: 1672, height: 941 })
   await page.goto('/#contact')
+  await expect(page.locator('html')).not.toHaveClass(/intro-pending/, { timeout: 20000 })
   await expect(page).toHaveURL(/#contact$/)
   const heading = page.getByRole('heading', { name: 'لديك فكرة؟ لنحوّلها إلى شيء مميز.', exact: true })
   await expect(heading).toBeInViewport({ ratio: 1 })
@@ -315,7 +321,7 @@ test('floating artwork moves gently while the background and headline stay still
 
   for (const [selector, initialBox] of [
     ['.hero__background', background],
-    ['.hero__line:last-child', headline],
+    ['.hero__line-mask:last-child .hero__line', headline],
   ] as const) {
     const current = await page.locator(selector).boundingBox()
     expect(initialBox).not.toBeNull()

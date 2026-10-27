@@ -17,6 +17,6 @@ export function prepareIntro() {
     document.body.style.overflow = previousOverflow
     document.querySelectorAll('.site-header, #main-content, .site-footer, .skip-link').forEach((element) => element.removeAttribute('inert'))
     window.dispatchEvent(new Event('clevio:intro-abort'))
-  }, 15_000)
+  }, 25_000)
   bootWindow.__clevioIntroBoot = { skip, watchdog }
 }
