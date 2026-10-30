@@ -29,6 +29,7 @@ export function useSectionTransitions() {
     const owners = [...new Set(groups.map((group) => group.owner))]
     const markers = new Map(owners.map((owner) => [owner, owner.getAttribute('data-section-revealed')]))
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const touch = window.matchMedia('(max-width: 979px), (pointer: coarse)')
     const context = gsap.context(() => {})
     let observer: IntersectionObserver | null = null
     let pointerActive = false
@@ -82,6 +83,9 @@ export function useSectionTransitions() {
       const inset = headerInset()
       const usable = Math.max(1, innerHeight - inset)
       const visible = Math.max(0, Math.min(bounds.bottom, innerHeight) - Math.max(bounds.top, inset))
+      // Touch can stop at any pixel: show incoming content as soon as it enters,
+      // including a short drag that stays below the desktop landing threshold.
+      if (touch.matches) return visible > 1
       const visibleEnough = visible >= Math.min(usable * 0.45, bounds.height * 0.55)
       // A short footer cannot reach the top landing when the document ends.
       if (owner.matches('footer')) return visibleEnough
@@ -154,6 +158,7 @@ export function useSectionTransitions() {
         if (bounds.bottom <= headerInset() + 1 || bounds.top >= innerHeight - 1) groups.filter((group) => group.owner === owner).forEach(prepare)
       }
     }
+    function onTouchModeChange() { scheduleEntries() }
     function onVisibilityChange() { if (document.hidden) groups.forEach(restore) }
     document.addEventListener('pointerdown', onPointerDown, true)
     document.addEventListener('pointerup', onPointerEnd, true)
@@ -163,6 +168,7 @@ export function useSectionTransitions() {
     document.addEventListener('visibilitychange', onVisibilityChange)
     window.addEventListener('hashchange', onHashChange)
     reduced.addEventListener('change', onMotionChange)
+    touch.addEventListener('change', onTouchModeChange)
     return () => {
       observer?.disconnect()
       window.removeEventListener('resize', observeOwners)
@@ -176,6 +182,7 @@ export function useSectionTransitions() {
       document.removeEventListener('visibilitychange', onVisibilityChange)
       window.removeEventListener('hashchange', onHashChange)
       reduced.removeEventListener('change', onMotionChange)
+      touch.removeEventListener('change', onTouchModeChange)
       groups.forEach(restore)
       context.revert()
       markers.forEach((value, owner) => value === null ? owner.removeAttribute('data-section-revealed') : owner.setAttribute('data-section-revealed', value))

@@ -103,15 +103,49 @@
 .hero__line-mask--lead { color: #f6f8ff; font-size: .48em; line-height: 1.12; white-space: nowrap; }
 .hero__line-mask--focus { color: var(--lime); line-height: 1.06; white-space: nowrap; }
 
-/* A static soft ring breathes through opacity, keeping the CTA itself steady. */
+/* Layered lime light breathes around the pill without moving the CTA itself. */
 .hero .action--primary { position: relative; isolation: isolate; }
-.hero .action--primary::before { content: ''; position: absolute; z-index: -1; inset: -4px; border: 1px solid rgb(213 255 72 / 38%); border-radius: inherit; box-shadow: 0 0 22px 2px rgb(213 255 72 / 24%); opacity: .22; pointer-events: none; }
-@keyframes hero-cta-breathe { 0%, 100% { opacity: .12; } 50% { opacity: .58; } }
-@media (prefers-reduced-motion: no-preference) {
-  .hero .action--primary::before { animation: hero-cta-breathe 4.8s ease-in-out infinite; }
-  .hero[data-hero-motion='paused'] .action--primary::before, .intro-pending .hero .action--primary::before { animation-play-state: paused; }
+.hero .action--primary::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -3px;
+  border: 1px solid rgb(213 255 72 / 46%);
+  border-radius: inherit;
+  box-shadow: 0 0 14px 2px rgb(213 255 72 / 30%), 0 0 34px 6px rgb(213 255 72 / 19%), 0 0 62px 9px rgb(213 255 72 / 8%);
+  opacity: .42;
+  pointer-events: none;
 }
-@media (prefers-reduced-motion: reduce) { .hero .action--primary::before { animation: none; opacity: .18; } }
+.hero .action--primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(115deg, transparent 18%, rgb(255 255 255 / 25%) 42%, transparent 66%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 52%), inset 0 -1px 0 rgb(161 207 24 / 22%);
+  opacity: .18;
+  pointer-events: none;
+}
+@keyframes hero-cta-breathe {
+  0%, 100% { opacity: .3; transform: scale(1); }
+  50% { opacity: .78; transform: scale(1.025, 1.055); }
+}
+@keyframes hero-cta-reflect {
+  0%, 24%, 76%, 100% { opacity: .12; }
+  50% { opacity: .52; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero .action--primary::before { animation: hero-cta-breathe 5.6s ease-in-out infinite; }
+  .hero .action--primary::after { animation: hero-cta-reflect 8.4s ease-in-out infinite; }
+  .hero[data-hero-motion='paused'] .action--primary::before,
+  .hero[data-hero-motion='paused'] .action--primary::after,
+  .intro-pending .hero .action--primary::before,
+  .intro-pending .hero .action--primary::after { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero .action--primary::before { animation: none; opacity: .42; transform: none; }
+  .hero .action--primary::after { animation: none; opacity: .18; }
+}
 @media (min-width: 980px) and (max-height: 760px) {
   .hero__content { top: max(18%, var(--header-offset)); }
   .hero__heading { font-size: clamp(70px, min(10vw, 17svh), 130px); }

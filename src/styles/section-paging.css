@@ -1,10 +1,7 @@
-/* Touch keeps its native momentum and settles gently near a section boundary. */
+/* Gesture paging owns the settle; proximity snapping could strand a short swipe. */
 :where(#home, #services, #partners, #contact, .site-footer) {
   scroll-snap-align: start;
   scroll-margin-top: 0;
-}
-@media (max-width: 979px), (pointer: coarse) {
-  html.section-paging-ready { scroll-snap-type: y proximity; }
 }
 @media (prefers-reduced-motion: reduce) {
   html.section-paging-ready { scroll-snap-type: none; }
