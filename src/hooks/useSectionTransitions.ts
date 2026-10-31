@@ -55,13 +55,8 @@ export function useSectionTransitions() {
       restore(group)
       group.prepared = true
       context.add(() => {
-        const common = { opacity: 0, force3D: true, willChange: 'transform, opacity' }
-        if (group.kind === 'heading') gsap.set(group.elements, { ...common, y: 24, clipPath: 'inset(0% 0% 100% 0%)' })
-        else if (group.kind === 'services') gsap.set(group.elements, { ...common, y: 38, rotationX: -9, rotationY: (index: number) => index % 3 === 0 ? -5 : 5, scale: 0.96, transformOrigin: '50% 100%' })
-        else if (group.kind === 'work') gsap.set(group.elements, { ...common, x: (index: number) => index % 2 ? -24 : 24, y: 22, rotationY: (index: number) => index % 2 ? 8 : -8, rotationZ: (index: number) => index % 2 ? -1 : 1, scale: 0.95 })
-        else if (group.kind === 'partners') gsap.set(group.elements, { ...common, y: 15, scale: 0.72, rotation: (index: number) => index % 2 ? 7 : -7 })
-        else if (group.kind === 'contact') gsap.set(group.elements, { ...common, x: -24, y: 24, rotationY: -4, transformOrigin: '100% 50%' })
-        else gsap.set(group.elements, { ...common, y: 30, rotationX: -5, scale: 0.98 })
+        // Keep offscreen groups hidden without reserving compositing layers.
+        gsap.set(group.elements, { opacity: 0 })
       })
     }
     function reveal(group: Group) {
@@ -69,6 +64,13 @@ export function useSectionTransitions() {
       if (reduced.matches || document.hidden) { restore(group); return }
       group.playing = true
       context.add(() => {
+        const common = { opacity: 0, force3D: true, willChange: 'transform, opacity' }
+        if (group.kind === 'heading') gsap.set(group.elements, { ...common, y: 24, clipPath: 'inset(0% 0% 100% 0%)' })
+        else if (group.kind === 'services') gsap.set(group.elements, { ...common, y: 38, rotationX: -9, rotationY: (index: number) => index % 3 === 0 ? -5 : 5, scale: 0.96, transformOrigin: '50% 100%' })
+        else if (group.kind === 'work') gsap.set(group.elements, { ...common, x: (index: number) => index % 2 ? -24 : 24, y: 22, rotationY: (index: number) => index % 2 ? 8 : -8, rotationZ: (index: number) => index % 2 ? -1 : 1, scale: 0.95 })
+        else if (group.kind === 'partners') gsap.set(group.elements, { ...common, y: 15, scale: 0.72, rotation: (index: number) => index % 2 ? 7 : -7 })
+        else if (group.kind === 'contact') gsap.set(group.elements, { ...common, x: -24, y: 24, rotationY: -4, transformOrigin: '100% 50%' })
+        else gsap.set(group.elements, { ...common, y: 30, rotationX: -5, scale: 0.98 })
         group.tween = gsap.to(group.elements, {
           opacity: 1, x: 0, y: 0, rotation: 0, rotationX: 0, rotationY: 0, scale: 1,
           clipPath: 'inset(0% 0% 0% 0%)', duration: group.kind === 'heading' ? 0.8 : 1.05,

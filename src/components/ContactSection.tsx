@@ -1,10 +1,11 @@
-import { useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { ArrowLeft, ChevronDown, Mail, MessageCircle } from 'lucide-react'
 import { services } from '../content/site'
 
 
 export function ContactSection() {
   const fieldId = useId()
+  const sectionRef = useRef<HTMLElement>(null)
   const [draftHref, setDraftHref] = useState('')
   const contactEmail = import.meta.env.VITE_CONTACT_EMAIL?.trim() || 'info@clevio.dz'
   const whatsappNumber = (import.meta.env.VITE_WHATSAPP_NUMBER || '').replace(/\D/g, '').replace(/^00/, '')
@@ -13,9 +14,23 @@ export function ContactSection() {
     ? 'https://wa.me/' + whatsappNumber + '?text=' + encodeURIComponent('مرحبًا كليفيو، أود مناقشة مشروع جديد.')
     : 'mailto:' + contactEmail
 
+  useEffect(() => {
+    const viewport = window.visualViewport
+    const section = sectionRef.current
+    if (!viewport || !section) return
+    // Keep the reading panel above a mobile keyboard without resizing its stage.
+    const updateViewportHeight = () => section.style.setProperty('--contact-viewport-height', `${viewport.height}px`)
+    updateViewportHeight()
+    viewport.addEventListener('resize', updateViewportHeight)
+    return () => {
+      viewport.removeEventListener('resize', updateViewportHeight)
+      section.style.removeProperty('--contact-viewport-height')
+    }
+  }, [])
+
   return (
-    <section id="contact" className="contact-section" tabIndex={-1} aria-labelledby="contact-heading">
-      <div className="contact-section__shell">
+    <section ref={sectionRef} id="contact" className="contact-section" tabIndex={-1} aria-labelledby="contact-heading">
+      <div className="contact-section__shell" data-native-scroll>
         <div className="contact-section__layout">
           <div className="contact-section__content">
             <p className="contact-section__eyebrow"><span aria-hidden="true" />لنبدأ شيئًا مختلفًا</p>

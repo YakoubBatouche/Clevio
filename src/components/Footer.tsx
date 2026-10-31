@@ -9,7 +9,7 @@ export function Footer({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
 
   return (
     <footer className="site-footer" aria-label="تذييل الموقع">
-      <div className="site-footer__inner">
+      <div className="site-footer__inner" data-native-scroll>
         <div className="site-footer__grid">
           <div className="site-footer__column site-footer__links">
             <h2>روابط سريعة</h2>

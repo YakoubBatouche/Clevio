@@ -3,6 +3,22 @@
   scroll-snap-align: start;
   scroll-margin-top: 0;
 }
+/* Retain a real document scroll range for programmatic section transitions. */
+html.section-paging-mobile {
+  overflow-y: hidden;
+  overscroll-behavior-y: none;
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}
+html.section-paging-mobile :where(#home, #services, #partners, #contact, .site-footer) {
+  touch-action: pan-x pinch-zoom;
+  overflow-anchor: none;
+}
+/* A real internal scrollport resolves its gesture before the locked stage. */
+html.section-paging-mobile :where([data-native-scroll], textarea) {
+  touch-action: pan-y pinch-zoom;
+  overscroll-behavior-y: contain;
+}
 @media (prefers-reduced-motion: reduce) {
   html.section-paging-ready { scroll-snap-type: none; }
 }

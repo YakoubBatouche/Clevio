@@ -16,50 +16,98 @@ test('reload returns to the hero while fresh section links remain usable', async
   await expect(page.locator('#services-heading')).toBeInViewport({ ratio: 1 })
 })
 
-test('a small mobile scroll reveals incoming content instead of leaving it blank', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'no-preference' })
+test('mobile stages lock document scrolling and keep long content inside panels', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/?skipintro#home')
-  await page.evaluate(() => document.fonts.ready)
-  const incoming = page.locator('#services')
-  await expect(incoming.locator('.service-card').first()).toHaveCSS('opacity', '0')
-  await page.evaluate(() => window.scrollTo({ top: 24, behavior: 'instant' }))
-  await expect(incoming).toHaveAttribute('data-section-revealed', 'true')
-  await expect(incoming.locator('.service-card').first()).toHaveCSS('opacity', '1')
-  await expect(incoming.locator('.service-card').first()).toHaveCSS('transform', 'none')
+  await expect(page.locator('html')).toHaveClass(/section-paging-mobile/)
+  await expect(page.locator('html')).toHaveCSS('overflow-y', 'hidden')
+  await page.goto('/?skipintro#contact')
+  const panel = page.locator('.contact-section__shell')
+  await expect(panel).toHaveAttribute('data-native-scroll', '')
+  await expect(panel).toHaveCSS('overflow-y', 'auto')
+  await expect(panel).toBeInViewport({ ratio: 1 })
+  expect(await panel.evaluate(el => el.scrollHeight > el.clientHeight)).toBe(true)
+  const stage = await page.locator('#contact').boundingBox()
+  expect(stage!.height).toBeLessThanOrEqual(844)
 })
 
-test.describe('native phone swipes', () => {
+test.describe('native phone section locking', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, reducedMotion: 'no-preference' })
-  test('a short vertical swipe settles exactly one section and horizontal drags stay native', async ({ page, browserName }) => {
-    test.skip(browserName !== 'chromium', 'Native touch input uses Chromium device emulation; reveal behavior is checked in every browser.')
+  test('short, cancelled and repeated native swipes stay on exact animated landings', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Native drag input uses Chromium device emulation; mobile layout runs in all browsers.')
     await page.goto('/?skipintro#home')
     await page.evaluate(() => document.fonts.ready)
     const session = await page.context().newCDPSession(page)
-    async function swipe(dx: number, dy: number) {
+    async function swipe(dx: number, dy: number, hold = false, cancel = false) {
       await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 180, y: 700, id: 1 }] })
       for (const amount of [0.28, 0.55, 1]) {
         await session.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 180 + dx * amount, y: 700 + dy * amount, id: 1 }] })
         await page.waitForTimeout(30)
       }
-      await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+      if (hold) {
+        await page.waitForTimeout(180)
+        expect(Math.abs(await page.evaluate(() => scrollY))).toBeLessThan(2)
+      }
+      await session.send('Input.dispatchTouchEvent', { type: cancel ? 'touchCancel' : 'touchEnd', touchPoints: [] })
     }
     async function landing(id: string) {
-      const target = await page.locator(id).evaluate((element) => element.getBoundingClientRect().top + scrollY - parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-offset')))
-      await expect.poll(() => page.evaluate(() => scrollY), { timeout: 6000 }).toBeGreaterThan(target - 3)
-      await expect.poll(() => page.evaluate(() => scrollY), { timeout: 6000 }).toBeLessThan(target + 3)
+      const target = await page.locator(id).evaluate(el => el.id === 'home' ? 0 : Math.min(document.documentElement.scrollHeight - innerHeight, el.getBoundingClientRect().top + scrollY - parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-offset'))))
+      await expect.poll(() => page.evaluate(y => Math.abs(scrollY - y), target), { timeout: 7000 }).toBeLessThan(2)
+      await expect(page.locator('html')).not.toHaveClass(/section-paging-moving/)
+      await page.waitForTimeout(450)
+      expect(await page.evaluate(y => Math.abs(scrollY - y), target)).toBeLessThan(2)
     }
+    await expect(page.locator('html')).toHaveCSS('overflow-y', 'hidden')
+    await swipe(0, -10, true)
+    await landing('#home')
     await swipe(36, -3)
-    await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(3)
-    await swipe(0, -26)
+    await landing('#home')
+    await swipe(0, 40)
+    await landing('#home')
+    await swipe(0, -26, false, true)
+    await landing('#home')
+    await swipe(0, -240)
     await landing('#services')
-    await expect(page.locator('#services .service-card').first()).toHaveCSS('opacity', '1')
     await swipe(0, -26)
+    await swipe(0, -240)
+    await swipe(0, 26)
     await landing('#partners')
     await expect(page.locator('#partners .work-showcase__card').first()).toHaveCSS('opacity', '1')
     await swipe(0, 26)
     await landing('#services')
     await expect(page.locator('dialog[open]')).toHaveCount(0)
     await session.detach()
+  })
+
+  test('contact reading stays inside its panel and reduced motion keeps the section lock', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Native drag input uses Chromium device emulation.')
+    await page.goto('/?skipintro#contact')
+    await page.evaluate(() => document.fonts.ready)
+    const panel = page.locator('.contact-section__shell')
+    await expect(panel).toBeInViewport({ ratio: 1 })
+    await expect.poll(() => page.locator('#contact').evaluate(el => Math.abs(el.getBoundingClientRect().top - 92))).toBeLessThan(2)
+    const y = await page.evaluate(() => scrollY)
+    const session = await page.context().newCDPSession(page)
+    const box = await panel.boundingBox()
+    const x = box!.x + 7
+    const startY = Math.min(700, box!.y + box!.height - 40)
+    await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: startY, id: 1 }] })
+    for (const distance of [20, 45, 70]) {
+      await session.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: startY - distance, id: 1 }] })
+      await page.waitForTimeout(45)
+    }
+    await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+    await expect.poll(() => panel.evaluate(el => el.scrollTop)).toBeGreaterThan(5)
+    expect(Math.abs(await page.evaluate(() => scrollY) - y)).toBeLessThan(2)
+    await session.detach()
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto('/?skipintro#home')
+    await expect(page.locator('html')).toHaveCSS('overflow-y', 'hidden')
+    await page.mouse.move(5, 500)
+    await page.mouse.wheel(0, 80)
+    await expect.poll(() => page.locator('#services').evaluate(el => Math.abs(el.getBoundingClientRect().top - 92))).toBeLessThan(2)
+    await page.waitForTimeout(250)
+    await page.mouse.wheel(0, -80)
+    await expect.poll(() => page.evaluate(() => Math.abs(scrollY))).toBeLessThan(2)
   })
 })

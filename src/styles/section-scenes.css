@@ -13,6 +13,37 @@
   gap: clamp(10px, 1.6svh, 18px);
 }
 .service-card { min-height: 0; padding-block: clamp(14px, 2svh, 24px); }
+@media (max-width: 979px), (pointer: coarse) {
+  #contact, .site-footer {
+    --scene-panel-inset: clamp(14px, 2.5svh, 24px);
+    display: flex;
+    align-items: flex-start;
+    height: calc(100svh - var(--header-offset));
+    min-height: 0;
+    padding-block: var(--scene-panel-inset);
+    overflow: clip;
+  }
+  #contact { flex-direction: column; }
+  .contact-section__shell, .site-footer__inner {
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    padding-inline: 4px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y pinch-zoom;
+    scroll-padding-block: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(125 164 238 / 38%) transparent;
+  }
+  .contact-section__shell {
+    max-height: max(0px, calc(var(--contact-viewport-height, 100svh) - var(--header-offset) - 2 * var(--scene-panel-inset)));
+    padding-block: 4px;
+  }
+  .contact-section__layout { min-height: 0; }
+  .contact-section__field :is(input, select, textarea) { scroll-margin-block: 20px; }
+}
 @media(max-width:900px) {
   .services-section__grid { grid-template-rows: repeat(4, minmax(0, 1fr)); }
 }
