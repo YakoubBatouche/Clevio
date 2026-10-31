@@ -8,17 +8,11 @@ function prepareReload(bootWindow: IntroBootWindow) {
   if (bootWindow.__clevioReloadPrepared || navigation?.type !== 'reload') return
   // Keep this document-level reset one-time, including during development hot reloads.
   bootWindow.__clevioReloadPrepared = true
-  const previousRestoration = window.history.scrollRestoration
+  // Keep native restoration disabled for this document: Firefox can restore the
+  // old position after pageshow, even after the first animation frame.
   window.history.scrollRestoration = 'manual'
   window.history.replaceState(window.history.state, '', `${window.location.pathname}${window.location.search}#home`)
   window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-
-  // Native reload restoration finishes around pageshow. Only release its lock later;
-  // a delayed scroll could override a visitor's first navigation or scroll gesture.
-  const restore = () => { window.history.scrollRestoration = previousRestoration }
-  const onPageShow = () => { window.requestAnimationFrame(restore) }
-  if (document.readyState === 'complete') onPageShow()
-  else window.addEventListener('pageshow', onPageShow, { once: true })
 }
 
 export function prepareIntro() {

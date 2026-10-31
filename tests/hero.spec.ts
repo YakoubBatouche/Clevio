@@ -281,13 +281,31 @@ test('a desktop wheel gesture glides to the next section without skipping it', a
 
 async function expectFullyRevealed(target: Locator) {
   await expect(target).toBeVisible()
-  await expect.poll(() => target.evaluate((element) => {
-    for (let current: Element | null = element; current && current.tagName !== 'MAIN'; current = current.parentElement) {
-      const style = getComputedStyle(current)
-      if (style.opacity !== '1' || style.transform !== 'none') return false
-    }
-    return true
-  }), { timeout: 6500 }).toBe(true)
+  try {
+    await expect.poll(() => target.evaluate((element) => {
+      for (let current: Element | null = element; current && current.tagName !== 'MAIN'; current = current.parentElement) {
+        const style = getComputedStyle(current)
+        if (style.opacity !== '1' || style.transform !== 'none') return false
+      }
+      return true
+    }), { timeout: 6500 }).toBe(true)
+  } catch (error) {
+    const diagnostics = await target.evaluate((element) => {
+      const ancestors = []
+      for (let current: Element | null = element; current; current = current.parentElement) {
+        const style = getComputedStyle(current)
+        ancestors.push({
+          tag: current.tagName, id: current.id, class: current.getAttribute('class'),
+          opacity: style.opacity, transform: style.transform, willChange: style.willChange,
+          clipPath: style.clipPath, inlineStyle: current.getAttribute('style'),
+        })
+        if (current.tagName === 'MAIN') break
+      }
+      return ancestors
+    }).catch((diagnosticError: unknown) => String(diagnosticError))
+    console.error('REVEAL_DIAGNOSTICS', JSON.stringify(diagnostics))
+    throw error
+  }
 }
 
 test('normal-motion navigation reveals services and contact with visible focus', async ({ page }) => {

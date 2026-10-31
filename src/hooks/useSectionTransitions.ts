@@ -73,7 +73,8 @@ export function useSectionTransitions() {
         else gsap.set(group.elements, { ...common, y: 30, rotationX: -5, scale: 0.98 })
         group.tween = gsap.to(group.elements, {
           opacity: 1, x: 0, y: 0, rotation: 0, rotationX: 0, rotationY: 0, scale: 1,
-          clipPath: 'inset(0% 0% 0% 0%)', duration: group.kind === 'heading' ? 0.8 : 1.05,
+          ...(group.kind === 'heading' ? { clipPath: 'inset(0% 0% 0% 0%)' } : {}),
+          duration: group.kind === 'heading' ? 0.8 : 1.05,
           stagger: group.kind === 'partners' ? 0.055 : group.kind === 'heading' ? 0 : 0.065,
           ease: group.kind === 'partners' ? 'back.out(1.3)' : 'power3.out',
           overwrite: 'auto', force3D: true, onComplete: () => restore(group),

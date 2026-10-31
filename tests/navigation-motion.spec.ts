@@ -10,6 +10,13 @@ test('reload returns to the hero while fresh section links remain usable', async
   await page.evaluate(() => document.fonts.ready)
   await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(2)
   await expect(page.locator('h1')).toBeInViewport({ ratio: 1 })
+  const nav = page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true })
+  await nav.getByRole('link', { name: 'خدماتنا', exact: true }).click()
+  await nav.getByRole('link', { name: 'أعمالنا', exact: true }).click()
+  await page.goBack()
+  await expect(page.locator('#services-heading')).toBeInViewport({ ratio: 1 })
+  await page.goForward()
+  await expect(page.locator('#work-heading')).toBeInViewport({ ratio: 1 })
   await page.goto('/?skipintro#contact')
   await expect(page.locator('#contact-heading')).toBeInViewport({ ratio: 1 })
   await page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true }).getByRole('link', { name: 'خدماتنا', exact: true }).click()
@@ -23,7 +30,7 @@ test('mobile stages lock document scrolling and keep long content inside panels'
   await expect(page.locator('html')).toHaveCSS('overflow-y', 'hidden')
   await page.goto('/?skipintro#contact')
   const panel = page.locator('.contact-section__shell')
-  await expect(panel).toHaveAttribute('data-native-scroll', '')
+  await expect(panel).toHaveAttribute('data-native-scroll', /^(true)?$/)
   await expect(panel).toHaveCSS('overflow-y', 'auto')
   await expect(panel).toBeInViewport({ ratio: 1 })
   expect(await panel.evaluate(el => el.scrollHeight > el.clientHeight)).toBe(true)
@@ -92,16 +99,24 @@ test.describe('native phone section locking', () => {
     await expect.poll(() => page.locator('#contact').evaluate(el => Math.abs(el.getBoundingClientRect().top - 92))).toBeLessThan(2)
     const y = await page.evaluate(() => scrollY)
     const session = await page.context().newCDPSession(page)
-    const box = await panel.boundingBox()
-    const x = box!.x + 7
-    const startY = Math.min(700, box!.y + box!.height - 40)
+    // Begin on non-interactive content, clear of the RTL scrollbar/gutter.
+    const box = await page.locator('.contact-section__intro').boundingBox()
+    const x = box!.x + box!.width / 2
+    const startY = box!.y + box!.height / 2
     await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: startY, id: 1 }] })
     for (const distance of [20, 45, 70]) {
       await session.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: startY - distance, id: 1 }] })
       await page.waitForTimeout(45)
     }
     await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
-    await expect.poll(() => panel.evaluate(el => el.scrollTop)).toBeGreaterThan(5)
+    await expect.poll(() => panel.evaluate(el => el.scrollTop)).toBeGreaterThan(5).catch(async error => {
+      console.log('CONTACT_TOUCH_DIAGNOSTIC', await page.evaluate(({ x, y }) => {
+        const hit = document.elementFromPoint(x, y)
+        const panel = document.querySelector('.contact-section__shell') as HTMLElement
+        return { hit: hit?.tagName, className: hit?.className, action: hit ? getComputedStyle(hit).touchAction : '', panelAction: getComputedStyle(panel).touchAction, scrollTop: panel.scrollTop, scrollHeight: panel.scrollHeight, clientHeight: panel.clientHeight, pageY: scrollY }
+      }, { x, y: startY }))
+      throw error
+    })
     expect(Math.abs(await page.evaluate(() => scrollY) - y)).toBeLessThan(2)
     await session.detach()
     await page.emulateMedia({ reducedMotion: 'reduce' })

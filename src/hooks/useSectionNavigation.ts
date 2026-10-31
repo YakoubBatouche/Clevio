@@ -39,6 +39,18 @@ export function useSectionNavigation() {
       const section = document.getElementById(initialId)
       if (section) window.scrollTo({ top: sectionScrollTop(section), behavior: 'auto' })
     }
+    function onHistoryNavigation() {
+      initialInterrupted = true
+      window.cancelAnimationFrame(frame)
+      frame = 0
+      if (window.history.scrollRestoration !== 'manual') return
+      // Reloaded documents retain manual restoration, so history traversal must
+      // align the existing fragment without creating another history entry.
+      const id = window.location.hash.slice(1) || 'home'
+      if (!sectionIds.has(id)) return
+      const section = document.getElementById(id)
+      if (section) window.scrollTo({ top: sectionScrollTop(section), behavior: 'instant' })
+    }
     function onAnchorClick(event: MouseEvent) {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
       const anchor = event.target instanceof Element ? event.target.closest('a') : null
@@ -57,6 +69,8 @@ export function useSectionNavigation() {
       })
     }
     document.addEventListener('click', onAnchorClick)
+    window.addEventListener('popstate', onHistoryNavigation)
+    window.addEventListener('hashchange', onHistoryNavigation)
     window.addEventListener('wheel', interruptInitialAlignment, { passive: true })
     window.addEventListener('pointerdown', interruptInitialAlignment, { passive: true })
     window.addEventListener('keydown', interruptInitialAlignment)
@@ -67,6 +81,8 @@ export function useSectionNavigation() {
     return () => {
       disposed = true
       document.removeEventListener('click', onAnchorClick)
+      window.removeEventListener('popstate', onHistoryNavigation)
+      window.removeEventListener('hashchange', onHistoryNavigation)
       window.removeEventListener('wheel', interruptInitialAlignment)
       window.removeEventListener('pointerdown', interruptInitialAlignment)
       window.removeEventListener('keydown', interruptInitialAlignment)
