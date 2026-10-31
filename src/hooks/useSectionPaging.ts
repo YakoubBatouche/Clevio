@@ -269,7 +269,13 @@ export function useSectionPaging() {
       scheduleSettle()
     }
     function onResize() {
-      const index = tweenIndex ?? closestIndex()
+      const focused = document.activeElement
+      const focusedStage = focused instanceof Element && focused.matches('input, textarea, select, [contenteditable="true"]')
+        ? focused.closest(stageSelector) : null
+      const focusIndex = sections().findIndex((item) => item.element === focusedStage)
+      // Layout has already changed when resize fires; the old scroll offset
+      // cannot identify the stage. Preserve its last committed identity instead.
+      const index = focusIndex >= 0 ? focusIndex : tweenIndex ?? activeIndex
       cancel()
       window.cancelAnimationFrame(resizeFrame)
       if (touch.matches) resizeFrame = window.requestAnimationFrame(() => {
