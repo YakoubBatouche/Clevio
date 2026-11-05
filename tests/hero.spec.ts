@@ -484,7 +484,7 @@ test('fixed glass navigation keeps section headings clear and groups work above 
   await expect(page).toHaveURL(/#work$/)
   await expect(page.locator('#work-heading')).toBeInViewport()
   await expect(page.locator('#partners .work-showcase__card')).toHaveCount(8)
-  await expect(page.locator('.work-showcase__card button, .work-showcase__card a')).toHaveCount(0)
+  await expect(page.locator('.work-showcase__card button[aria-haspopup="dialog"]')).toHaveCount(8)
   expect(await page.locator('#work-heading').evaluate((element) => element.getBoundingClientRect().top)).toBeGreaterThan(headerBottom)
   const lastCard = await page.locator('.work-showcase__card').last().boundingBox()
   const partnersTitle = await page.locator('#partners-heading').boundingBox()

@@ -1,6 +1,8 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
+import { ArrowUpLeft } from 'lucide-react'
 import { useWorkCardTilt } from '../hooks/useWorkCardTilt'
-import { services } from '../content/site'
+import { portfolioCategories } from '../content/portfolio'
+import { PortfolioSheet } from './PortfolioSheet'
 
 const partnerMarks = [
   <g key="orbit-petals" fill="none" stroke="currentColor" strokeWidth="2.4">
@@ -42,6 +44,7 @@ const workVisuals = ['brand-identity.webp', 'digital-experience.webp', 'digital-
 
 function WorkShowcase() {
   const root = useRef<HTMLDivElement>(null)
+  const [selection, setSelection] = useState<{ category: string; trigger: HTMLButtonElement } | null>(null)
   useWorkCardTilt(root)
   return <div ref={root} id="work" className="work-showcase" role="group" tabIndex={-1} aria-labelledby="work-heading">
     <div className="work-showcase__header">
@@ -49,17 +52,22 @@ function WorkShowcase() {
       <p className="work-showcase__intro">أفكار تأخذ شكلها.<br />وتجارب تترك أثرها.</p>
     </div>
     <div className="work-showcase__grid">
-      {services.map((category, index) => <article className={'work-showcase__card work-showcase__card--' + index} key={category}>
+      {portfolioCategories.map((category, index) => <article className={'work-showcase__card work-showcase__card--' + index} key={category.id}>
         <div className="work-showcase__visual" aria-hidden="true">
           <img src={import.meta.env.BASE_URL + 'work/' + workVisuals[index]} alt="" loading="lazy" decoding="async" width="1122" height="941" />
           <span className="work-showcase__glass" />
           <span className="work-showcase__orbit" />
         </div>
         <span className="work-showcase__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-        <h3>{category}</h3>
+        <h3 id={'work-card-' + category.id}>{category.title}</h3>
+        <button type="button" className="work-showcase__trigger" aria-haspopup="dialog" aria-controls="portfolio-sheet"
+          aria-labelledby={'work-card-' + category.id} onClick={(event) => setSelection({ category: category.id, trigger: event.currentTarget })}>
+          <span className="work-showcase__open" aria-hidden="true"><ArrowUpLeft /></span>
+        </button>
       </article>)}
     </div>
     <p className="work-showcase__note">نماذج بصرية توضيحية</p>
+    <PortfolioSheet category={selection?.category ?? null} trigger={selection?.trigger} onClose={() => setSelection(null)} />
   </div>
 }
 

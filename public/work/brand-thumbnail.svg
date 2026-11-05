@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+  <defs>
+    <radialGradient id="background" cx="25%" cy="56%" r="88%">
+      <stop stop-color="#432780"/>
+      <stop offset=".53" stop-color="#21133b"/>
+      <stop offset="1" stop-color="#0f0a1c"/>
+    </radialGradient>
+    <linearGradient id="symbol" x1="0" y1="1" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop stop-color="#5533ad"/>
+      <stop offset=".48" stop-color="#aa80fc"/>
+      <stop offset="1" stop-color="#f6eaff"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+    <path id="mark" fill-rule="evenodd" d="M411 238c33 128 114 209 242 242-128 33-209 114-242 242-33-128-114-209-242-242 128-33 209-114 242-242Zm0 124c-21 57-61 97-118 118 57 21 97 61 118 118 21-57 61-97 118-118-57-21-97-61-118-118Z"/>
+  </defs>
+
+  <path fill="url(#background)" d="M0 0h1378v996H0z"/>
+  <path d="M81 78h1216v840H81z" fill="none" stroke="#a99ada" stroke-opacity=".48" stroke-width="2"/>
+  <path d="M81 156h1216M81 822h1216" fill="none" stroke="#a99ada" stroke-opacity=".28" stroke-width="2"/>
+  <g fill="none" stroke="#bfabfc" stroke-opacity=".43" stroke-width="2">
+    <circle cx="411" cy="480" r="288"/>
+    <circle cx="411" cy="480" r="200" stroke-dasharray="6 14"/>
+    <path d="M111 480h600M411 180v600" stroke-opacity=".23"/>
+  </g>
+  <circle cx="672" cy="360" r="5" fill="#d6ff57"/>
+  <circle cx="197" cy="673" r="5" fill="#d6ff57"/>
+  <use href="#mark" fill="#9a64ff" opacity=".6" filter="url(#glow)"/>
+  <use href="#mark" fill="url(#symbol)" stroke="#dbbfff" stroke-width="2"/>
+  <path d="M411 239c-33 128-114 209-242 242 117-4 185-43 242-119Z" fill="#e9d9ff" opacity=".62"/>
+
+  <g font-family="Arial, sans-serif">
+    <circle cx="114" cy="118" r="5" fill="#d6ff57"/>
+    <text x="137" y="125" fill="#e1d6fb" font-size="19" font-weight="700" letter-spacing="4">STUDIO NOTES</text>
+    <text x="1260" y="125" text-anchor="end" fill="#e1d6fb" font-size="19" font-weight="700" letter-spacing="3">01 / 03</text>
+    <text x="1247" y="356" direction="rtl" fill="#d6ff57" font-size="28" font-weight="700">دراسة بصرية</text>
+    <text x="1255" y="479" direction="rtl" fill="#f6efff" font-size="112" font-weight="700">تفاصيل</text>
+    <text x="1255" y="602" direction="rtl" fill="#c6a9ff" font-size="112" font-weight="700">الهوية</text>
+    <text x="1247" y="675" direction="rtl" fill="#e1d6fb" font-size="28">الرمز واللون والتكوين</text>
+    <text x="113" y="880" fill="#e1d6fb" font-size="17" letter-spacing="3">IDENTITY IN FOCUS</text>
+    <path d="M1220 869h41m-13-13 13 13-13 13" fill="none" stroke="#d6ff57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

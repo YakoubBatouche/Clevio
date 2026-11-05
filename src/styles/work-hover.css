@@ -1,5 +1,15 @@
 /* Decorative hover responds inside the card, leaving its section-reveal transform free. */
-.work-showcase__card { cursor: default; transition: border-color 260ms ease, box-shadow 300ms ease; }
+.work-showcase__card { transition: border-color 260ms ease, box-shadow 300ms ease; }
+.work-showcase__trigger { position: absolute; inset: 0; z-index: 3; padding: 0; border-radius: inherit; background: transparent; touch-action: pan-x pinch-zoom; }
+.work-showcase__trigger:focus-visible { outline-color: var(--cyan); outline-offset: -3px; }
+.work-showcase__open {
+  position: absolute; inset-block-start: clamp(5px, 1.2svh, 12px); inset-inline-start: clamp(5px, 1vw, 12px);
+  display: grid; place-items: center; width: clamp(21px, 2.8vw, 34px); aspect-ratio: 1;
+  color: var(--cyan); background: rgb(3 17 43 / 82%); border: 1px solid rgb(122 244 252 / 40%);
+  border-radius: 50%; transition: background-color 240ms ease, color 240ms ease;
+}
+.work-showcase__open svg { width: 55%; height: 55%; stroke-width: 1.75; }
+.work-showcase__trigger:is(:hover, :focus-visible) .work-showcase__open { background: var(--cyan); color: var(--navy); }
 .work-showcase__visual { transition: transform 650ms cubic-bezier(.22,1,.36,1); }
 .work-showcase__glass { transition: transform 700ms cubic-bezier(.22,1,.36,1); }
 .work-showcase__card h3 { z-index: 2; transition: transform 300ms ease, color 300ms ease; }

@@ -42,3 +42,5 @@ import './styles/work-scene-fit.css'
 import './styles/hero-framing.css'
 
 import './styles/section-scenes.css'
+
+import './styles/portfolio-sheet.css'
