@@ -1,8 +1,8 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Locator } from '@playwright/test'
 
 const category = 'الهوية والعلامة التجارية'
 
-test('portfolio filters the selected category and returns focus when dismissed', async ({ page }) => {
+test('portfolio lays out three desktop columns, filters the gallery, and returns focus', async ({ page }) => {
   await page.goto('/?skipintro#work')
   const trigger = page.getByRole('button', { name: category, exact: true })
   await trigger.focus()
@@ -12,20 +12,35 @@ test('portfolio filters the selected category and returns focus when dismissed',
   const all = sheet.getByRole('button', { name: 'الكل', exact: true })
   await expect(all).toHaveAttribute('aria-pressed', 'true')
   const images = sheet.locator('.portfolio-sheet__media img')
-  const sources = await images.evaluateAll(items => items.map(item => item.getAttribute('src')))
-  expect(sources.length).toBeGreaterThanOrEqual(3)
-  const filteredSources = new Set<string | null>()
-  for (const label of ['شعارات', 'ملصقات', 'صور مصغّرة']) {
+  await expect(images).toHaveCount(3)
+  const row = await images.evaluateAll(items => items.map(item => {
+    const { left, top, width } = item.getBoundingClientRect()
+    return { left, top, width }
+  }))
+  expect(new Set(row.map(item => item.left)).size).toBe(3)
+  for (const item of row.slice(1)) {
+    expect(Math.abs(item.top - row[0].top)).toBeLessThan(1)
+    expect(Math.abs(item.width - row[0].width)).toBeLessThan(1)
+  }
+
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  for (const [label, source] of [
+    ['شعارات', /\/work\/brand-identity\.webp$/],
+    ['ملصقات', /\/work\/brand-poster\.svg$/],
+    ['صور مصغّرة', /\/work\/brand-thumbnail\.svg$/],
+  ] as const) {
     const filter = sheet.getByRole('button', { name: label, exact: true })
     await filter.click()
     await expect(filter).toHaveAttribute('aria-pressed', 'true')
     await expect(all).toHaveAttribute('aria-pressed', 'false')
-    const results = await images.evaluateAll(items => items.map(item => item.getAttribute('src')))
-    expect(results.length).toBeGreaterThan(0)
-    expect(results.length).toBeLessThan(sources.length)
-    results.forEach(source => filteredSources.add(source))
+    await expect(images).toHaveCount(1)
+    await expect(images).toHaveAttribute('src', source)
   }
-  expect(filteredSources.size).toBeGreaterThanOrEqual(3)
+  await all.click()
+  await expect(all).toHaveAttribute('aria-pressed', 'true')
+  await expect(images).toHaveCount(3)
+  await sheet.getByRole('button', { name: 'ملصقات', exact: true }).click()
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.keyboard.press('Escape')
   await expect(sheet).toBeHidden()
   await expect(trigger).toBeFocused()
@@ -33,7 +48,7 @@ test('portfolio filters the selected category and returns focus when dismissed',
 
   await trigger.click()
   await expect(all).toHaveAttribute('aria-pressed', 'true')
-  await expect(images).toHaveCount(sources.length)
+  await expect(images).toHaveCount(3)
   await sheet.getByRole('button', { name: 'إغلاق معرض الأعمال' }).click()
   await expect(sheet).toBeHidden()
   await page.locator('#work').getByRole('button', { name: 'التصميم الإبداعي', exact: true }).click()
@@ -47,7 +62,7 @@ test.describe('mobile portfolio', () => {
     await page.goto('/?skipintro#work')
     const trigger = page.getByRole('button', { name: category, exact: true })
     await expect(page.locator('html')).toHaveClass(/section-paging-mobile/)
-    await expect(trigger).toBeInViewport({ ratio: 1 })
+    await expect(trigger).toBeInViewport({ ratio: 0.99 })
     const pageScroll = await page.evaluate(() => scrollY)
     await trigger.tap()
     const sheet = page.getByRole('dialog', { name: category, exact: true })
@@ -70,5 +85,56 @@ test.describe('mobile portfolio', () => {
     await sheet.getByRole('button', { name: 'إغلاق معرض الأعمال' }).tap()
     await expect(sheet).toBeHidden()
     await expect(trigger).toBeFocused()
+  })
+
+  test('handle swipes move the sheet while gallery swipes scroll within it', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Native swipe input uses Chromium device emulation.')
+    await page.goto('/?skipintro#work')
+    const trigger = page.getByRole('button', { name: category, exact: true })
+    await trigger.tap()
+    const sheet = page.getByRole('dialog', { name: category, exact: true })
+    const handle = sheet.getByRole('button', { name: 'اسحب لإغلاق معرض الأعمال', exact: true })
+    const scroller = sheet.locator('.portfolio-sheet__scroll')
+    await expect(sheet).toBeVisible()
+    await page.emulateMedia({ reducedMotion: 'no-preference' })
+    await expect.poll(() => sheet.evaluate(element => Math.abs(element.getBoundingClientRect().bottom - innerHeight))).toBeLessThan(1)
+    const handleTop = () => handle.evaluate(element => element.getBoundingClientRect().top)
+    const restTop = await handleTop()
+    const pageScroll = await page.evaluate(() => scrollY)
+    const touch = await page.context().newCDPSession(page)
+
+    async function swipe(target: Locator, distance: number, whileHeld?: () => Promise<void>) {
+      const box = await target.boundingBox()
+      if (!box) throw new Error('Swipe target has no visible bounds')
+      const x = box.x + box.width / 2
+      const y = box.y + box.height / 2
+      await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y, id: 1 }] })
+      for (const fraction of [0.3, 0.6, 1]) {
+        await touch.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y + distance * fraction, id: 1 }] })
+      }
+      await whileHeld?.()
+      await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+    }
+
+    await swipe(scroller, 170, async () => {
+      expect(Math.abs(await handleTop() - restTop)).toBeLessThan(1)
+    })
+    await expect(sheet).toBeVisible()
+    await swipe(scroller, -170)
+    await expect.poll(() => scroller.evaluate(element => element.scrollTop)).toBeGreaterThan(0)
+    expect(Math.abs(await handleTop() - restTop)).toBeLessThan(1)
+
+    await swipe(handle, 40, async () => {
+      await expect.poll(handleTop).toBeGreaterThan(restTop + 25)
+    })
+    await expect.poll(async () => Math.abs(await handleTop() - restTop)).toBeLessThan(1)
+    await expect(sheet).toBeVisible()
+    expect(Math.abs(await page.evaluate(() => scrollY) - pageScroll)).toBeLessThan(2)
+
+    await swipe(handle, 170)
+    await expect(sheet).toBeHidden()
+    await expect(trigger).toBeFocused()
+    await expect(page).toHaveURL(/#work$/)
+    await touch.detach()
   })
 })

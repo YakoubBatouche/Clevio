@@ -1,9 +1,18 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState, type PointerEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { portfolioCategories } from '../content/portfolio'
 
 const allFilter = { id: 'all', label: 'الكل' }
+const gripClickSlop = 6
+
+type GripDrag = {
+  pointerId: number
+  handle: HTMLButtonElement
+  startX: number
+  startY: number
+  moved: boolean
+}
 
 export function PortfolioSheet({ category, trigger, onClose }: {
   category: string | null
@@ -14,11 +23,14 @@ export function PortfolioSheet({ category, trigger, onClose }: {
   const filtersRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const backdropPressed = useRef(false)
+  const gripDrag = useRef<GripDrag | null>(null)
+  const suppressGripClick = useRef(false)
   const requested = portfolioCategories.find((entry) => entry.id === category)
   const [selection, setSelection] = useState({
     requested,
     displayed: requested,
     filterId: allFilter.id,
+    filterMotion: false,
   })
 
   if (selection.requested !== requested) {
@@ -27,6 +39,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
       requested,
       displayed: requested ?? selection.displayed,
       filterId: requested ? allFilter.id : selection.filterId,
+      filterMotion: !requested && selection.filterMotion,
     })
   }
 
@@ -42,7 +55,15 @@ export function PortfolioSheet({ category, trigger, onClose }: {
     scrollRef.current?.scrollTo(0, 0)
 
     return () => {
+      const drag = gripDrag.current
+      gripDrag.current = null
+      if (drag) {
+        suppressGripClick.current = true
+        if (drag.handle.hasPointerCapture(drag.pointerId)) drag.handle.releasePointerCapture(drag.pointerId)
+      }
+      dialog.removeAttribute('data-dragging')
       if (dialog.open) dialog.close()
+      dialog.style.removeProperty('--sheet-drag-y')
       document.body.style.overflow = previousOverflow
       if (returnFocus instanceof HTMLElement && returnFocus.isConnected && document.activeElement !== returnFocus) {
         returnFocus.focus({ preventScroll: true })
@@ -50,7 +71,52 @@ export function PortfolioSheet({ category, trigger, onClose }: {
     }
   }, [requested, trigger])
 
-  const { displayed, filterId } = selection
+  function startGripDrag(event: PointerEvent<HTMLButtonElement>) {
+    if (!event.isPrimary || event.button !== 0 || gripDrag.current) return
+
+    suppressGripClick.current = false
+    gripDrag.current = {
+      pointerId: event.pointerId,
+      handle: event.currentTarget,
+      startX: event.clientX,
+      startY: event.clientY,
+      moved: false,
+    }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  function moveGripDrag(event: PointerEvent<HTMLButtonElement>) {
+    const dialog = dialogRef.current
+    const drag = gripDrag.current
+    if (!dialog || !drag || drag.pointerId !== event.pointerId) return
+
+    const offset = event.clientY - drag.startY
+    if (!drag.moved && Math.hypot(event.clientX - drag.startX, offset) <= gripClickSlop) return
+
+    drag.moved = true
+    dialog.setAttribute('data-dragging', '')
+    dialog.style.setProperty('--sheet-drag-y', `${Math.max(0, offset)}px`)
+  }
+
+  function endGripDrag(event: PointerEvent<HTMLButtonElement>, canceled = false) {
+    const dialog = dialogRef.current
+    const drag = gripDrag.current
+    if (!dialog || !drag || drag.pointerId !== event.pointerId) return
+
+    const offset = event.clientY - drag.startY
+    gripDrag.current = null
+    suppressGripClick.current = canceled || drag.moved || Math.hypot(event.clientX - drag.startX, offset) > gripClickSlop
+    dialog.removeAttribute('data-dragging')
+
+    const dismissDistance = Math.max(72, Math.min(120, dialog.offsetHeight * 0.2))
+    if (!canceled && offset >= dismissDistance) {
+      onClose()
+    } else {
+      dialog.style.removeProperty('--sheet-drag-y')
+    }
+  }
+
+  const { displayed, filterId, filterMotion } = selection
   const items = displayed?.items.filter((item) => filterId === allFilter.id || item.filterId === filterId) ?? []
 
   return createPortal(
@@ -78,7 +144,19 @@ export function PortfolioSheet({ category, trigger, onClose }: {
       {displayed && (
         <div className="portfolio-sheet__panel">
           <div className="portfolio-sheet__chrome">
-            <div className="portfolio-sheet__grip" aria-hidden="true" />
+            <button
+              className="portfolio-sheet__grip"
+              type="button"
+              aria-label="اسحب لإغلاق معرض الأعمال"
+              onPointerDown={startGripDrag}
+              onPointerMove={moveGripDrag}
+              onPointerUp={endGripDrag}
+              onPointerCancel={(event) => endGripDrag(event, true)}
+              onLostPointerCapture={(event) => endGripDrag(event, true)}
+              onClick={(event) => {
+                if (event.detail === 0 || !suppressGripClick.current) onClose()
+              }}
+            />
             <header className="portfolio-sheet__header">
               <div>
                 <p className="portfolio-sheet__eyebrow">معرض الأعمال</p>
@@ -99,7 +177,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
                   aria-pressed={filterId === filter.id}
                   onClick={() => {
                     if (filter.id === filterId) return
-                    setSelection({ ...selection, filterId: filter.id })
+                    setSelection({ ...selection, filterId: filter.id, filterMotion: true })
                     scrollRef.current?.scrollTo(0, 0)
                   }}
                 >
@@ -118,7 +196,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
             tabIndex={0}
           >
             {items.length ? (
-              <ul className="portfolio-sheet__grid" role="list">
+              <ul key={filterId} className="portfolio-sheet__grid" role="list" data-filter-motion={filterMotion || undefined}>
                 {items.map((item) => (
                   <li key={item.id} className="portfolio-sheet__card">
                     <div className="portfolio-sheet__media">
@@ -138,7 +216,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
                 ))}
               </ul>
             ) : (
-              <p className="portfolio-sheet__empty">لا توجد أعمال في هذا التصنيف حاليًا.</p>
+              <p key={filterId} className="portfolio-sheet__empty" data-filter-motion={filterMotion || undefined}>لا توجد أعمال في هذا التصنيف حاليًا.</p>
             )}
           </div>
         </div>

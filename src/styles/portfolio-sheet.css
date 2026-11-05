@@ -1,11 +1,13 @@
 .portfolio-sheet {
   --sheet-accent: var(--cyan, #7af4fc);
   --sheet-gutter: clamp(20px, 4vw, 48px);
-  --sheet-duration: 460ms;
-  --sheet-ease: cubic-bezier(.22, .85, .3, 1);
+  --sheet-enter: 540ms;
+  --sheet-exit: 350ms;
+  --sheet-ease-out: cubic-bezier(.18, .8, .22, 1);
+  --sheet-ease-in: cubic-bezier(.44, 0, .66, 1);
   position: fixed;
   inset: auto 0 0;
-  width: min(1120px, calc(100% - 48px));
+  width: min(1440px, calc(100% - 48px));
   height: min(88vh, 920px);
   height: min(88dvh, 920px);
   max-width: none;
@@ -22,6 +24,8 @@
   box-shadow: 0 -16px 96px rgb(0 0 0 / 43%), inset 0 1px rgb(223 246 255 / 9%);
   color: #f3f8ff;
   text-align: start;
+  transform-origin: 50% 100%;
+  translate: 0 var(--sheet-drag-y, 0px);
 }
 
 .portfolio-sheet::backdrop {
@@ -39,14 +43,38 @@
 .portfolio-sheet__chrome {
   padding: 12px var(--sheet-gutter) 12px;
   border-bottom: 1px solid rgb(174 213 250 / 12%);
+  background: linear-gradient(90deg, transparent, rgb(122 244 252 / 38%), transparent)
+    center top / min(52%, 640px) 1px no-repeat;
 }
 
 .portfolio-sheet__grip {
-  width: 44px;
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 32px;
+  margin: -6px auto 9px;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+
+.portfolio-sheet__grip::before {
+  width: 46px;
   height: 4px;
-  margin: 0 auto 20px;
   border-radius: 999px;
   background: rgb(199 228 253 / 39%);
+  content: '';
+}
+
+.portfolio-sheet[data-dragging] .portfolio-sheet__grip {
+  cursor: grabbing;
+}
+
+.portfolio-sheet[data-dragging] .portfolio-sheet__grip::before,
+.portfolio-sheet__grip:focus-visible::before {
+  background: var(--sheet-accent);
 }
 
 .portfolio-sheet__header {
@@ -141,6 +169,7 @@
   box-shadow: 0 2px 14px rgb(122 244 252 / 17%);
 }
 
+.portfolio-sheet__grip:focus-visible,
 .portfolio-sheet__close:focus-visible,
 .portfolio-sheet__filter:focus-visible {
   outline: 2px solid var(--sheet-accent);
@@ -163,7 +192,7 @@
 
 .portfolio-sheet__grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(12px, 2.15vw, 24px);
   margin: 0;
   padding: 0;
@@ -221,11 +250,21 @@
 }
 
 @media (hover: hover) {
+  .portfolio-sheet__grip:hover::before {
+    background: var(--sheet-accent);
+  }
+
   .portfolio-sheet__close:hover,
   .portfolio-sheet__filter:not([aria-pressed='true']):hover {
     border-color: rgb(122 244 252 / 56%);
     background: rgb(122 244 252 / 12%);
     color: var(--sheet-accent);
+  }
+}
+
+@media (max-width: 1023px) {
+  .portfolio-sheet__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -239,7 +278,7 @@
   }
 
   .portfolio-sheet__grip {
-    margin-bottom: 15px;
+    margin-bottom: 4px;
   }
 
   .portfolio-sheet__grid {
@@ -262,7 +301,7 @@
   }
 
   .portfolio-sheet__grip {
-    margin-bottom: 8px;
+    margin-bottom: -2px;
   }
 
   .portfolio-sheet .portfolio-sheet__title {
@@ -276,38 +315,91 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .portfolio-sheet[open] {
-    animation: portfolio-sheet-enter var(--sheet-duration) var(--sheet-ease) both;
+    animation: portfolio-sheet-enter var(--sheet-enter) var(--sheet-ease-out) both;
+    transition: translate 400ms var(--sheet-ease-out);
   }
 
   .portfolio-sheet[open]::backdrop {
-    animation: portfolio-sheet-fade 240ms ease both;
+    animation: portfolio-sheet-fade 300ms ease-out both;
+  }
+
+  .portfolio-sheet[open] .portfolio-sheet__header {
+    --sheet-reveal-y: 10px;
+    animation: portfolio-sheet-reveal 420ms var(--sheet-ease-out) 70ms backwards;
+  }
+
+  .portfolio-sheet[open] .portfolio-sheet__filters {
+    --sheet-reveal-y: 10px;
+    animation: portfolio-sheet-reveal 420ms var(--sheet-ease-out) 95ms backwards;
+  }
+
+  .portfolio-sheet[open] .portfolio-sheet__scroll {
+    --sheet-reveal-y: 18px;
+    animation: portfolio-sheet-reveal 440ms var(--sheet-ease-out) 115ms backwards;
+  }
+
+  .portfolio-sheet__grip::before {
+    transition: background-color 160ms ease-out;
+  }
+
+  .portfolio-sheet__close,
+  .portfolio-sheet__filter {
+    transition: background-color 160ms ease-out, border-color 160ms ease-out,
+      color 160ms ease-out, box-shadow 160ms ease-out;
+  }
+
+  .portfolio-sheet__grid[data-filter-motion] > .portfolio-sheet__card,
+  .portfolio-sheet__empty[data-filter-motion] {
+    --sheet-reveal-y: 12px;
+    animation: portfolio-sheet-reveal 310ms var(--sheet-ease-out) var(--sheet-card-delay, 0ms) backwards;
+  }
+
+  .portfolio-sheet__grid[data-filter-motion] > .portfolio-sheet__card:nth-child(2) { --sheet-card-delay: 22ms; }
+  .portfolio-sheet__grid[data-filter-motion] > .portfolio-sheet__card:nth-child(3) { --sheet-card-delay: 44ms; }
+  .portfolio-sheet__grid[data-filter-motion] > .portfolio-sheet__card:nth-child(4) { --sheet-card-delay: 66ms; }
+  .portfolio-sheet__grid[data-filter-motion] > .portfolio-sheet__card:nth-child(5) { --sheet-card-delay: 88ms; }
+  .portfolio-sheet__grid[data-filter-motion] > .portfolio-sheet__card:nth-child(n + 6) { --sheet-card-delay: 110ms; }
+
+  .portfolio-sheet[open][data-dragging] {
+    animation: none;
+    transition: none;
   }
 
   @supports (transition-behavior: allow-discrete) {
     .portfolio-sheet {
-      transform: translateY(100%);
-      transition: transform var(--sheet-duration) var(--sheet-ease),
-        display var(--sheet-duration) allow-discrete, overlay var(--sheet-duration) allow-discrete;
+      transform: translateY(100%) scale(.97);
+      transition: transform var(--sheet-exit) var(--sheet-ease-in),
+        translate var(--sheet-exit) var(--sheet-ease-in),
+        display var(--sheet-exit) allow-discrete, overlay var(--sheet-exit) allow-discrete;
     }
 
     .portfolio-sheet[open] {
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
       animation: none;
+    }
+
+    .portfolio-sheet[open]:not([data-dragging]) {
+      transition: transform var(--sheet-enter) var(--sheet-ease-out),
+        translate 400ms var(--sheet-ease-out),
+        display var(--sheet-enter) allow-discrete, overlay var(--sheet-enter) allow-discrete;
     }
 
     .portfolio-sheet::backdrop {
       opacity: 0;
-      transition: opacity 240ms ease, display 240ms allow-discrete, overlay 240ms allow-discrete;
+      transition: opacity var(--sheet-exit) ease-in,
+        display var(--sheet-exit) allow-discrete, overlay var(--sheet-exit) allow-discrete;
     }
 
     .portfolio-sheet[open]::backdrop {
       opacity: 1;
       animation: none;
+      transition-duration: 300ms;
+      transition-timing-function: ease-out;
     }
 
     @starting-style {
       .portfolio-sheet[open] {
-        transform: translateY(100%);
+        transform: translateY(100%) scale(.97);
       }
 
       .portfolio-sheet[open]::backdrop {
@@ -318,11 +410,16 @@
 }
 
 @keyframes portfolio-sheet-enter {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from { transform: translateY(100%) scale(.97); }
+  to { transform: translateY(0) scale(1); }
 }
 
 @keyframes portfolio-sheet-fade {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes portfolio-sheet-reveal {
+  from { opacity: 0; translate: 0 var(--sheet-reveal-y); }
+  to { opacity: 1; translate: 0 0; }
 }
