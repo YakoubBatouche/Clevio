@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<path d="M0 0h1378v996H0z" fill="#ede5d1"/>
+  <path d="M0 0h447v996H0z" fill="#1c1c18"/>
+  <path d="M447 332h931v332H447z" fill="#2949d0"/>
+  <path d="M757 0h311v332H757zM1068 664h310v332h-310z" fill="#db3c30"/>
+  <path d="M447 0h310v332H447zM757 664h311v332H757z" fill="#ffbe36"/>
+  <path d="M447 332a310 332 0 0 1 310-332v332z" fill="#1c1c18"/>
+  <path d="M1068 0a310 332 0 0 1 310 332h-310z" fill="#1c1c18"/>
+  <path d="M447 664a310 332 0 0 0 310 332V664z" fill="#1c1c18"/>
+  <path d="M1068 664h310a310 332 0 0 1-310 332z" fill="#1c1c18"/>
+  <path d="M447 664V332h931v332z" fill="none" stroke="#1c1c18" stroke-width="4"/>
+  <g fill="#ede5d1" font-family="Arial, sans-serif">
+    <text x="62" y="114" font-size="22" font-weight="700" letter-spacing="7">POSTER STUDY</text>
+    <text x="47" y="419" font-size="124" font-weight="900" letter-spacing="-8">MOD</text>
+    <text x="47" y="524" font-size="124" font-weight="900" letter-spacing="-8">ULAR</text>
+    <path d="M61 575h322" stroke="#ede5d1" stroke-width="2"/>
+    <text x="61" y="632" font-size="25" letter-spacing="4">SPACE IN PIECES</text>
+    <text x="61" y="918" font-size="23" letter-spacing="7">04 / 06</text>
+    <text x="902" y="568" text-anchor="middle" font-size="176" font-weight="900" letter-spacing="-17">03×03</text>
+  </g>
+</svg>

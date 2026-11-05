@@ -12,8 +12,11 @@ test('portfolio lays out three desktop columns, filters the gallery, and returns
   const all = sheet.getByRole('button', { name: 'الكل', exact: true })
   await expect(all).toHaveAttribute('aria-pressed', 'true')
   const images = sheet.locator('.portfolio-sheet__media img')
-  await expect(images).toHaveCount(3)
-  const row = await images.evaluateAll(items => items.map(item => {
+  const imageCount = await images.count()
+  expect(imageCount).toBeGreaterThanOrEqual(15)
+  const allSources = await images.evaluateAll(items => items.map(item => item.getAttribute('src')))
+  expect(new Set(allSources).size).toBe(imageCount)
+  const row = await images.evaluateAll(items => items.slice(0, 3).map(item => {
     const { left, top, width } = item.getBoundingClientRect()
     return { left, top, width }
   }))
@@ -33,12 +36,14 @@ test('portfolio lays out three desktop columns, filters the gallery, and returns
     await filter.click()
     await expect(filter).toHaveAttribute('aria-pressed', 'true')
     await expect(all).toHaveAttribute('aria-pressed', 'false')
-    await expect(images).toHaveCount(1)
-    await expect(images).toHaveAttribute('src', source)
+    const filtered = await images.evaluateAll(items => items.map(item => item.getAttribute('src')))
+    expect(filtered.length).toBeGreaterThan(1)
+    expect(filtered.length).toBeLessThan(imageCount)
+    expect(filtered.some(path => path && source.test(path))).toBe(true)
   }
   await all.click()
   await expect(all).toHaveAttribute('aria-pressed', 'true')
-  await expect(images).toHaveCount(3)
+  await expect(images).toHaveCount(imageCount)
   await sheet.getByRole('button', { name: 'ملصقات', exact: true }).click()
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.keyboard.press('Escape')
@@ -48,11 +53,55 @@ test('portfolio lays out three desktop columns, filters the gallery, and returns
 
   await trigger.click()
   await expect(all).toHaveAttribute('aria-pressed', 'true')
-  await expect(images).toHaveCount(3)
+  await expect(images).toHaveCount(imageCount)
   await sheet.getByRole('button', { name: 'إغلاق معرض الأعمال', exact: true }).click()
   await expect(sheet).toBeHidden()
   await page.locator('#work').getByRole('button', { name: 'التصميم الإبداعي', exact: true }).click()
   await expect(page.getByRole('dialog', { name: 'التصميم الإبداعي', exact: true })).toBeVisible()
+})
+
+test('the first gallery scroll expands the sheet while the final image stays reachable', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 })
+  await page.goto('/?skipintro#work')
+  await page.getByRole('button', { name: category, exact: true }).click()
+  const sheet = page.getByRole('dialog', { name: category, exact: true })
+  const scroller = sheet.locator('.portfolio-sheet__scroll')
+  const top = () => sheet.evaluate(element => element.getBoundingClientRect().top)
+  await expect(sheet).toBeVisible()
+  const initialTop = await top()
+  const pageScroll = await page.evaluate(() => scrollY)
+  const box = await scroller.boundingBox()
+  await page.mouse.move(box!.x + box!.width / 2, box!.y + 72)
+  await page.mouse.wheel(0, 100)
+  await expect(sheet).toHaveAttribute('data-expanded', /^(true)?$/)
+  await expect.poll(top).toBeLessThan(initialTop - 24)
+  const navbarBottom = await page.locator('.site-header').evaluate(element => element.getBoundingClientRect().bottom)
+  expect(Math.abs(await top() - navbarBottom)).toBeLessThan(38)
+
+  await page.mouse.wheel(0, 6000)
+  const finalImage = scroller.locator('.portfolio-sheet__media').last()
+  await expect(finalImage).toBeInViewport()
+  expect(Math.abs(await page.evaluate(() => scrollY) - pageScroll)).toBeLessThan(2)
+  await expect(sheet.getByRole('button', { name: 'الكل', exact: true })).toBeInViewport()
+
+  await page.mouse.wheel(0, -6000)
+  await expect.poll(() => scroller.evaluate(element => element.scrollTop)).toBe(0)
+  const visibleRows = await scroller.evaluate(element => {
+    const { bottom } = element.getBoundingClientRect()
+    const rows = new Set(
+      Array.from(element.querySelectorAll('.portfolio-sheet__card'), card => card.getBoundingClientRect().top)
+        .filter(rowTop => rowTop < bottom - 24)
+        .map(Math.round),
+    )
+    return rows.size
+  })
+  expect(visibleRows).toBeGreaterThanOrEqual(3)
+
+  await page.keyboard.press('Escape')
+  await expect(sheet).toBeHidden()
+  await page.getByRole('button', { name: category, exact: true }).click()
+  await expect(sheet).not.toHaveAttribute('data-expanded')
+  await expect.poll(top).toBeGreaterThan(initialTop - 2)
 })
 
 test.describe('mobile portfolio', () => {
@@ -99,7 +148,7 @@ test.describe('mobile portfolio', () => {
     await page.emulateMedia({ reducedMotion: 'no-preference' })
     await expect.poll(() => sheet.evaluate(element => Math.abs(element.getBoundingClientRect().bottom - innerHeight))).toBeLessThan(1)
     const handleTop = () => handle.evaluate(element => element.getBoundingClientRect().top)
-    const restTop = await handleTop()
+    let restTop = await handleTop()
     const pageScroll = await page.evaluate(() => scrollY)
     const touch = await page.context().newCDPSession(page)
 
@@ -122,7 +171,10 @@ test.describe('mobile portfolio', () => {
     await expect(sheet).toBeVisible()
     await swipe(scroller, -170)
     await expect.poll(() => scroller.evaluate(element => element.scrollTop)).toBeGreaterThan(0)
-    expect(Math.abs(await handleTop() - restTop)).toBeLessThan(1)
+    await expect(sheet).toHaveAttribute('data-expanded', /^(true)?$/)
+    await expect.poll(handleTop).toBeLessThan(restTop - 24)
+    await expect.poll(() => sheet.evaluate(element => element.getAnimations().some(animation => animation.playState === 'running'))).toBe(false)
+    restTop = await handleTop()
 
     await swipe(handle, 40, async () => {
       await expect.poll(handleTop).toBeGreaterThan(restTop + 25)

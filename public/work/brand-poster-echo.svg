@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<defs>
+    <linearGradient id="ink" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#aafa59"/><stop offset="1" stop-color="#24cd9c"/>
+    </linearGradient>
+    <pattern id="ticks" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M12 9v6m-3-3h6" stroke="#70b3a0" opacity=".34"/>
+    </pattern>
+  </defs>
+  <path d="M0 0h1378v996H0z" fill="#092a28"/>
+  <rect x="45" y="45" width="1288" height="906" fill="url(#ticks)" stroke="#8bd7ae" stroke-opacity=".49"/>
+  <path d="M45 169h1288M45 826h1288" stroke="#78ba98"/>
+  <g transform="translate(704 503) skewX(-24)" fill="none" stroke="url(#ink)" stroke-width="7">
+    <ellipse rx="398" ry="235"/><ellipse rx="356" ry="211"/><ellipse rx="314" ry="187"/>
+    <ellipse rx="272" ry="163"/><ellipse rx="230" ry="139"/><ellipse rx="188" ry="115"/>
+    <ellipse rx="146" ry="91"/><ellipse rx="104" ry="67"/><ellipse rx="62" ry="43"/>
+  </g>
+  <rect x="569" y="428" width="263" height="145" fill="#092a28"/>
+  <text x="700" y="531" text-anchor="middle" fill="#dafaac" font-family="Arial, sans-serif" font-size="92" font-weight="900" letter-spacing="-6">ECHO</text>
+  <g fill="#dafaac" font-family="Arial, sans-serif" font-size="25" letter-spacing="7">
+    <text x="78" y="119">A STUDY IN SOUND</text>
+    <text x="1298" y="119" text-anchor="end">POSTER 02</text>
+    <text x="78" y="899">REPEAT / RESONATE</text>
+    <text x="1298" y="899" text-anchor="end">FORM IN MOTION</text>
+  </g>
+</svg>

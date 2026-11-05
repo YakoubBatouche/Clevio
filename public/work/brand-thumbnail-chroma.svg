@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<defs>
+    <linearGradient id="prism" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#fff8a4"/><stop offset=".42" stop-color="#ff9ce7"/><stop offset="1" stop-color="#6948ed"/>
+    </linearGradient>
+    <linearGradient id="stage" x1="0" y1="1" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop stop-color="#162c9a"/><stop offset="1" stop-color="#6544e7"/>
+    </linearGradient>
+  </defs>
+  <path d="M0 0h1378v996H0z" fill="url(#stage)"/>
+  <path d="M635 0h743v996H473z" fill="#272273" opacity=".38"/>
+  <g fill="none" stroke="#b7a7ff" stroke-opacity=".44" stroke-width="2">
+    <circle cx="1016" cy="517" r="283"/><circle cx="1016" cy="517" r="317"/>
+    <path d="M705 516h624M1016 194v643" stroke-dasharray="5 13"/>
+  </g>
+  <path d="M970 247 1260 482 1072 764 794 515Z" fill="url(#prism)"/>
+  <path d="M970 247 1032 509 794 515Z" fill="#ffe6e8"/>
+  <path d="M970 247 1260 482 1032 509Z" fill="#faf3a1"/>
+  <path d="M1032 509 1260 482 1072 764Z" fill="#f09bdc"/>
+  <path d="M794 515 1032 509 1072 764Z" fill="#7958f6"/>
+  <circle cx="1255" cy="277" r="11" fill="#fff6a0"/><circle cx="821" cy="727" r="9" fill="#fff6a0"/>
+  <g fill="#fff7fb" font-family="Arial, sans-serif">
+    <text x="91" y="118" font-size="24" font-weight="700" letter-spacing="7">DESIGN NOTES / 02</text>
+    <text x="75" y="473" font-size="136" font-weight="900" letter-spacing="-10">COLOR</text>
+    <text x="74" y="591" font-size="136" font-weight="900" letter-spacing="-10">SHIFT</text>
+    <text x="89" y="669" font-size="29" letter-spacing="6">LIGHT, IN FACETS</text>
+  </g>
+  <rect x="90" y="820" width="188" height="82" rx="41" fill="#f4eea6"/>
+  <path d="M122 846v30l24-15z" fill="#272273"/>
+  <text x="158" y="869" fill="#272273" font-family="Arial, sans-serif" font-weight="700" font-size="21" letter-spacing="2">03:24</text>
+</svg>

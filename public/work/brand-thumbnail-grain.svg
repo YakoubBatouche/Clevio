@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<defs>
+    <pattern id="specks" width="29" height="23" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="5" r="1.8" fill="#ffad97"/><circle cx="17" cy="18" r="1" fill="#ffad97"/><circle cx="25" cy="7" r="1.2" fill="#ffad97"/>
+    </pattern>
+    <pattern id="lines" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(19)">
+      <path d="M0 0v12" stroke="#37282b" stroke-width="2"/>
+    </pattern>
+    <clipPath id="circle"><circle cx="410" cy="484" r="287"/></clipPath>
+  </defs>
+  <path d="M0 0h1378v996H0z" fill="#ee634c"/>
+  <path d="M0 0h1378v996H0z" fill="url(#specks)" opacity=".65"/>
+  <circle cx="410" cy="484" r="305" fill="#40292c"/>
+  <circle cx="410" cy="484" r="287" fill="#f6d39b"/>
+  <g clip-path="url(#circle)">
+    <path d="M98 620 367 244 531 791H98z" fill="#7a4440"/>
+    <path d="M225 700 486 234 670 700Z" fill="url(#lines)"/>
+    <path d="M357 743 593 394 753 743z" fill="#432c2e"/>
+    <circle cx="580" cy="308" r="36" fill="#ef694f"/>
+  </g>
+  <g fill="#3b2429" font-family="Arial, sans-serif">
+    <text x="743" y="258" font-size="22" font-weight="700" letter-spacing="6">MATERIAL STUDIES / 03</text>
+    <text x="731" y="463" font-size="117" font-weight="900" letter-spacing="-9">GRAIN</text>
+    <text x="733" y="570" font-size="117" font-weight="900" letter-spacing="-9">LAB</text>
+    <text x="747" y="646" font-size="25" letter-spacing="4">TEXTURE IN PRINT</text>
+    <text x="86" y="894" font-size="20" letter-spacing="7">STUDY IN INK</text>
+  </g>
+  <path d="M82 79h1214v836H82z" fill="none" stroke="#562d30" stroke-width="2"/>
+  <path d="M1186 817h85v73h-85z" fill="#3b2429"/><path d="m1219 835 26 18-26 18z" fill="#f6d39b"/>
+</svg>

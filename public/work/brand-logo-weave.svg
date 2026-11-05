@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<path d="M0 0h1378v996H0z" fill="#b39d7e"/>
+  <path d="M70 70h1238v856H70z" fill="#262822"/>
+  <path d="M70 739h1238v187H70z" fill="#ded2b3"/>
+  <g transform="translate(689 383)" fill="none" stroke-width="33" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-225 0-92-133 49 8-60 117-177 0-60-117 78 21" stroke="#efe2b8"/>
+    <path d="M225 0 92 133-49-8 60-117 177 0 60 117-78-21" stroke="#c59253"/>
+    <path d="M-6-48 49 8-6 63" stroke="#262822" stroke-width="63"/>
+    <path d="M-6-48 49 8-6 63" stroke="#efe2b8"/>
+  </g>
+  <path d="M112 160h1154m-1154 448h1154" stroke="#baad8a" stroke-opacity=".65" stroke-width="2" stroke-dasharray="4 10"/>
+  <g fill="#efe2b8" font-family="Arial, sans-serif" font-size="21" letter-spacing="6">
+    <text x="110" y="128">INTERLOCKED MARK</text><text x="1267" y="128" text-anchor="end">STUDY 06</text>
+  </g>
+  <text x="110" y="860" fill="#262822" font-family="Georgia, serif" font-size="76" letter-spacing="9">Weave</text>
+  <text x="1267" y="854" fill="#262822" text-anchor="end" font-family="Arial, sans-serif" font-size="24" letter-spacing="6">PATTERN AS IDENTITY</text>
+</svg>

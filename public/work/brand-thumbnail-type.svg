@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<path d="M0 0h1378v996H0z" fill="#f0e7cf"/>
+  <path d="M0 0h1378v180H0zM0 824h1378v172H0z" fill="#201f1b"/>
+  <path d="M689 180v644M0 510h1378" fill="none" stroke="#201f1b" opacity=".41" stroke-width="2" stroke-dasharray="5 10"/>
+  <path d="M64 237h1250v522H64z" fill="none" stroke="#201f1b" stroke-width="2"/>
+  <circle cx="690" cy="497" r="236" fill="#ff582f"/>
+  <text x="255" y="651" fill="#201f1b" font-family="Georgia, serif" font-size="474" letter-spacing="-57">Aa</text>
+  <text x="811" y="648" fill="#201f1b" font-family="Arial, sans-serif" font-size="404" font-weight="900" letter-spacing="-41">Bb</text>
+  <g fill="#f0e7cf" font-family="Arial, sans-serif">
+    <text x="63" y="116" font-size="60" font-weight="900" letter-spacing="1">TYPE IN PAIRS</text>
+    <text x="1311" y="108" font-size="24" text-anchor="end" letter-spacing="6">DESIGN NOTES / 05</text>
+    <text x="63" y="920" font-size="23" letter-spacing="7">SERIF + SANS</text>
+    <text x="1311" y="920" font-size="23" text-anchor="end" letter-spacing="7">VISUAL CONTRAST</text>
+  </g>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<path d="M0 0h1378v996H0z" fill="#b9c9b2"/>
+  <path d="M235 42h911v911H235z" fill="#697b67"/>
+  <path d="M218 26h911v911H218z" fill="#f0e9d4"/>
+  <path d="M267 75h813v813H267zM267 155h813M267 799h813" fill="none" stroke="#252c26" stroke-width="2"/>
+  <text x="672" y="643" text-anchor="middle" fill="#294f42" font-family="Georgia, serif" font-size="560" font-weight="700">g</text>
+  <text x="691" y="628" text-anchor="middle" fill="#ac4339" opacity=".92" font-family="Georgia, serif" font-size="560" font-weight="700">g</text>
+  <path d="M299 695h749" stroke="#252c26" stroke-dasharray="4 10" stroke-width="2"/>
+  <g fill="#252c26" font-family="Arial, sans-serif" letter-spacing="5">
+    <text x="296" y="124" font-size="22" font-weight="700">LETTERPRESS STUDY</text><text x="1051" y="124" text-anchor="end" font-size="22">07</text>
+    <text x="296" y="756" font-size="22">OFFSET / IMPRESSION</text>
+    <text x="296" y="854" font-size="21">TWO INKS, ONE LETTER</text><text x="1051" y="854" text-anchor="end" font-size="21">01 / 01</text>
+  </g>
+</svg>

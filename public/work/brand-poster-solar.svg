@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<defs>
+    <pattern id="grain" width="18" height="18" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="8" r="1" fill="#ffa578"/><circle cx="14" cy="15" r=".8" fill="#ffd66c"/>
+    </pattern>
+    <linearGradient id="sun" x1="0" y1="1" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop stop-color="#ff8548"/><stop offset="1" stop-color="#ffd16a"/>
+    </linearGradient>
+  </defs>
+  <path d="M0 0h1378v996H0z" fill="#9c2e20"/>
+  <path d="M0 0h1378v996H0z" fill="url(#grain)" opacity=".43"/>
+  <circle cx="1002" cy="432" r="314" fill="url(#sun)"/>
+  <path d="M0 659c260-116 577-124 809-37 214 79 399 104 569 49v325H0z" fill="#421d28"/>
+  <path d="M0 750c319-156 581-140 792-65 220 77 426 117 586 49M0 782c319-156 581-140 792-65 220 77 426 117 586 49M0 814c319-156 581-140 792-65 220 77 426 117 586 49" fill="none" stroke="#ef8251" stroke-width="2" opacity=".6"/>
+  <path d="M99 107h1180" stroke="#ffca85"/>
+  <g fill="#fff0cb">
+    <text x="96" y="235" font-family="Arial, sans-serif" font-size="21" font-weight="700" letter-spacing="7">POSTER STUDY / 03</text>
+    <text x="83" y="430" font-family="Georgia, serif" font-size="204" letter-spacing="-13">Solar</text>
+    <text x="88" y="585" font-family="Georgia, serif" font-style="italic" font-size="146" letter-spacing="-10">hours</text>
+    <text x="96" y="927" font-family="Arial, sans-serif" font-size="21" letter-spacing="7">LIGHT ACROSS A LANDSCAPE</text>
+    <text x="1279" y="927" text-anchor="end" font-family="Arial, sans-serif" font-size="21" letter-spacing="7">DESIGN EXERCISE</text>
+  </g>
+</svg>

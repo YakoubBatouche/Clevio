@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<defs>
+    <radialGradient id="sky" cx="64%" cy="43%" r="73%">
+      <stop stop-color="#624e80"/><stop offset=".63" stop-color="#262644"/><stop offset="1" stop-color="#101122"/>
+    </radialGradient>
+    <linearGradient id="moon" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#fff6de"/><stop offset="1" stop-color="#d6a1ae"/>
+    </linearGradient>
+  </defs>
+  <path d="M0 0h1378v996H0z" fill="url(#sky)"/>
+  <circle cx="928" cy="418" r="228" fill="url(#moon)"/>
+  <circle cx="866" cy="361" r="227" fill="#302b4d"/>
+  <path d="M597 681c184-83 352-80 505-13 82 36 172 41 276 7v321H0V804c212 7 411-39 597-123z" fill="#151829"/>
+  <path d="M0 890c204 6 413-40 619-119 189-72 333-66 491-15 97 31 184 36 268 19M0 929c209 2 413-42 616-119 185-70 334-62 495-14 90 27 177 33 267 19" fill="none" stroke="#9284aa" stroke-opacity=".52" stroke-width="2"/>
+  <g fill="#f3cba6">
+    <circle cx="1176" cy="241" r="5"/><circle cx="1013" cy="120" r="3"/><circle cx="1237" cy="430" r="4"/><circle cx="683" cy="233" r="4"/><circle cx="1078" cy="661" r="4"/>
+    <path d="M1123 151h35m-17.5-17.5v35m-563 384h27m-13.5-13.5v27" stroke="#f3cba6" stroke-width="2"/>
+  </g>
+  <g fill="#fbebdb">
+    <text x="82" y="153" font-family="Arial, sans-serif" font-size="22" letter-spacing="7">PALETTE STUDY / 06</text>
+    <text x="77" y="429" font-family="Georgia, serif" font-size="127" font-style="italic" letter-spacing="-8">Night</text>
+    <text x="77" y="551" font-family="Georgia, serif" font-size="127" font-style="italic" letter-spacing="-8">colors.</text>
+    <text x="88" y="644" font-family="Arial, sans-serif" font-size="24" letter-spacing="6">A LOW-LIGHT PALETTE</text>
+  </g>
+</svg>

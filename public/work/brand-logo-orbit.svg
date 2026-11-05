@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<defs>
+    <radialGradient id="paper" cx="50%" cy="42%" r="67%">
+      <stop stop-color="#f5f2de"/><stop offset="1" stop-color="#e5dfbe"/>
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#123f3c" opacity=".12"/>
+    </pattern>
+  </defs>
+  <path fill="url(#paper)" d="M0 0h1378v996H0z"/>
+  <rect x="58" y="58" width="1262" height="880" fill="url(#grid)" stroke="#173e3a" stroke-opacity=".55"/>
+  <g fill="none" stroke="#173e3a" stroke-width="2" opacity=".44">
+    <path d="M58 150h1262M58 846h1262M689 150v696M58 460h1262" stroke-dasharray="5 11"/>
+    <circle cx="689" cy="460" r="220"/><circle cx="689" cy="460" r="163"/>
+  </g>
+  <g fill="none" stroke="#123f3c" stroke-width="51" stroke-linecap="round">
+    <ellipse cx="689" cy="460" rx="211" ry="91" transform="rotate(-37 689 460)"/>
+    <ellipse cx="689" cy="460" rx="211" ry="91" transform="rotate(37 689 460)"/>
+  </g>
+  <circle cx="689" cy="460" r="37" fill="#f07442"/>
+  <g fill="#123f3c" font-family="Arial, sans-serif">
+    <text x="92" y="116" font-size="21" font-weight="700" letter-spacing="6">SYMBOL STUDY</text>
+    <text x="1286" y="116" font-size="21" text-anchor="end" letter-spacing="5">01 — ORBIT</text>
+    <text x="689" y="790" font-size="96" font-weight="700" text-anchor="middle" letter-spacing="20">ORBIT</text>
+    <text x="92" y="903" font-size="19" letter-spacing="5">AXIS / MOVEMENT</text>
+    <text x="1286" y="903" font-size="19" text-anchor="end" letter-spacing="5">DESIGN EXERCISE</text>
+  </g>
+</svg>

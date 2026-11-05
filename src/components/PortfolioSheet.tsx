@@ -50,6 +50,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
     const returnFocus = trigger ?? document.activeElement
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
+    dialog.removeAttribute('data-expanded')
     dialog.showModal()
     filtersRef.current?.scrollTo(0, 0)
     scrollRef.current?.scrollTo(0, 0)
@@ -70,6 +71,11 @@ export function PortfolioSheet({ category, trigger, onClose }: {
       }
     }
   }, [requested, trigger])
+
+  function expandSheet() {
+    const dialog = dialogRef.current
+    if (dialog?.open) dialog.toggleAttribute('data-expanded', true)
+  }
 
   function startGripDrag(event: PointerEvent<HTMLButtonElement>) {
     if (!event.isPrimary || event.button !== 0 || gripDrag.current) return
@@ -194,6 +200,12 @@ export function PortfolioSheet({ category, trigger, onClose }: {
             role="region"
             aria-label="نماذج الأعمال"
             tabIndex={0}
+            onScroll={(event) => {
+              if (event.currentTarget.scrollTop > 0) expandSheet()
+            }}
+            onWheel={(event) => {
+              if (!event.ctrlKey && !event.metaKey && event.deltaY > Math.abs(event.deltaX)) expandSheet()
+            }}
           >
             {items.length ? (
               <ul key={filterId} className="portfolio-sheet__grid" role="list" data-filter-motion={filterMotion || undefined}>

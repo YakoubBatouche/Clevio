@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<defs>
+    <pattern id="ruled" width="27" height="27" patternUnits="userSpaceOnUse">
+      <path d="M0 26h27" stroke="#877b5b" opacity=".26"/>
+    </pattern>
+    <linearGradient id="fold" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#ffe18d"/><stop offset="1" stop-color="#d19642"/>
+    </linearGradient>
+  </defs>
+  <path d="M0 0h1378v996H0z" fill="#efe7cd"/>
+  <rect x="81" y="81" width="1216" height="834" fill="url(#ruled)" stroke="#9b8767"/>
+  <g transform="translate(722 465) rotate(-12)">
+    <path d="M-190-246 269-66 123 260-299 138Z" fill="#82755b" opacity=".25" transform="translate(16 22)"/>
+    <path d="M-190-246 269-66 123 260-299 138Z" fill="#f8bd52"/>
+    <path d="M-190-246 63 15-299 138Z" fill="#ffe6a1"/>
+    <path d="M-190-246 269-66 63 15Z" fill="#ffce69"/>
+    <path d="M269-66 123 260 63 15Z" fill="url(#fold)"/>
+    <path d="M63 15 123 260-299 138Z" fill="#f4a532"/>
+    <path d="M-299 138 63 15 269-66" fill="none" stroke="#905925" stroke-opacity=".46" stroke-width="3"/>
+  </g>
+  <g fill="#302e26" font-family="Georgia, serif">
+    <text x="117" y="220" font-size="109" font-style="italic">Paper</text>
+    <text x="116" y="318" font-size="109" font-style="italic">folds.</text>
+    <text x="116" y="804" font-size="33">A study in crease, light and shadow.</text>
+  </g>
+  <g fill="#4f493a" font-family="Arial, sans-serif" font-size="19" letter-spacing="6">
+    <text x="119" y="131">POSTER STUDY / 06</text>
+    <text x="1259" y="881" text-anchor="end">PAPER OBJECTS / 01</text>
+  </g>
+</svg>

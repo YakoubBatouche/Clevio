@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<defs>
+    <linearGradient id="trail" x1="0" y1="1" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop stop-color="#0d6a7f"/><stop offset=".48" stop-color="#3bcde4"/><stop offset="1" stop-color="#afffe1"/>
+    </linearGradient>
+    <path id="ribbon" d="M533 668c175-27 139-303 309-326 162-22 212 228 378 159"/>
+  </defs>
+  <path d="M0 0h1378v996H0z" fill="#102933"/>
+  <path d="M73 72h1232v852H73zM73 165h1232M73 834h1232" fill="none" stroke="#5aa0ac" stroke-opacity=".62" stroke-width="2"/>
+  <g fill="none" stroke="url(#trail)" stroke-width="7" stroke-linecap="round">
+    <use href="#ribbon" transform="translate(-10 -112)" opacity=".43"/><use href="#ribbon" transform="translate(-8 -83)" opacity=".61"/>
+    <use href="#ribbon" transform="translate(-6 -53)" opacity=".8"/><use href="#ribbon" transform="translate(-3 -26)"/>
+    <use href="#ribbon"/><use href="#ribbon" transform="translate(3 26)"/><use href="#ribbon" transform="translate(6 53)" opacity=".8"/>
+    <use href="#ribbon" transform="translate(8 83)" opacity=".61"/><use href="#ribbon" transform="translate(10 112)" opacity=".43"/>
+  </g>
+  <circle cx="1240" cy="496" r="19" fill="#dafa9e"/>
+  <g fill="#e1faed" font-family="Arial, sans-serif">
+    <text x="105" y="126" font-size="22" font-weight="700" letter-spacing="6">MOTION STUDY</text>
+    <text x="1270" y="126" font-size="22" text-anchor="end" letter-spacing="6">04 / 07</text>
+    <text x="96" y="416" font-size="122" font-weight="900" letter-spacing="-9">AFTER</text>
+    <text x="97" y="529" font-size="122" font-weight="900" letter-spacing="-9">IMAGE</text>
+    <text x="108" y="591" font-size="26" letter-spacing="5">FOLLOW THE LINE</text>
+    <text x="107" y="885" font-size="22" letter-spacing="6">TIMING / FORM / SPEED</text>
+  </g>
+  <circle cx="1251" cy="879" r="15" fill="none" stroke="#dafa9e" stroke-width="3"/><circle cx="1251" cy="879" r="5" fill="#dafa9e"/>
+</svg>

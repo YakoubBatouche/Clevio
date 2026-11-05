@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<defs>
+    <radialGradient id="sea" cx="59%" cy="37%" r="80%">
+      <stop stop-color="#164d83"/><stop offset="1" stop-color="#101a35"/>
+    </radialGradient>
+    <g id="wave" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round">
+      <path d="M-107-14c55-68 107-68 161 0 17 21 35 33 53 35M-107 35c55-68 107-68 161 0 17 21 35 33 53 35"/>
+    </g>
+  </defs>
+  <path d="M0 0h1378v996H0z" fill="url(#sea)"/>
+  <g fill="none" stroke="#76a7da" opacity=".44" stroke-width="2">
+    <circle cx="689" cy="459" r="290"/><circle cx="689" cy="459" r="309"/>
+    <path d="M62 126h1254M62 869h1254M248 459h882M689 140v637" stroke-dasharray="5 11"/>
+  </g>
+  <g transform="translate(689 458)" color="#a6eeef">
+    <circle r="230" fill="#0b264a" stroke="currentColor" stroke-width="13"/>
+    <use href="#wave" transform="scale(1.57)"/>
+    <circle cx="58" cy="-101" r="24" fill="#fbdc85"/>
+    <path d="M-230 0h-23m483 0h23M0-230v-23m0 483v23" stroke="currentColor" stroke-width="4"/>
+  </g>
+  <g fill="#d0edee" font-family="Arial, sans-serif">
+    <text x="62" y="100" font-size="22" letter-spacing="6">EMBLEM STUDY / 04</text>
+    <text x="1316" y="100" font-size="22" text-anchor="end" letter-spacing="6">SOUND OF THE SEA</text>
+    <text x="689" y="827" font-size="62" font-weight="700" text-anchor="middle" letter-spacing="29">TIDE</text>
+    <text x="62" y="928" font-size="19" letter-spacing="4">CURVE / RHYTHM / HORIZON</text>
+  </g>
+</svg>

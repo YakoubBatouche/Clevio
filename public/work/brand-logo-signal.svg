@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<path d="M0 0h1378v996H0z" fill="#191b39"/>
+  <path d="M0 0h827v996H0z" fill="#eeff77"/>
+  <g fill="#232544">
+    <path d="M154 541 306 291h126L280 541z"/>
+    <path d="M316 541 468 291h124L440 541z"/>
+    <path d="M478 541 630 291h74L552 541z"/>
+    <circle cx="650" cy="518" r="23"/>
+    <text x="149" y="687" font-family="Arial, sans-serif" font-weight="900" font-size="120" letter-spacing="1">signal/</text>
+    <text x="153" y="124" font-family="Arial, sans-serif" font-weight="700" font-size="21" letter-spacing="6">DIRECTIONAL MARK</text>
+    <text x="153" y="885" font-family="Arial, sans-serif" font-size="19" letter-spacing="6">SYMBOL STUDY / 03</text>
+  </g>
+  <g transform="translate(916 145)">
+    <rect width="374" height="278" fill="none" stroke="#8786ac" stroke-width="2"/>
+    <rect y="304" width="374" height="278" fill="#5d54b7"/>
+    <path d="m86 178 63-102h50l-62 102zm67 0 62-102h51l-62 102zm68 0 62-102h30l-62 102z" fill="#eeff77"/>
+    <circle cx="286" cy="168" r="10" fill="#eeff77"/>
+    <path d="m86 482 63-102h50l-62 102zm67 0 62-102h51l-62 102zm68 0 62-102h30l-62 102z" fill="#f5edf8"/>
+    <circle cx="286" cy="472" r="10" fill="#f5edf8"/>
+    <path d="M0 647h374" stroke="#8786ac" stroke-width="2"/>
+    <text x="0" y="715" fill="#f5edf8" font-family="Arial, sans-serif" font-size="20" letter-spacing="6">COLOR PAIRINGS</text>
+  </g>
+</svg>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="996" viewBox="0 0 1378 996">
+<defs>
+    <linearGradient id="wall" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#c6634f"/><stop offset="1" stop-color="#812c2f"/>
+    </linearGradient>
+    <linearGradient id="stamp" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#fff5dd"/><stop offset="1" stop-color="#ecd0a7"/>
+    </linearGradient>
+  </defs>
+  <path d="M0 0h1378v996H0z" fill="url(#wall)"/>
+  <path d="M0 854 1190 0h188v111L141 996H0z" fill="#eb9b75" opacity=".29"/>
+  <path d="M0 893 1260 0M0 934 1315 0M22 996 1378 45" fill="none" stroke="#fdd0a7" stroke-opacity=".27" stroke-width="2"/>
+  <g transform="rotate(-12 689 498)">
+    <rect x="339" y="221" width="737" height="602" fill="#571e28" opacity=".58"/>
+    <rect x="323" y="204" width="737" height="602" fill="url(#stamp)"/>
+    <rect x="351" y="232" width="681" height="546" fill="none" stroke="#a65f50" stroke-width="2"/>
+    <path d="M577 563V430c0-63 51-114 114-114s114 51 114 114v133M622 563V432a69 69 0 0 1 138 0v131M667 563V433a24 24 0 0 1 48 0v130" fill="none" stroke="#903637" stroke-width="20"/>
+    <path d="M531 563h322" stroke="#903637" stroke-width="20"/>
+    <text x="691" y="682" text-anchor="middle" fill="#752c2f" font-family="Georgia, serif" font-size="69" letter-spacing="9">TERRACE</text>
+    <text x="691" y="725" text-anchor="middle" fill="#752c2f" font-family="Arial, sans-serif" font-size="17" letter-spacing="7">MARK STUDY / 02</text>
+  </g>
+  <circle cx="120" cy="116" r="7" fill="#ffdcaa"/>
+  <text x="147" y="125" fill="#fff3d7" font-family="Arial, sans-serif" font-size="21" letter-spacing="6">THE ARCH SERIES</text>
+</svg>
