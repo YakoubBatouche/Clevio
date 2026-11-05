@@ -17,7 +17,6 @@ html.section-paging-mobile :where(#home, #services, #partners, #contact, .site-f
 /* A real internal scrollport resolves its gesture before the locked stage. */
 html.section-paging-mobile :where([data-native-scroll], textarea) {
   touch-action: pan-y pinch-zoom;
-  overscroll-behavior-y: contain;
 }
 @media (prefers-reduced-motion: reduce) {
   html.section-paging-ready { scroll-snap-type: none; }

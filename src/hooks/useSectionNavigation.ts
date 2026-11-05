@@ -43,13 +43,20 @@ export function useSectionNavigation() {
       initialInterrupted = true
       window.cancelAnimationFrame(frame)
       frame = 0
-      if (window.history.scrollRestoration !== 'manual') return
-      // Reloaded documents retain manual restoration, so history traversal must
-      // align the existing fragment without creating another history entry.
       const id = window.location.hash.slice(1) || 'home'
       if (!sectionIds.has(id)) return
       const section = document.getElementById(id)
-      if (section) window.scrollTo({ top: sectionScrollTop(section), behavior: 'instant' })
+      if (!section) return
+      const focused = document.activeElement
+      // An open contact field cannot keep the mobile pager on the old stage.
+      if (document.documentElement.classList.contains('section-paging-mobile') &&
+        focused instanceof HTMLElement && focused.closest('[data-native-scroll]') && !section.contains(focused) &&
+        focused.matches('input, textarea, select, [contenteditable="true"]')) focused.blur()
+      // Reloaded documents retain manual restoration, so history traversal must
+      // align the existing fragment without creating another history entry.
+      if (window.history.scrollRestoration === 'manual') {
+        window.scrollTo({ top: sectionScrollTop(section), behavior: 'instant' })
+      }
     }
     function onAnchorClick(event: MouseEvent) {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return

@@ -15,7 +15,7 @@ const definitions: { selector: string; kind: Kind }[] = [
 ]
 type Group = {
   elements: HTMLElement[]; owner: HTMLElement; kind: Kind; prepared: boolean
-  playing: boolean; tween: gsap.core.Tween | null; originals: (string | null)[]
+  playing: boolean; finishTimer: number; tween: gsap.core.Tween | null; originals: (string | null)[]
 }
 
 /** Crystal panels assemble on each full section re-entry; Arabic stays in joined blocks. */
@@ -24,7 +24,7 @@ export function useSectionTransitions() {
     const groups: Group[] = definitions.flatMap(({ selector, kind }) => {
       const elements = [...document.querySelectorAll<HTMLElement>(selector)].filter((element) => !element.closest('dialog') && element.getClientRects().length > 0)
       const owner = elements[0]?.closest<HTMLElement>('section, footer')
-      return owner ? [{ elements, owner, kind, prepared: false, playing: false, tween: null, originals: elements.map((element) => element.getAttribute('style')) }] : []
+      return owner ? [{ elements, owner, kind, prepared: false, playing: false, finishTimer: 0, tween: null, originals: elements.map((element) => element.getAttribute('style')) }] : []
     })
     const owners = [...new Set(groups.map((group) => group.owner))]
     const markers = new Map(owners.map((owner) => [owner, owner.getAttribute('data-section-revealed')]))
@@ -37,6 +37,8 @@ export function useSectionTransitions() {
     const headerInset = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-offset')) || 0
 
     function restore(group: Group) {
+      window.clearTimeout(group.finishTimer)
+      group.finishTimer = 0
       group.tween?.kill()
       group.tween = null
       if (group.prepared) {
@@ -71,14 +73,19 @@ export function useSectionTransitions() {
         else if (group.kind === 'partners') gsap.set(group.elements, { ...common, y: 15, scale: 0.72, rotation: (index: number) => index % 2 ? 7 : -7 })
         else if (group.kind === 'contact') gsap.set(group.elements, { ...common, x: -24, y: 24, rotationY: -4, transformOrigin: '100% 50%' })
         else gsap.set(group.elements, { ...common, y: 30, rotationX: -5, scale: 0.98 })
+        const duration = group.kind === 'heading' ? 0.8 : 1.05
+        const stagger = group.kind === 'partners' ? 0.055 : group.kind === 'heading' ? 0 : 0.065
         group.tween = gsap.to(group.elements, {
           opacity: 1, x: 0, y: 0, rotation: 0, rotationX: 0, rotationY: 0, scale: 1,
           ...(group.kind === 'heading' ? { clipPath: 'inset(0% 0% 0% 0%)' } : {}),
-          duration: group.kind === 'heading' ? 0.8 : 1.05,
-          stagger: group.kind === 'partners' ? 0.055 : group.kind === 'heading' ? 0 : 0.065,
+          duration,
+          stagger,
           ease: group.kind === 'partners' ? 'back.out(1.3)' : 'power3.out',
           overwrite: 'auto', force3D: true, onComplete: () => restore(group),
         })
+        // Finish the reveal if throttled frames leave visible content partly hidden.
+        const revealTime = (duration + (group.elements.length - 1) * stagger) * 1000
+        group.finishTimer = window.setTimeout(() => restore(group), revealTime + 750)
       })
     }
     function readyToReveal(owner: HTMLElement) {
@@ -86,8 +93,7 @@ export function useSectionTransitions() {
       const inset = headerInset()
       const usable = Math.max(1, innerHeight - inset)
       const visible = Math.max(0, Math.min(bounds.bottom, innerHeight) - Math.max(bounds.top, inset))
-      // Touch can stop at any pixel: show incoming content as soon as it enters,
-      // including a short drag that stays below the desktop landing threshold.
+      // Start revealing incoming content as soon as a touch transition brings it into view.
       if (touch.matches) return visible > 1
       const visibleEnough = visible >= Math.min(usable * 0.45, bounds.height * 0.55)
       // A short footer cannot reach the top landing when the document ends.

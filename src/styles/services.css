@@ -2,7 +2,7 @@
 .services-section:focus { outline: none; }
 .services-section__shell { width: min(1380px, 88.8%); margin-inline: auto; }
 .services-section__header { display: flex; justify-content: space-between; align-items: flex-end; gap: 28px; margin-bottom: 30px; }
-.services-section__eyebrow { margin: 0 0 8px; color: #83baff; font-size: 14px; font-weight: 700; letter-spacing: 0; }
+.services-section__eyebrow { margin: 0 0 8px; color: var(--cyan); font-size: 14px; font-weight: 700; letter-spacing: 0; }
 .services-section h2 { margin: 0; font-family: var(--font-display); font-size: clamp(38px,4vw,62px); font-weight: 900; line-height: 1.25; }
 .services-section__intro { margin: 0 0 4px; color: #adbedc; font-size: 16px; line-height: 1.8; }
 .services-section__grid { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 16px; }
@@ -15,9 +15,9 @@
 .service-card__body { display: flex; min-width: 0; flex-direction: column; gap: 17px; }
 .service-card__body strong { color: #f0f6ff; font-size: clamp(17px,1.35vw,22px); font-weight: 700; line-height: 1.6; }
 .service-card__explore { display: inline-flex; align-items: center; gap: 12px; color: #91b2df; font-size: 12px; font-weight: 400; transition: color 240ms ease; }
-.service-card__explore svg { width: 19px; height: 19px; color: #77acfc; transition: transform 240ms ease; }
+.service-card__explore svg { width: 19px; height: 19px; color: var(--cyan); transition: transform 240ms ease; }
 .service-card__corner { position: absolute; bottom: 0; right: 0; width: 24%; height: 2px; background: linear-gradient(to left,#63b8ff88,transparent); }
-.service-card:hover { transform: translateY(-4px); border-color: #568df2; box-shadow: inset 0 1px 0 #b6e6ff2b,0 14px 38px #035cff18; }
+.service-card:hover { transform: translateY(-4px); border-color: var(--cyan); box-shadow: inset 0 1px 0 #b6e6ff2b,0 14px 38px #035cff18; }
 .service-card:hover .service-card__explore { color: var(--lime); }
 .service-card:hover .service-card__explore svg { transform: translate(-3px,-3px); color: var(--lime); }
 .services-dialog { width: min(620px,92vw); max-height: 90svh; overflow: auto; padding: 0; border: 1px solid #3b6496; border-radius: 24px; color: #f4f8ff; background: #06152f; }

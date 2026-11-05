@@ -18,7 +18,7 @@
 .contact-section__content { position: relative; z-index: 1; min-width: 0; }
 .contact-section__eyebrow {
   display: flex; align-items: center; gap: 12px;
-  margin: 0 0 16px; color: #80b8ff; font-size: 14px; font-weight: 700;
+  margin: 0 0 16px; color: var(--cyan); font-size: 14px; font-weight: 700;
 }
 .contact-section__eyebrow span { width: 28px; height: 1px; background: currentColor; }
 .contact-section h2 {
@@ -31,7 +31,7 @@
 .contact-section__field { position: relative; display: flex; flex-direction: column; gap: 9px; min-width: 0; }
 .contact-section__field--full { grid-column: 1 / -1; }
 .contact-section__field label { color: #dbe5f7; font-size: 14px; line-height: 1.6; font-weight: 700; }
-.contact-section__field label span { color: #8eb8ff; margin-inline-start: 3px; }
+.contact-section__field label span { color: var(--cyan); margin-inline-start: 3px; }
 .contact-section__field input, .contact-section__field select, .contact-section__field textarea {
   display: block; width: 100%; min-width: 0; min-height: 54px;
   border: 1px solid rgb(108 153 239 / 36%); border-radius: 10px;
@@ -41,11 +41,11 @@
 }
 .contact-section__field input::placeholder, .contact-section__field textarea::placeholder { color: #91a4c6; opacity: 1; }
 .contact-section__field input:hover, .contact-section__field select:hover, .contact-section__field textarea:hover { border-color: #6690d8; }
-.contact-section__field input:focus, .contact-section__field select:focus, .contact-section__field textarea:focus { border-color: #81acff; outline: 2px solid rgb(96 151 255 / 42%); outline-offset: 2px; background: #05132e; }
+.contact-section__field input:focus, .contact-section__field select:focus, .contact-section__field textarea:focus { border-color: var(--cyan); outline: 2px solid color-mix(in srgb, var(--cyan) 42%, transparent); outline-offset: 2px; background: #05132e; }
 .contact-section__field textarea { min-height: 130px; resize: vertical; }
 .contact-section__field select { appearance: none; padding-inline-end: 46px; cursor: pointer; }
 .contact-section__field select option { color: #f8faff; background: #071730; }
-.contact-section__field--select > svg { position: absolute; inset-inline-end: 17px; bottom: 18px; width: 18px; height: 18px; color: #a3bee9; pointer-events: none; }
+.contact-section__field--select > svg { position: absolute; inset-inline-end: 17px; bottom: 18px; width: 18px; height: 18px; color: var(--cyan); pointer-events: none; }
 .contact-section__required { margin: 10px 0 21px; color: #9eb0cf; font-size: 12px; line-height: 1.6; }
 .contact-section__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 15px 24px; }
 .contact-section__submit {

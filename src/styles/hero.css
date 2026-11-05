@@ -51,9 +51,9 @@
 }
 .action--primary:hover { background: #e0ff77; box-shadow: 0 5px 30px rgb(213 255 72 / 13%); }
 .action--secondary {
-  min-height: clamp(44px, 2.65vw, 54px); padding-bottom: 0.45vw; border-bottom: 2px solid #217bff; font-size: clamp(15px, 1.02vw, 19px);
+  min-height: clamp(44px, 2.65vw, 54px); padding-bottom: 0.45vw; border-bottom: 2px solid var(--cyan); font-size: clamp(15px, 1.02vw, 19px);
 }
-.action--secondary svg { color: #4b92ff; }
+.action--secondary svg { color: var(--cyan); }
 @media (min-width: 2000px) {
   .site-header { top: 2.7vw; }
 }

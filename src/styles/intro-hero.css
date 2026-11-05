@@ -30,7 +30,7 @@
   bottom: -2px;
   inset-inline: 0;
   height: 2px;
-  background: #217bff;
+  background: var(--cyan);
   transform: scaleX(var(--intro-underline, 1));
   transform-origin: right center;
 }

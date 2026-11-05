@@ -1,7 +1,7 @@
 .hero__scroll-indicator {
   position: absolute; z-index: 3; bottom: clamp(12px, 2.1svh, 25px); left: 50%;
   display: grid; place-items: center; width: 56px; min-height: 70px;
-  transform: translateX(-50%); color: #b8d8ff; border-radius: 28px;
+  transform: translateX(-50%); color: var(--cyan); border-radius: 28px;
   background: linear-gradient(180deg, rgb(3 15 40 / 8%), rgb(3 15 40 / 38%));
   transition: color 200ms ease;
 }

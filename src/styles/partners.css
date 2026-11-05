@@ -70,7 +70,7 @@
 /* Work categories and partner signatures share one composed page section. */
 .work-showcase:focus { outline: none; }
 .work-showcase__header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 27px; }
-.work-showcase__eyebrow { margin: 0 0 8px; color: #83baff; font-size: 14px; font-weight: 700; }
+.work-showcase__eyebrow { margin: 0 0 8px; color: var(--cyan); font-size: 14px; font-weight: 700; }
 .work-showcase h2 { margin: 0; font: 900 clamp(38px,4vw,62px)/1.25 var(--font-display); color: #f5f8ff; }
 .work-showcase__intro { margin: 0; color: #adbedc; font-size: 16px; line-height: 1.8; }
 .work-showcase__grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 18px; }
