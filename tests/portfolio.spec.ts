@@ -2,7 +2,8 @@ import { expect, test, type Locator } from '@playwright/test'
 
 const category = 'الهوية والعلامة التجارية'
 
-test('portfolio lays out three desktop columns, filters the gallery, and returns focus', async ({ page }) => {
+test('portfolio opens with five desktop columns, filters the gallery, and returns focus', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 })
   await page.goto('/?skipintro#work')
   const trigger = page.getByRole('button', { name: category, exact: true })
   await trigger.focus()
@@ -16,15 +17,19 @@ test('portfolio lays out three desktop columns, filters the gallery, and returns
   expect(imageCount).toBeGreaterThanOrEqual(15)
   const allSources = await images.evaluateAll(items => items.map(item => item.getAttribute('src')))
   expect(new Set(allSources).size).toBe(imageCount)
-  const row = await images.evaluateAll(items => items.slice(0, 3).map(item => {
+  const [row, nextRow] = await images.evaluateAll(items => {
+    const firstSix = items.slice(0, 6).map(item => {
     const { left, top, width } = item.getBoundingClientRect()
     return { left, top, width }
-  }))
-  expect(new Set(row.map(item => item.left)).size).toBe(3)
+    })
+    return [firstSix.slice(0, 5), firstSix[5]] as const
+  })
+  expect(new Set(row.map(item => item.left)).size).toBe(5)
   for (const item of row.slice(1)) {
     expect(Math.abs(item.top - row[0].top)).toBeLessThan(1)
     expect(Math.abs(item.width - row[0].width)).toBeLessThan(1)
   }
+  expect(nextRow.top).toBeGreaterThan(row[0].top)
 
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   for (const [label, source] of [
@@ -60,7 +65,7 @@ test('portfolio lays out three desktop columns, filters the gallery, and returns
   await expect(page.getByRole('dialog', { name: 'التصميم الإبداعي', exact: true })).toBeVisible()
 })
 
-test('the first gallery scroll expands the sheet while the final image stays reachable', async ({ page }) => {
+test('the sheet opens at its full height and the gallery scrolls independently', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 })
   await page.goto('/?skipintro#work')
   await page.getByRole('button', { name: category, exact: true }).click()
@@ -69,23 +74,9 @@ test('the first gallery scroll expands the sheet while the final image stays rea
   const top = () => sheet.evaluate(element => element.getBoundingClientRect().top)
   await expect(sheet).toBeVisible()
   const initialTop = await top()
-  const pageScroll = await page.evaluate(() => scrollY)
-  const box = await scroller.boundingBox()
-  await page.mouse.move(box!.x + box!.width / 2, box!.y + 72)
-  await page.mouse.wheel(0, 100)
-  await expect(sheet).toHaveAttribute('data-expanded', /^(true)?$/)
-  await expect.poll(top).toBeLessThan(initialTop - 24)
   const navbarBottom = await page.locator('.site-header').evaluate(element => element.getBoundingClientRect().bottom)
-  expect(Math.abs(await top() - navbarBottom)).toBeLessThan(38)
-
-  await page.mouse.wheel(0, 6000)
-  const finalImage = scroller.locator('.portfolio-sheet__media').last()
-  await expect(finalImage).toBeInViewport()
-  expect(Math.abs(await page.evaluate(() => scrollY) - pageScroll)).toBeLessThan(2)
-  await expect(sheet.getByRole('button', { name: 'الكل', exact: true })).toBeInViewport()
-
-  await page.mouse.wheel(0, -6000)
-  await expect.poll(() => scroller.evaluate(element => element.scrollTop)).toBe(0)
+  expect(Math.abs(initialTop - navbarBottom)).toBeLessThan(38)
+  const pageScroll = await page.evaluate(() => scrollY)
   const visibleRows = await scroller.evaluate(element => {
     const { bottom } = element.getBoundingClientRect()
     const rows = new Set(
@@ -97,11 +88,68 @@ test('the first gallery scroll expands the sheet while the final image stays rea
   })
   expect(visibleRows).toBeGreaterThanOrEqual(3)
 
+  const box = await scroller.boundingBox()
+  await page.mouse.move(box!.x + box!.width / 2, box!.y + 72)
+  await page.mouse.wheel(0, 100)
+  await expect.poll(() => scroller.evaluate(element => element.scrollTop)).toBeGreaterThan(0)
+  expect(Math.abs(await top() - initialTop)).toBeLessThan(1)
+
+  await page.mouse.wheel(0, 6000)
+  await expect(scroller.locator('.portfolio-sheet__media').last()).toBeInViewport()
+  expect(Math.abs(await page.evaluate(() => scrollY) - pageScroll)).toBeLessThan(2)
+  await expect(sheet.getByRole('button', { name: 'الكل', exact: true })).toBeInViewport()
+
   await page.keyboard.press('Escape')
   await expect(sheet).toBeHidden()
   await page.getByRole('button', { name: category, exact: true }).click()
-  await expect(sheet).not.toHaveAttribute('data-expanded')
-  await expect.poll(top).toBeGreaterThan(initialTop - 2)
+  await expect.poll(async () => Math.abs(await top() - initialTop)).toBeLessThan(1)
+  await expect.poll(() => scroller.evaluate(element => element.scrollTop)).toBe(0)
+})
+
+test('artwork previews fit the viewport and preserve the filtered gallery', async ({ page }) => {
+  await page.setViewportSize({ width: 800, height: 550 })
+  await page.goto('/?skipintro#work')
+  await page.getByRole('button', { name: category, exact: true }).click()
+  const sheet = page.getByRole('dialog', { name: category, exact: true })
+  const filter = sheet.getByRole('button', { name: 'ملصقات', exact: true })
+  await filter.click()
+  const gallery = sheet.locator('.portfolio-sheet__scroll')
+  const imageTrigger = gallery.locator('.portfolio-sheet__media').last()
+  await imageTrigger.scrollIntoViewIfNeeded()
+  const originalScroll = await gallery.evaluate(element => element.scrollTop)
+  expect(originalScroll).toBeGreaterThan(0)
+  const title = (await gallery.locator('.portfolio-sheet__card-title').last().textContent())!
+  const source = await imageTrigger.locator('img').getAttribute('src')
+  await imageTrigger.click()
+
+  const popup = page.getByRole('dialog', { name: title, exact: true })
+  await expect(popup).toBeVisible()
+  const art = popup.locator('.portfolio-image-viewer__art')
+  const image = art.locator('img')
+  await expect(image).toHaveAttribute('src', source!)
+  await expect(image).toHaveCSS('object-fit', 'contain')
+  const fitted = (await art.boundingBox())!
+  expect(Math.abs(fitted.width / fitted.height - 1378 / 996)).toBeLessThan(0.01)
+  expect(fitted.x).toBeGreaterThanOrEqual(0)
+  expect(fitted.y + fitted.height).toBeLessThan(550)
+  await page.keyboard.press('Escape')
+  await expect(popup).toBeHidden()
+  await expect(sheet).toBeVisible()
+  await expect(imageTrigger).toBeFocused()
+  await expect(filter).toHaveAttribute('aria-pressed', 'true')
+  expect(Math.abs(await gallery.evaluate(element => element.scrollTop) - originalScroll)).toBeLessThan(2)
+
+  await page.setViewportSize({ width: 1600, height: 1150 })
+  const firstImage = gallery.locator('.portfolio-sheet__media').first()
+  await firstImage.click()
+  const largePopup = page.locator('.portfolio-image-viewer')
+  await expect(largePopup).toBeVisible()
+  const fullSize = (await largePopup.locator('.portfolio-image-viewer__art').boundingBox())!
+  expect(fullSize.width).toBeCloseTo(1378, 0)
+  expect(fullSize.height).toBeCloseTo(996, 0)
+  await page.mouse.click(5, 5)
+  await expect(largePopup).toBeHidden()
+  await expect(firstImage).toBeFocused()
 })
 
 test.describe('mobile portfolio', () => {
@@ -148,7 +196,7 @@ test.describe('mobile portfolio', () => {
     await page.emulateMedia({ reducedMotion: 'no-preference' })
     await expect.poll(() => sheet.evaluate(element => Math.abs(element.getBoundingClientRect().bottom - innerHeight))).toBeLessThan(1)
     const handleTop = () => handle.evaluate(element => element.getBoundingClientRect().top)
-    let restTop = await handleTop()
+    const restTop = await handleTop()
     const pageScroll = await page.evaluate(() => scrollY)
     const touch = await page.context().newCDPSession(page)
 
@@ -171,10 +219,7 @@ test.describe('mobile portfolio', () => {
     await expect(sheet).toBeVisible()
     await swipe(scroller, -170)
     await expect.poll(() => scroller.evaluate(element => element.scrollTop)).toBeGreaterThan(0)
-    await expect(sheet).toHaveAttribute('data-expanded', /^(true)?$/)
-    await expect.poll(handleTop).toBeLessThan(restTop - 24)
-    await expect.poll(() => sheet.evaluate(element => element.getAnimations().some(animation => animation.playState === 'running'))).toBe(false)
-    restTop = await handleTop()
+    expect(Math.abs(await handleTop() - restTop)).toBeLessThan(1)
 
     await swipe(handle, 40, async () => {
       await expect.poll(handleTop).toBeGreaterThan(restTop + 25)

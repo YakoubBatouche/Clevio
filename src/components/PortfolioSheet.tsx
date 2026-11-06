@@ -1,7 +1,8 @@
 import { useLayoutEffect, useRef, useState, type PointerEvent } from 'react'
 import { createPortal } from 'react-dom'
-import { X } from 'lucide-react'
+import { Maximize2, X } from 'lucide-react'
 import { portfolioCategories } from '../content/portfolio'
+import { PortfolioImageViewer, type PortfolioImageSelection } from './PortfolioImageViewer'
 
 const allFilter = { id: 'all', label: 'الكل' }
 const gripClickSlop = 6
@@ -25,6 +26,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
   const backdropPressed = useRef(false)
   const gripDrag = useRef<GripDrag | null>(null)
   const suppressGripClick = useRef(false)
+  const [viewer, setViewer] = useState<PortfolioImageSelection | null>(null)
   const requested = portfolioCategories.find((entry) => entry.id === category)
   const [selection, setSelection] = useState({
     requested,
@@ -34,6 +36,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
   })
 
   if (selection.requested !== requested) {
+    if (viewer) setViewer(null)
     // Preserve the visible gallery while the dialog animates out of the top layer.
     setSelection({
       requested,
@@ -50,7 +53,6 @@ export function PortfolioSheet({ category, trigger, onClose }: {
     const returnFocus = trigger ?? document.activeElement
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    dialog.removeAttribute('data-expanded')
     dialog.showModal()
     filtersRef.current?.scrollTo(0, 0)
     scrollRef.current?.scrollTo(0, 0)
@@ -71,11 +73,6 @@ export function PortfolioSheet({ category, trigger, onClose }: {
       }
     }
   }, [requested, trigger])
-
-  function expandSheet() {
-    const dialog = dialogRef.current
-    if (dialog?.open) dialog.toggleAttribute('data-expanded', true)
-  }
 
   function startGripDrag(event: PointerEvent<HTMLButtonElement>) {
     if (!event.isPrimary || event.button !== 0 || gripDrag.current) return
@@ -125,7 +122,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
   const { displayed, filterId, filterMotion } = selection
   const items = displayed?.items.filter((item) => filterId === allFilter.id || item.filterId === filterId) ?? []
 
-  return createPortal(
+  const sheet = createPortal(
     <dialog
       ref={dialogRef}
       id="portfolio-sheet"
@@ -200,18 +197,13 @@ export function PortfolioSheet({ category, trigger, onClose }: {
             role="region"
             aria-label="نماذج الأعمال"
             tabIndex={0}
-            onScroll={(event) => {
-              if (event.currentTarget.scrollTop > 0) expandSheet()
-            }}
-            onWheel={(event) => {
-              if (!event.ctrlKey && !event.metaKey && event.deltaY > Math.abs(event.deltaX)) expandSheet()
-            }}
           >
             {items.length ? (
               <ul key={filterId} className="portfolio-sheet__grid" role="list" data-filter-motion={filterMotion || undefined}>
                 {items.map((item) => (
                   <li key={item.id} className="portfolio-sheet__card">
-                    <div className="portfolio-sheet__media">
+                    <button className="portfolio-sheet__media" type="button" aria-haspopup="dialog"
+                      aria-label={'عرض الصورة: ' + item.title} onClick={(event) => setViewer({ item, trigger: event.currentTarget })}>
                       <img
                         src={import.meta.env.BASE_URL + item.image}
                         alt={item.alt}
@@ -219,7 +211,8 @@ export function PortfolioSheet({ category, trigger, onClose }: {
                         decoding="async"
                         style={item.position ? { objectPosition: item.position } : undefined}
                       />
-                    </div>
+                      <span className="portfolio-sheet__zoom" aria-hidden="true"><Maximize2 /></span>
+                    </button>
                     <div className="portfolio-sheet__card-body">
                       <h3 className="portfolio-sheet__card-title">{item.title}</h3>
                       <p className="portfolio-sheet__card-meta">{displayed.filters.find((filter) => filter.id === item.filterId)?.label}</p>
@@ -236,4 +229,9 @@ export function PortfolioSheet({ category, trigger, onClose }: {
     </dialog>,
     document.body,
   )
+
+  return <>
+    {sheet}
+    {viewer && <PortfolioImageViewer {...viewer} onClose={() => setViewer(null)} />}
+  </>
 }
