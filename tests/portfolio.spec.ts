@@ -1,32 +1,36 @@
 import { expect, test, type Locator } from '@playwright/test'
 
-const category = 'Print & Identité Visuelle'
-const marketingFilter = 'Supports Marketing'
+const category = 'المطبوعات والهوية البصرية'
+const webCategory = 'المواقع والتطبيقات'
+const brandingFilter = 'تصميم العلامة التجارية'
+const editorialFilter = 'المطبوعات التحريرية والكتالوجات'
+const packagingFilter = 'التغليف والملصقات التعريفية'
+const marketingFilter = 'المواد التسويقية'
 
 const categories = [
   {
     title: category,
-    description: 'Conception Offline',
-    filters: ['Branding', 'Édition & Catalogues', 'Packaging & Étiquettes', 'Signalétique & Grand Format', marketingFilter],
+    description: 'تصميم المواد المطبوعة والمادية',
+    filters: [brandingFilter, editorialFilter, packagingFilter, 'اللافتات والطباعة كبيرة الحجم', marketingFilter],
   },
   {
-    title: 'Web & App',
-    description: 'Conception Tech, UI/UX & Code',
-    filters: ['Sites Vitrines & Corporate', 'E-Commerce & Retail', 'Applications Mobiles', 'Web Apps & Outils Métier', 'Landing Pages & UI/UX Pur'],
+    title: webCategory,
+    description: 'التصميم التقني، وتصميم الواجهات وتجربة المستخدم، والبرمجة',
+    filters: ['المواقع التعريفية ومواقع المؤسسات', 'التجارة الإلكترونية وتجارة التجزئة', 'تطبيقات الهواتف الذكية', 'تطبيقات الويب وأدوات العمل', 'صفحات الهبوط وتصميم الواجهات وتجربة المستخدم'],
   },
   {
-    title: 'Digital Marketing & Growth',
-    description: 'Stratégie & Acquisition',
-    filters: ['Stratégie & Social Media', 'Campagnes Publicitaires (Ads)', 'SEO & Visibilité', 'Email & WhatsApp Marketing'],
+    title: 'التسويق الرقمي والنمو',
+    description: 'الاستراتيجية واستقطاب العملاء',
+    filters: ['الاستراتيجية ووسائل التواصل الاجتماعي', 'الحملات الإعلانية', 'تحسين الظهور في محركات البحث', 'التسويق عبر البريد الإلكتروني وواتساب'],
   },
   {
-    title: 'Audiovisuel & Média',
-    description: 'Storytelling & Post-Production',
-    filters: ['Scénarisation & Storyboard', 'Motion Design & Animation', 'Montage & Post-Production', 'Direction Artistique de Shootings'],
+    title: 'الإنتاج السمعي البصري والإعلام',
+    description: 'السرد القصصي وما بعد الإنتاج',
+    filters: ['كتابة السيناريو واللوحات القصصية', 'التصميم الحركي والرسوم المتحركة', 'المونتاج وما بعد الإنتاج', 'الإخراج الفني لجلسات التصوير'],
   },
 ]
 
-test('the four portfolio categories expose their French filters and service scope', async ({ page }) => {
+test('the four portfolio categories expose their Arabic filters and service scope', async ({ page }) => {
   await page.goto('/?skipintro#work')
   const work = page.locator('#work')
   await expect(work.locator('.work-showcase__card h3')).toHaveText(categories.map(entry => entry.title))
@@ -37,8 +41,8 @@ test('the four portfolio categories expose their French filters and service scop
     await expect(sheet.getByText(entry.description, { exact: false })).toBeVisible()
     await expect(sheet.locator('.portfolio-sheet__filter')).toHaveText(['الكل', ...entry.filters])
     if (entry.title === category) {
-      await sheet.getByRole('button', { name: 'Édition & Catalogues', exact: true }).click()
-      await expect(sheet.getByText(/Brochures, magazines, rapports, menus/)).toBeVisible()
+      await sheet.getByRole('button', { name: editorialFilter, exact: true }).click()
+      await expect(sheet.getByText('تصميم الكتيبات والمجلات والتقارير وقوائم الطعام.', { exact: true })).toBeVisible()
       await expect(sheet.locator('.portfolio-sheet__empty')).toBeVisible()
       await expect(sheet.locator('.portfolio-sheet__media')).toHaveCount(0)
     }
@@ -78,8 +82,8 @@ test('portfolio opens with five desktop columns, filters the gallery, and return
 
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   for (const [label, source] of [
-    ['Branding', /\/work\/brand-logo-orbit\.svg$/],
-    ['Packaging & Étiquettes', /\/work\/brand-identity\.webp$/],
+    [brandingFilter, /\/work\/brand-logo-orbit\.svg$/],
+    [packagingFilter, /\/work\/brand-identity\.webp$/],
     [marketingFilter, /\/work\/brand-poster\.svg$/],
   ] as const) {
     const filter = sheet.getByRole('button', { name: label, exact: true })
@@ -106,8 +110,8 @@ test('portfolio opens with five desktop columns, filters the gallery, and return
   await expect(images).toHaveCount(imageCount)
   await sheet.getByRole('button', { name: 'إغلاق معرض الأعمال', exact: true }).click()
   await expect(sheet).toBeHidden()
-  await page.locator('#work').getByRole('button', { name: 'Web & App', exact: true }).click()
-  await expect(page.getByRole('dialog', { name: 'Web & App', exact: true })).toBeVisible()
+  await page.locator('#work').getByRole('button', { name: webCategory, exact: true }).click()
+  await expect(page.getByRole('dialog', { name: webCategory, exact: true })).toBeVisible()
 })
 
 test('the sheet opens at its full height and the gallery scrolls independently', async ({ page }) => {

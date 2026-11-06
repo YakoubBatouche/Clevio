@@ -163,9 +163,9 @@ export function PortfolioSheet({ category, trigger, onClose }: {
             />
             <header className="portfolio-sheet__header">
               <div className="portfolio-sheet__heading">
-                <h2 id="portfolio-sheet-title" className="portfolio-sheet__title" lang="fr" dir="ltr">{displayed.title}</h2>
+                <h2 id="portfolio-sheet-title" className="portfolio-sheet__title">{displayed.title}</h2>
                 <div className="portfolio-sheet__summary">
-                  <p className="portfolio-sheet__description" lang="fr" dir="ltr">{displayed.description}</p>
+                  <p className="portfolio-sheet__description">{displayed.description}</p>
                   <p className="portfolio-sheet__eyebrow">نماذج بصرية توضيحية</p>
                 </div>
               </div>
@@ -179,8 +179,6 @@ export function PortfolioSheet({ category, trigger, onClose }: {
                   key={filter.id}
                   className="portfolio-sheet__filter"
                   type="button"
-                  lang={filter.id === allFilter.id ? 'ar' : 'fr'}
-                  dir={filter.id === allFilter.id ? 'rtl' : 'ltr'}
                   aria-controls="portfolio-sheet-gallery"
                   aria-pressed={filterId === filter.id}
                   onClick={() => {
@@ -205,7 +203,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
             tabIndex={0}
           >
             {selectedFilter && (
-              <p id="portfolio-sheet-filter-description" className="portfolio-sheet__filter-description" lang="fr" dir="ltr">
+              <p id="portfolio-sheet-filter-description" className="portfolio-sheet__filter-description">
                 {selectedFilter.description}
               </p>
             )}
@@ -226,7 +224,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
                     </button>
                     <div className="portfolio-sheet__card-body">
                       <h3 className="portfolio-sheet__card-title">{item.title}</h3>
-                      <p className="portfolio-sheet__card-meta" lang="fr" dir="ltr">
+                      <p className="portfolio-sheet__card-meta">
                         {displayed.filters.find((filter) => filter.id === item.filterId)?.label}
                       </p>
                     </div>

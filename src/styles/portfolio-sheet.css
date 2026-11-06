@@ -1,6 +1,5 @@
 .portfolio-sheet {
   --sheet-accent: var(--cyan, #7af4fc);
-  --sheet-font-fr: 'Alexandria Variable', sans-serif;
   --sheet-gutter: clamp(20px, 4vw, 48px);
   --sheet-viewport: 100vh;
   --sheet-top: max(calc(var(--header-offset, 112px) - 12px), env(safe-area-inset-top));
@@ -123,21 +122,15 @@
 
 .portfolio-sheet__title {
   margin: 0;
-  font: 800 clamp(24px, 4.2vw, 40px)/1.2 var(--sheet-font-fr);
+  font: 900 clamp(24px, 4.2vw, 40px)/1.3 var(--font-display);
   overflow-wrap: anywhere;
 }
 
 .portfolio-sheet__description {
   margin: 0;
   color: #b6c9de;
-  font-family: var(--sheet-font-fr);
   font-size: 13px;
   line-height: 1.45;
-}
-
-.portfolio-sheet__title,
-.portfolio-sheet__description {
-  text-align: right;
 }
 
 .portfolio-sheet__close {
@@ -186,10 +179,6 @@
   overflow-wrap: anywhere;
 }
 
-.portfolio-sheet__filter:lang(fr) {
-  font-family: var(--sheet-font-fr);
-}
-
 .portfolio-sheet__filter-description {
   max-inline-size: 70ch;
   margin: 0 auto 14px;
@@ -197,7 +186,8 @@
   border-inline-start: 2px solid var(--sheet-accent);
   background: rgb(135 178 229 / 7%);
   color: #d8e8f7;
-  font: 400 13px/1.65 var(--sheet-font-fr);
+  font-size: 13px;
+  line-height: 1.65;
   overflow-wrap: anywhere;
 }
 
@@ -283,11 +273,9 @@
 .portfolio-sheet__card-meta {
   margin: 0;
   color: var(--sheet-accent);
-  font-family: var(--sheet-font-fr);
   font-size: 13px;
   line-height: 1.5;
   overflow-wrap: anywhere;
-  text-align: right;
 }
 
 .portfolio-sheet__empty {

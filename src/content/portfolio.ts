@@ -30,15 +30,15 @@ const chroma = 'work/brand-thumbnail-chroma.svg'
 export const portfolioCategories: readonly PortfolioCategory[] = [
   {
     id: 'print-identity',
-    title: 'Print & Identité Visuelle',
-    description: 'Conception Offline',
+    title: 'المطبوعات والهوية البصرية',
+    description: 'تصميم المواد المطبوعة والمادية',
     cover: identity,
     filters: [
-      { id: 'branding', label: 'Branding', description: 'Logos, chartes graphiques, guidelines, direction artistique.' },
-      { id: 'editorial', label: 'Édition & Catalogues', description: 'Brochures, magazines, rapports, menus.' },
-      { id: 'packaging', label: 'Packaging & Étiquettes', description: 'Design d’emballages (agroalimentaire, cosmétique, retail).' },
-      { id: 'signage', label: 'Signalétique & Grand Format', description: 'Enseignes, stands d’exposition, habillages, roll-ups.' },
-      { id: 'marketing-materials', label: 'Supports Marketing', description: 'Flyers, cartes de visite, affiches, goodies.' },
+      { id: 'branding', label: 'تصميم العلامة التجارية', description: 'تصميم الشعارات، وإعداد أدلة الهوية البصرية وإرشادات استخدامها، والإخراج الفني.' },
+      { id: 'editorial', label: 'المطبوعات التحريرية والكتالوجات', description: 'تصميم الكتيبات والمجلات والتقارير وقوائم الطعام.' },
+      { id: 'packaging', label: 'التغليف والملصقات التعريفية', description: 'تصميم عبوات المنتجات الغذائية ومستحضرات التجميل ومنتجات التجزئة.' },
+      { id: 'signage', label: 'اللافتات والطباعة كبيرة الحجم', description: 'تصميم اللافتات وأجنحة المعارض وتغليف الواجهات واللافتات القابلة للّف.' },
+      { id: 'marketing-materials', label: 'المواد التسويقية', description: 'تصميم المنشورات الورقية وبطاقات العمل والملصقات والهدايا الترويجية.' },
     ],
     items: [
       {
@@ -55,7 +55,7 @@ export const portfolioCategories: readonly PortfolioCategory[] = [
       },
       {
         id: 'echo-poster', filterId: 'marketing-materials', title: 'ملصق الصدى', image: 'work/brand-poster-echo.svg',
-        alt: 'حلقات خضراء مائلة تتكرر حول كلمة ECHO على خلفية خضراء داكنة',
+        alt: 'حلقات خضراء مائلة تتكرر حول كلمة «الصدى» بالإنجليزية على خلفية خضراء داكنة',
       },
       {
         id: 'terrace-mark', filterId: 'branding', title: 'شعار الأقواس', image: 'work/brand-logo-terrace.svg',
@@ -63,7 +63,7 @@ export const portfolioCategories: readonly PortfolioCategory[] = [
       },
       {
         id: 'solar-poster', filterId: 'marketing-materials', title: 'ملصق ساعات الشمس', image: 'work/brand-poster-solar.svg',
-        alt: 'قرص شمسي ذهبي يطل على تلال داكنة بجوار عبارة Solar hours',
+        alt: 'قرص شمسي ذهبي يطل على تلال داكنة بجوار عبارة «ساعات الشمس» بالإنجليزية',
       },
       {
         id: 'signal-mark', filterId: 'branding', title: 'شعار الإشارة', image: 'work/brand-logo-signal.svg',
@@ -101,15 +101,15 @@ export const portfolioCategories: readonly PortfolioCategory[] = [
   },
   {
     id: 'web-app',
-    title: 'Web & App',
-    description: 'Conception Tech, UI/UX & Code',
+    title: 'المواقع والتطبيقات',
+    description: 'التصميم التقني، وتصميم الواجهات وتجربة المستخدم، والبرمجة',
     cover: website,
     filters: [
-      { id: 'corporate-websites', label: 'Sites Vitrines & Corporate', description: 'Sites d’entreprise, institutions, portfolio.' },
-      { id: 'ecommerce', label: 'E-Commerce & Retail', description: 'Boutiques en ligne, catalogues connectés, parcours d’achat.' },
-      { id: 'mobile-apps', label: 'Applications Mobiles', description: 'Apps iOS / Android (UI/UX et développement).' },
-      { id: 'web-apps', label: 'Web Apps & Outils Métier', description: 'Plateformes sur mesure, tableaux de bord, systèmes de réservation.' },
-      { id: 'landing-uiux', label: 'Landing Pages & UI/UX Pur', description: 'Pages de conversion (Ads) et maquettes Figma / Design Systems.' },
+      { id: 'corporate-websites', label: 'المواقع التعريفية ومواقع المؤسسات', description: 'مواقع للشركات والمؤسسات ومواقع لعرض الأعمال.' },
+      { id: 'ecommerce', label: 'التجارة الإلكترونية وتجارة التجزئة', description: 'متاجر إلكترونية، وكتالوجات متصلة بالمتاجر، وتصميم رحلة الشراء.' },
+      { id: 'mobile-apps', label: 'تطبيقات الهواتف الذكية', description: 'تصميم واجهات التطبيقات وتجربة استخدامها وتطويرها لنظامَي آي أو إس وأندرويد.' },
+      { id: 'web-apps', label: 'تطبيقات الويب وأدوات العمل', description: 'منصات مصمّمة حسب الطلب، ولوحات تحكّم، وأنظمة حجز.' },
+      { id: 'landing-uiux', label: 'صفحات الهبوط وتصميم الواجهات وتجربة المستخدم', description: 'صفحات هبوط للحملات الإعلانية مصمّمة لزيادة التحويلات، ونماذج واجهات في فيغما، وأنظمة تصميم.' },
     ],
     items: [
       {
@@ -120,14 +120,14 @@ export const portfolioCategories: readonly PortfolioCategory[] = [
   },
   {
     id: 'digital-marketing',
-    title: 'Digital Marketing & Growth',
-    description: 'Stratégie & Acquisition',
+    title: 'التسويق الرقمي والنمو',
+    description: 'الاستراتيجية واستقطاب العملاء',
     cover: chroma,
     filters: [
-      { id: 'social-media', label: 'Stratégie & Social Media', description: 'Lignes éditoriales, direction artistique des flux, templates.' },
-      { id: 'ads', label: 'Campagnes Publicitaires (Ads)', description: 'Créatives publicitaires pour Meta (Facebook/Instagram) et Google Ads.' },
-      { id: 'seo', label: 'SEO & Visibilité', description: 'Optimisation Google Business Profile / Google Maps, référencement naturel.' },
-      { id: 'direct-marketing', label: 'Email & WhatsApp Marketing', description: 'Conception de campagnes et tunnels de communication client.' },
+      { id: 'social-media', label: 'الاستراتيجية ووسائل التواصل الاجتماعي', description: 'وضع التوجّه التحريري، والإخراج الفني لحسابات التواصل، وتصميم قوالب المنشورات.' },
+      { id: 'ads', label: 'الحملات الإعلانية', description: 'تصميم مواد إعلانية لفيسبوك وإنستغرام على منصّات ميتا، ولإعلانات غوغل.' },
+      { id: 'seo', label: 'تحسين الظهور في محركات البحث', description: 'تحسين الملف التجاري على غوغل والظهور على خرائط غوغل وفي نتائج البحث المجانية.' },
+      { id: 'direct-marketing', label: 'التسويق عبر البريد الإلكتروني وواتساب', description: 'تصميم الحملات وتخطيط مراحل التواصل مع العملاء.' },
     ],
     items: [
       {
@@ -136,7 +136,7 @@ export const portfolioCategories: readonly PortfolioCategory[] = [
       },
       {
         id: 'chroma-thumbnail', filterId: 'social-media', title: 'صورة مصغّرة لتحوّلات اللون', image: chroma,
-        alt: 'منشور بوجوه صفراء ووردية وبنفسجية بجوار عبارة COLOR SHIFT',
+        alt: 'منشور بوجوه صفراء ووردية وبنفسجية بجوار عبارة «تحوّل اللون» بالإنجليزية',
       },
       {
         id: 'grain-thumbnail', filterId: 'social-media', title: 'صورة مصغّرة لملمس الطباعة', image: 'work/brand-thumbnail-grain.svg',
@@ -144,7 +144,7 @@ export const portfolioCategories: readonly PortfolioCategory[] = [
       },
       {
         id: 'motion-thumbnail', filterId: 'social-media', title: 'صورة مصغّرة لأثر الحركة', image: 'work/brand-thumbnail-motion.svg',
-        alt: 'خطوط سماوية متموجة تترك أثرًا متكررًا بجوار عبارة AFTER IMAGE',
+        alt: 'خطوط سماوية متموجة تترك أثرًا متكررًا بجوار عبارة «الأثر البصري» بالإنجليزية',
       },
       {
         id: 'type-thumbnail', filterId: 'social-media', title: 'صورة مصغّرة لتباين الخطوط', image: 'work/brand-thumbnail-type.svg',
@@ -152,24 +152,24 @@ export const portfolioCategories: readonly PortfolioCategory[] = [
       },
       {
         id: 'nocturne-thumbnail', filterId: 'social-media', title: 'صورة مصغّرة لألوان الليل', image: 'work/brand-thumbnail-nocturne.svg',
-        alt: 'هلال وردي ونجوم صغيرة فوق تلال داكنة بجوار عبارة Night colors',
+        alt: 'هلال وردي ونجوم صغيرة فوق تلال داكنة بجوار عبارة «ألوان الليل» بالإنجليزية',
       },
       {
         id: 'cut-thumbnail', filterId: 'social-media', title: 'صورة مصغّرة للقصاصات الورقية', image: 'work/brand-thumbnail-cut.svg',
-        alt: 'قصاصات هندسية وردية وبنفسجية فوق بطاقة مائلة بجانب عبارة CUT OUT',
+        alt: 'قصاصات هندسية وردية وبنفسجية فوق بطاقة مائلة بجانب عبارة «قصاصات» بالإنجليزية',
       },
     ],
   },
   {
     id: 'audiovisual-media',
-    title: 'Audiovisuel & Média',
-    description: 'Storytelling & Post-Production',
+    title: 'الإنتاج السمعي البصري والإعلام',
+    description: 'السرد القصصي وما بعد الإنتاج',
     cover: studio,
     filters: [
-      { id: 'storyboard', label: 'Scénarisation & Storyboard', description: 'Écriture de scripts pour spots, pubs et films de marque.' },
-      { id: 'motion', label: 'Motion Design & Animation', description: '2D/3D, logos animés, habillages vidéo, infographies.' },
-      { id: 'post-production', label: 'Montage & Post-Production', description: 'Montage dynamique, étalonnage (color grading), sound design.' },
-      { id: 'shooting-direction', label: 'Direction Artistique de Shootings', description: 'Moodboards et briefs créatifs pour packshots produits et tournages.' },
+      { id: 'storyboard', label: 'كتابة السيناريو واللوحات القصصية', description: 'كتابة النصوص للمقاطع الترويجية والإعلانات وأفلام العلامات التجارية.' },
+      { id: 'motion', label: 'التصميم الحركي والرسوم المتحركة', description: 'رسوم متحركة ثنائية وثلاثية الأبعاد، وشعارات متحركة، وعناصر بصرية للفيديو، ورسوم معلوماتية.' },
+      { id: 'post-production', label: 'المونتاج وما بعد الإنتاج', description: 'مونتاج بإيقاع حيوي، ومعالجة الألوان، وتصميم الصوت.' },
+      { id: 'shooting-direction', label: 'الإخراج الفني لجلسات التصوير', description: 'إعداد لوحات مرجعية بصرية وموجزات إبداعية لتصوير المنتجات والفيديو.' },
     ],
     items: [
       {

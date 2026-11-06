@@ -35,9 +35,8 @@
 }
 .work-showcase__card { height: auto; min-height: 0; border-radius: clamp(11px, 1.1vw, 17px); }
 .work-showcase__card h3 {
-  bottom: clamp(11px, 1.3vw, 19px);
-  right: clamp(11px, 1.3vw, 19px);
-  left: clamp(11px, 1.3vw, 19px);
+  inset-block-end: clamp(11px, 1.3vw, 19px);
+  inset-inline: clamp(11px, 1.3vw, 19px);
   font-size: clamp(15px, 1.5vw, 22px);
 }
 .work-showcase__index { top: 10px; left: 12px; font-size: 9px; }
@@ -64,7 +63,7 @@
   .work-showcase__intro { display: none; }
   .work-showcase h2 { font-size: clamp(26px, 6.5vw, 34px); }
   .work-showcase__grid { gap: 8px; }
-  .work-showcase__card h3 { bottom: 9px; right: 10px; left: 10px; font-size: clamp(13px, 3.6vw, 17px); }
+  .work-showcase__card h3 { inset-block-end: 9px; inset-inline: 10px; font-size: clamp(13px, 3.6vw, 17px); }
   .work-showcase__index { top: 7px; left: 8px; font-size: 8px; }
   .work-showcase__note { margin-top: 5px; font-size: 9px; }
   .partners__heading { font-size: 18px; }
@@ -82,7 +81,7 @@
   .partners__mark { height: 24px; }
   .partners__mark svg { width: 22px; height: 22px; }
   .partners__heading { font-size: 17px; }
-  .work-showcase__card h3 { bottom: 7px; right: 8px; left: 8px; font-size: clamp(12px, 1.7vw, 16px); }
+  .work-showcase__card h3 { inset-block-end: 7px; inset-inline: 8px; font-size: clamp(12px, 1.7vw, 16px); }
   .work-showcase__index { top: 5px; left: 6px; font-size: 7px; }
 }
 @media (max-height: 620px) and (min-aspect-ratio: 11/10) {
@@ -91,7 +90,7 @@
 @media (max-height: 460px) {
   .work-showcase h2 { font-size: 22px; }
   .work-showcase__header { margin-bottom: 6px; }
-  .work-showcase__card h3 { bottom: 5px; }
+  .work-showcase__card h3 { inset-block-end: 5px; }
   .work-showcase__index { display: none; }
   .partners__note { display: none; }
 }

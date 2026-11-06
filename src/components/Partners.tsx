@@ -57,7 +57,7 @@ function WorkShowcase() {
           <span className="work-showcase__orbit" />
         </div>
         <span className="work-showcase__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-        <h3 id={'work-card-' + category.id} lang="fr" dir="ltr">{category.title}</h3>
+        <h3 id={'work-card-' + category.id}>{category.title}</h3>
         <button type="button" className="work-showcase__trigger" aria-haspopup="dialog" aria-controls="portfolio-sheet"
           aria-labelledby={'work-card-' + category.id} onClick={(event) => setSelection({ category: category.id, trigger: event.currentTarget })}>
           <span className="work-showcase__open" aria-hidden="true"><ArrowUpLeft /></span>
