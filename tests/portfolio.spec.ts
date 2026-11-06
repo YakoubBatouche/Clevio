@@ -1,6 +1,51 @@
 import { expect, test, type Locator } from '@playwright/test'
 
-const category = 'الهوية والعلامة التجارية'
+const category = 'Print & Identité Visuelle'
+const marketingFilter = 'Supports Marketing'
+
+const categories = [
+  {
+    title: category,
+    description: 'Conception Offline',
+    filters: ['Branding', 'Édition & Catalogues', 'Packaging & Étiquettes', 'Signalétique & Grand Format', marketingFilter],
+  },
+  {
+    title: 'Web & App',
+    description: 'Conception Tech, UI/UX & Code',
+    filters: ['Sites Vitrines & Corporate', 'E-Commerce & Retail', 'Applications Mobiles', 'Web Apps & Outils Métier', 'Landing Pages & UI/UX Pur'],
+  },
+  {
+    title: 'Digital Marketing & Growth',
+    description: 'Stratégie & Acquisition',
+    filters: ['Stratégie & Social Media', 'Campagnes Publicitaires (Ads)', 'SEO & Visibilité', 'Email & WhatsApp Marketing'],
+  },
+  {
+    title: 'Audiovisuel & Média',
+    description: 'Storytelling & Post-Production',
+    filters: ['Scénarisation & Storyboard', 'Motion Design & Animation', 'Montage & Post-Production', 'Direction Artistique de Shootings'],
+  },
+]
+
+test('the four portfolio categories expose their French filters and service scope', async ({ page }) => {
+  await page.goto('/?skipintro#work')
+  const work = page.locator('#work')
+  await expect(work.locator('.work-showcase__card h3')).toHaveText(categories.map(entry => entry.title))
+  for (const entry of categories) {
+    await work.getByRole('button', { name: entry.title, exact: true }).click()
+    const sheet = page.getByRole('dialog', { name: entry.title, exact: true })
+    await expect(sheet).toBeVisible()
+    await expect(sheet.getByText(entry.description, { exact: false })).toBeVisible()
+    await expect(sheet.locator('.portfolio-sheet__filter')).toHaveText(['الكل', ...entry.filters])
+    if (entry.title === category) {
+      await sheet.getByRole('button', { name: 'Édition & Catalogues', exact: true }).click()
+      await expect(sheet.getByText(/Brochures, magazines, rapports, menus/)).toBeVisible()
+      await expect(sheet.locator('.portfolio-sheet__empty')).toBeVisible()
+      await expect(sheet.locator('.portfolio-sheet__media')).toHaveCount(0)
+    }
+    await page.keyboard.press('Escape')
+    await expect(sheet).toBeHidden()
+  }
+})
 
 test('portfolio opens with five desktop columns, filters the gallery, and returns focus', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 })
@@ -14,13 +59,13 @@ test('portfolio opens with five desktop columns, filters the gallery, and return
   await expect(all).toHaveAttribute('aria-pressed', 'true')
   const images = sheet.locator('.portfolio-sheet__media img')
   const imageCount = await images.count()
-  expect(imageCount).toBeGreaterThanOrEqual(15)
+  expect(imageCount).toBeGreaterThan(5)
   const allSources = await images.evaluateAll(items => items.map(item => item.getAttribute('src')))
   expect(new Set(allSources).size).toBe(imageCount)
   const [row, nextRow] = await images.evaluateAll(items => {
     const firstSix = items.slice(0, 6).map(item => {
-    const { left, top, width } = item.getBoundingClientRect()
-    return { left, top, width }
+      const { left, top, width } = item.getBoundingClientRect()
+      return { left, top, width }
     })
     return [firstSix.slice(0, 5), firstSix[5]] as const
   })
@@ -33,23 +78,23 @@ test('portfolio opens with five desktop columns, filters the gallery, and return
 
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   for (const [label, source] of [
-    ['شعارات', /\/work\/brand-identity\.webp$/],
-    ['ملصقات', /\/work\/brand-poster\.svg$/],
-    ['صور مصغّرة', /\/work\/brand-thumbnail\.svg$/],
+    ['Branding', /\/work\/brand-logo-orbit\.svg$/],
+    ['Packaging & Étiquettes', /\/work\/brand-identity\.webp$/],
+    [marketingFilter, /\/work\/brand-poster\.svg$/],
   ] as const) {
     const filter = sheet.getByRole('button', { name: label, exact: true })
     await filter.click()
     await expect(filter).toHaveAttribute('aria-pressed', 'true')
     await expect(all).toHaveAttribute('aria-pressed', 'false')
     const filtered = await images.evaluateAll(items => items.map(item => item.getAttribute('src')))
-    expect(filtered.length).toBeGreaterThan(1)
+    expect(filtered.length).toBeGreaterThan(0)
     expect(filtered.length).toBeLessThan(imageCount)
     expect(filtered.some(path => path && source.test(path))).toBe(true)
   }
   await all.click()
   await expect(all).toHaveAttribute('aria-pressed', 'true')
   await expect(images).toHaveCount(imageCount)
-  await sheet.getByRole('button', { name: 'ملصقات', exact: true }).click()
+  await sheet.getByRole('button', { name: marketingFilter, exact: true }).click()
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.keyboard.press('Escape')
   await expect(sheet).toBeHidden()
@@ -61,8 +106,8 @@ test('portfolio opens with five desktop columns, filters the gallery, and return
   await expect(images).toHaveCount(imageCount)
   await sheet.getByRole('button', { name: 'إغلاق معرض الأعمال', exact: true }).click()
   await expect(sheet).toBeHidden()
-  await page.locator('#work').getByRole('button', { name: 'التصميم الإبداعي', exact: true }).click()
-  await expect(page.getByRole('dialog', { name: 'التصميم الإبداعي', exact: true })).toBeVisible()
+  await page.locator('#work').getByRole('button', { name: 'Web & App', exact: true }).click()
+  await expect(page.getByRole('dialog', { name: 'Web & App', exact: true })).toBeVisible()
 })
 
 test('the sheet opens at its full height and the gallery scrolls independently', async ({ page }) => {
@@ -111,7 +156,7 @@ test('artwork previews fit the viewport and preserve the filtered gallery', asyn
   await page.goto('/?skipintro#work')
   await page.getByRole('button', { name: category, exact: true }).click()
   const sheet = page.getByRole('dialog', { name: category, exact: true })
-  const filter = sheet.getByRole('button', { name: 'ملصقات', exact: true })
+  const filter = sheet.getByRole('button', { name: marketingFilter, exact: true })
   await filter.click()
   const gallery = sheet.locator('.portfolio-sheet__scroll')
   const imageTrigger = gallery.locator('.portfolio-sheet__media').last()

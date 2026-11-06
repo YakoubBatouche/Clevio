@@ -1,5 +1,6 @@
 .portfolio-sheet {
   --sheet-accent: var(--cyan, #7af4fc);
+  --sheet-font-fr: 'Alexandria Variable', sans-serif;
   --sheet-gutter: clamp(20px, 4vw, 48px);
   --sheet-viewport: 100vh;
   --sheet-top: max(calc(var(--header-offset, 112px) - 12px), env(safe-area-inset-top));
@@ -90,19 +91,31 @@
   gap: 16px;
 }
 
+.portfolio-sheet__heading {
+  min-width: 0;
+}
+
+.portfolio-sheet__summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  margin-top: 5px;
+}
+
 .portfolio-sheet__eyebrow {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: 0 0 5px;
+  gap: 6px;
+  margin: 0;
   color: var(--sheet-accent);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 1.5;
 }
 
 .portfolio-sheet__eyebrow::before {
-  width: 18px;
+  width: 12px;
   height: 1px;
   background: currentColor;
   content: '';
@@ -110,15 +123,21 @@
 
 .portfolio-sheet__title {
   margin: 0;
-  font: 900 clamp(26px, 4.2vw, 48px)/1.25 var(--font-display);
+  font: 800 clamp(24px, 4.2vw, 40px)/1.2 var(--sheet-font-fr);
   overflow-wrap: anywhere;
 }
 
 .portfolio-sheet__description {
-  margin: 6px 0 0;
+  margin: 0;
   color: #b6c9de;
+  font-family: var(--sheet-font-fr);
   font-size: 13px;
   line-height: 1.45;
+}
+
+.portfolio-sheet__title,
+.portfolio-sheet__description {
+  text-align: right;
 }
 
 .portfolio-sheet__close {
@@ -142,20 +161,19 @@
 .portfolio-sheet__filters {
   display: flex;
   align-items: center;
+  min-width: 0;
   gap: 8px;
   margin: 13px -4px 0;
   padding: 4px;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
-  scrollbar-width: none;
-}
-
-.portfolio-sheet__filters::-webkit-scrollbar {
-  display: none;
+  scrollbar-color: rgb(153 200 237 / 48%) transparent;
+  scrollbar-width: thin;
 }
 
 .portfolio-sheet__filter {
   flex: none;
+  max-inline-size: 100%;
   min-height: 44px;
   padding: 6px 16px;
   border: 1px solid rgb(174 213 250 / 23%);
@@ -165,7 +183,22 @@
   font-size: 14px;
   font-weight: 700;
   line-height: 1.4;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+
+.portfolio-sheet__filter:lang(fr) {
+  font-family: var(--sheet-font-fr);
+}
+
+.portfolio-sheet__filter-description {
+  max-inline-size: 70ch;
+  margin: 0 auto 14px;
+  padding: 8px 12px;
+  border-inline-start: 2px solid var(--sheet-accent);
+  background: rgb(135 178 229 / 7%);
+  color: #d8e8f7;
+  font: 400 13px/1.65 var(--sheet-font-fr);
+  overflow-wrap: anywhere;
 }
 
 .portfolio-sheet__filter[aria-pressed='true'] {
@@ -250,8 +283,11 @@
 .portfolio-sheet__card-meta {
   margin: 0;
   color: var(--sheet-accent);
+  font-family: var(--sheet-font-fr);
   font-size: 13px;
   line-height: 1.5;
+  overflow-wrap: anywhere;
+  text-align: right;
 }
 
 .portfolio-sheet__empty {
@@ -340,7 +376,7 @@
   .portfolio-sheet__chrome {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, max-content) 44px;
+    grid-template-columns: minmax(210px, max-content) minmax(0, 1fr) 44px;
     align-items: center;
     column-gap: 14px;
     padding-block: 4px 9px;
@@ -352,16 +388,12 @@
     margin: -3px auto 0;
   }
 
-  .portfolio-sheet__eyebrow {
-    display: none;
+  .portfolio-sheet__heading {
+    max-inline-size: clamp(230px, 25vw, 350px);
   }
 
   .portfolio-sheet__title {
-    font-size: clamp(22px, 2.25vw, 30px);
-  }
-
-  .portfolio-sheet__description {
-    margin-top: 0;
+    font-size: clamp(19px, 1.9vw, 28px);
   }
 
   .portfolio-sheet__close {
@@ -371,12 +403,19 @@
   }
 
   .portfolio-sheet__filters {
+    gap: 6px;
     margin: 0 -4px;
+  }
+
+  .portfolio-sheet__filter {
+    padding-inline: 10px;
+    font-size: 12px;
   }
 }
 
 @media (min-width: 1024px) {
-  .portfolio-sheet__card-title {
+  .portfolio-sheet__card-title,
+  .portfolio-sheet__card-meta {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -384,9 +423,13 @@
 }
 
 @media (min-width: 1024px) and (max-height: 960px) {
+  .portfolio-sheet__scroll {
+    container-type: size;
+  }
+
   .portfolio-sheet__grid {
-    /* Keep three rows visible at shorter desktop heights. */
-    max-inline-size: max(720px, calc((var(--sheet-viewport) - 182px) * 1.56));
+    /* Allow space for three rows below the sheet controls. */
+    max-inline-size: max(600px, calc((100cqh - 130px) * 2.3));
   }
 
   .portfolio-sheet__card-body {

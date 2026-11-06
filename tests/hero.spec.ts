@@ -483,8 +483,8 @@ test('fixed glass navigation keeps section headings clear and groups work above 
   await page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true }).getByRole('link', { name: 'أعمالنا', exact: true }).click()
   await expect(page).toHaveURL(/#work$/)
   await expect(page.locator('#work-heading')).toBeInViewport()
-  await expect(page.locator('#partners .work-showcase__card')).toHaveCount(8)
-  await expect(page.locator('.work-showcase__card button[aria-haspopup="dialog"]')).toHaveCount(8)
+  await expect(page.locator('#partners .work-showcase__card')).toHaveCount(4)
+  await expect(page.locator('.work-showcase__card button[aria-haspopup="dialog"]')).toHaveCount(4)
   expect(await page.locator('#work-heading').evaluate((element) => element.getBoundingClientRect().top)).toBeGreaterThan(headerBottom)
   const lastCard = await page.locator('.work-showcase__card').last().boundingBox()
   const partnersTitle = await page.locator('#partners-heading').boundingBox()
@@ -500,7 +500,7 @@ test('work and partner marks fit together below the navbar on compact and wide s
     await page.setViewportSize(viewport)
     await page.goto('/?skipintro#work')
     await page.evaluate(() => document.fonts.ready)
-    await expect(page.locator('.work-showcase__card')).toHaveCount(8)
+    await expect(page.locator('.work-showcase__card')).toHaveCount(4)
     const bounds = await page.evaluate(() => ({
       header: document.querySelector('.site-header')!.getBoundingClientRect().bottom,
       heading: document.querySelector('#work-heading')!.getBoundingClientRect().top,

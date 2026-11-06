@@ -120,6 +120,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
   }
 
   const { displayed, filterId, filterMotion } = selection
+  const selectedFilter = displayed?.filters.find((filter) => filter.id === filterId)
   const items = displayed?.items.filter((item) => filterId === allFilter.id || item.filterId === filterId) ?? []
 
   const sheet = createPortal(
@@ -161,21 +162,25 @@ export function PortfolioSheet({ category, trigger, onClose }: {
               }}
             />
             <header className="portfolio-sheet__header">
-              <div>
-                <p className="portfolio-sheet__eyebrow">معرض الأعمال</p>
-                <h2 id="portfolio-sheet-title" className="portfolio-sheet__title">{displayed.title}</h2>
-                <p className="portfolio-sheet__description">نماذج بصرية توضيحية</p>
+              <div className="portfolio-sheet__heading">
+                <h2 id="portfolio-sheet-title" className="portfolio-sheet__title" lang="fr" dir="ltr">{displayed.title}</h2>
+                <div className="portfolio-sheet__summary">
+                  <p className="portfolio-sheet__description" lang="fr" dir="ltr">{displayed.description}</p>
+                  <p className="portfolio-sheet__eyebrow">نماذج بصرية توضيحية</p>
+                </div>
               </div>
               <button className="portfolio-sheet__close" type="button" aria-label="إغلاق معرض الأعمال" autoFocus onClick={onClose}>
                 <X aria-hidden="true" />
               </button>
             </header>
-            <div ref={filtersRef} className="portfolio-sheet__filters" role="group" aria-label="تصفية الأعمال">
+            <div ref={filtersRef} className="portfolio-sheet__filters" data-native-scroll role="group" aria-label="تصفية الأعمال">
               {[allFilter, ...displayed.filters].map((filter) => (
                 <button
                   key={filter.id}
                   className="portfolio-sheet__filter"
                   type="button"
+                  lang={filter.id === allFilter.id ? 'ar' : 'fr'}
+                  dir={filter.id === allFilter.id ? 'rtl' : 'ltr'}
                   aria-controls="portfolio-sheet-gallery"
                   aria-pressed={filterId === filter.id}
                   onClick={() => {
@@ -196,8 +201,14 @@ export function PortfolioSheet({ category, trigger, onClose }: {
             data-native-scroll
             role="region"
             aria-label="نماذج الأعمال"
+            aria-describedby={selectedFilter ? 'portfolio-sheet-filter-description' : undefined}
             tabIndex={0}
           >
+            {selectedFilter && (
+              <p id="portfolio-sheet-filter-description" className="portfolio-sheet__filter-description" lang="fr" dir="ltr">
+                {selectedFilter.description}
+              </p>
+            )}
             {items.length ? (
               <ul key={filterId} className="portfolio-sheet__grid" role="list" data-filter-motion={filterMotion || undefined}>
                 {items.map((item) => (
@@ -215,13 +226,15 @@ export function PortfolioSheet({ category, trigger, onClose }: {
                     </button>
                     <div className="portfolio-sheet__card-body">
                       <h3 className="portfolio-sheet__card-title">{item.title}</h3>
-                      <p className="portfolio-sheet__card-meta">{displayed.filters.find((filter) => filter.id === item.filterId)?.label}</p>
+                      <p className="portfolio-sheet__card-meta" lang="fr" dir="ltr">
+                        {displayed.filters.find((filter) => filter.id === item.filterId)?.label}
+                      </p>
                     </div>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p key={filterId} className="portfolio-sheet__empty" data-filter-motion={filterMotion || undefined}>لا توجد أعمال في هذا التصنيف حاليًا.</p>
+              <p key={filterId} className="portfolio-sheet__empty" data-filter-motion={filterMotion || undefined}>لا تتوفر نماذج بصرية لهذا التصنيف حاليًا.</p>
             )}
           </div>
         </div>

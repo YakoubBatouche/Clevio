@@ -40,8 +40,6 @@ const partnerMarks = [
 ]
 
 
-const workVisuals = ['brand-identity.webp', 'digital-experience.webp', 'digital-experience.webp', 'visual-story.webp', 'brand-identity.webp', 'digital-experience.webp', 'visual-story.webp', 'digital-experience.webp']
-
 function WorkShowcase() {
   const root = useRef<HTMLDivElement>(null)
   const [selection, setSelection] = useState<{ category: string; trigger: HTMLButtonElement } | null>(null)
@@ -52,14 +50,14 @@ function WorkShowcase() {
       <p className="work-showcase__intro">أفكار تأخذ شكلها.<br />وتجارب تترك أثرها.</p>
     </div>
     <div className="work-showcase__grid">
-      {portfolioCategories.map((category, index) => <article className={'work-showcase__card work-showcase__card--' + index} key={category.id}>
+      {portfolioCategories.map((category, index) => <article className="work-showcase__card" key={category.id}>
         <div className="work-showcase__visual" aria-hidden="true">
-          <img src={import.meta.env.BASE_URL + 'work/' + workVisuals[index]} alt="" loading="lazy" decoding="async" width="1122" height="941" />
+          <img src={import.meta.env.BASE_URL + category.cover} alt="" loading="lazy" decoding="async" />
           <span className="work-showcase__glass" />
           <span className="work-showcase__orbit" />
         </div>
         <span className="work-showcase__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-        <h3 id={'work-card-' + category.id}>{category.title}</h3>
+        <h3 id={'work-card-' + category.id} lang="fr" dir="ltr">{category.title}</h3>
         <button type="button" className="work-showcase__trigger" aria-haspopup="dialog" aria-controls="portfolio-sheet"
           aria-labelledby={'work-card-' + category.id} onClick={(event) => setSelection({ category: category.id, trigger: event.currentTarget })}>
           <span className="work-showcase__open" aria-hidden="true"><ArrowUpLeft /></span>
