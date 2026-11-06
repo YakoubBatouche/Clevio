@@ -404,6 +404,10 @@
   .portfolio-sheet__filter:focus-visible {
     outline-offset: -4px;
   }
+
+  .portfolio-sheet__filter[aria-pressed='true']:focus-visible {
+    outline-color: currentColor;
+  }
 }
 
 @media (min-width: 1024px) {
