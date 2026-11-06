@@ -17,7 +17,7 @@
   box-sizing: border-box;
   max-inline-size: 76rem;
   margin-inline: auto;
-  padding: clamp(1rem, 3vw, 2.75rem);
+  padding: clamp(1rem, 2.5vw, 2rem);
 }
 
 .clevio-editor-home__header {
@@ -26,19 +26,12 @@
   align-items: center;
   justify-content: space-between;
   gap: .75rem;
-  margin-block-end: clamp(1.25rem, 3vw, 2.25rem);
+  margin-block-end: .75rem;
 }
 
-.clevio-editor-home__brand {
-  display: grid;
-  place-items: center;
-  padding: .55rem .9rem;
-  border-radius: .85rem;
-  background: #06172d;
-}
-
-.clevio-editor-home__brand img { inline-size: 6.5rem; block-size: auto; }
-.clevio-editor-home a { color: inherit; text-decoration: none; }
+.clevio-editor-home__brand { inline-size: 6.5rem; block-size: auto; }
+.clevio-editor-home a:any-link { color: inherit; text-decoration: none; }
+.clevio-editor-home a.clevio-editor-home__preview:any-link { color: var(--editor-text); }
 .clevio-editor-home a:focus-visible { outline: 3px solid var(--editor-focus); outline-offset: 3px; }
 
 .clevio-editor-home__preview,
@@ -58,7 +51,7 @@
 }
 
 .clevio-editor-home__intro {
-  padding: clamp(1.35rem, 3vw, 2.25rem);
+  padding: clamp(1.15rem, 2vw, 1.65rem);
   border: 1px solid #223e58;
   border-radius: 1.25rem;
   color: #f5fbff;
@@ -68,7 +61,7 @@
 .clevio-editor-home__intro h1 {
   margin: .2rem 0 .45rem;
   color: inherit;
-  font: 750 clamp(1.85rem, 5.2vw, 3.2rem)/1.24 system-ui, sans-serif;
+  font: 750 clamp(1.85rem, 4.7vw, 2.65rem)/1.24 system-ui, sans-serif;
 }
 
 .clevio-editor-home__intro p { margin: 0; color: #d6e5f3; }
@@ -87,7 +80,7 @@
   align-items: flex-start;
   gap: .5rem;
   min-inline-size: 0;
-  padding: 1.1rem;
+  padding: .9rem 1rem;
   border: 1px solid var(--editor-edge);
   border-radius: 1rem;
   background: var(--editor-card);
@@ -99,8 +92,8 @@
 .clevio-editor-home__icon {
   display: grid;
   place-items: center;
-  inline-size: 2.6rem;
-  block-size: 2.6rem;
+  inline-size: 2.35rem;
+  block-size: 2.35rem;
   border-radius: .75rem;
   color: var(--editor-accent);
   background: var(--editor-icon);
