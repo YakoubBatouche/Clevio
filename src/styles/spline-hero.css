@@ -8,7 +8,7 @@
 .spline-hero__artwork {
   position: absolute;
   z-index: 0;
-  inset: 0 40% 0 0;
+  inset: 0 52% 0 0;
   overflow: hidden;
   pointer-events: none;
   container-type: size;
@@ -36,10 +36,8 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to right, transparent 70%, var(--navy)),
+    linear-gradient(to right, transparent calc(100% - 16px), var(--navy)),
     linear-gradient(to bottom, var(--navy), transparent 20%);
-  /* Leave the embedded badge visible in its lower-right corner. */
-  mask-image: linear-gradient(#000 calc(100% - 75px), transparent calc(100% - 30px));
 }
 
 .hero--spline .hero__content {
@@ -92,7 +90,7 @@
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
     gap: 0;
-    padding: calc(var(--header-offset) - 8px) 0 83px;
+    padding: calc(var(--header-offset) - 8px) 0 clamp(92px, 13svh, 112px);
   }
 
   .spline-hero__artwork {
@@ -103,8 +101,9 @@
 
   .spline-hero__artwork::after {
     background:
-      linear-gradient(to right, var(--navy), transparent 12% 83%, var(--navy)),
-      linear-gradient(to bottom, var(--navy), transparent 15%);
+      linear-gradient(to right, var(--navy), transparent 12% calc(100% - 16px), var(--navy)),
+      linear-gradient(to bottom, var(--navy), transparent 15%),
+      linear-gradient(to top, var(--navy), transparent 16px);
   }
 
   .hero--spline .hero__content {
