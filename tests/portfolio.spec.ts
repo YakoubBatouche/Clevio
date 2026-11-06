@@ -78,11 +78,11 @@ test('the sheet opens at its full height and the gallery scrolls independently',
   expect(Math.abs(initialTop - navbarBottom)).toBeLessThan(38)
   const pageScroll = await page.evaluate(() => scrollY)
   const visibleRows = await scroller.evaluate(element => {
-    const { bottom } = element.getBoundingClientRect()
+    const { top, bottom } = element.getBoundingClientRect()
     const rows = new Set(
-      Array.from(element.querySelectorAll('.portfolio-sheet__card'), card => card.getBoundingClientRect().top)
-        .filter(rowTop => rowTop < bottom - 24)
-        .map(Math.round),
+      Array.from(element.querySelectorAll('.portfolio-sheet__card'), card => card.getBoundingClientRect())
+        .filter(card => card.top >= top && card.bottom <= bottom + 1)
+        .map(card => Math.round(card.top)),
     )
     return rows.size
   })
