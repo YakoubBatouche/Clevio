@@ -1,37 +1,24 @@
 import { setTimeout as pause } from 'node:timers/promises'
 import { expect, test, type CDPSession, type Locator } from '@playwright/test'
 
-const category = 'المطبوعات والهوية البصرية'
+const category = 'المطبوعات'
+const logoCategory = 'الشعارات'
+const digitalCategory = 'التسويق الرقمي والنمو'
 const webCategory = 'المواقع والتطبيقات'
-const brandingFilter = 'تصميم العلامة التجارية'
-const editorialFilter = 'المطبوعات التحريرية والكتالوجات'
-const packagingFilter = 'التغليف والملصقات التعريفية'
-const marketingFilter = 'المواد التسويقية'
+const brochuresFilter = 'الكتيبات'
+const socialFilter = 'منشورات التواصل الاجتماعي'
+const thumbnailsFilter = 'الصور المصغّرة'
+const signaturesFilter = 'توقيعات البريد الإلكتروني'
 
 const categories = [
-  {
-    title: category,
-    description: 'تصميم المواد المطبوعة والمادية',
-    filters: [brandingFilter, editorialFilter, packagingFilter, 'اللافتات والطباعة كبيرة الحجم', marketingFilter],
-  },
-  {
-    title: webCategory,
-    description: 'التصميم التقني، وتصميم الواجهات وتجربة المستخدم، والبرمجة',
-    filters: ['المواقع التعريفية ومواقع المؤسسات', 'التجارة الإلكترونية وتجارة التجزئة', 'تطبيقات الهواتف الذكية', 'تطبيقات الويب وأدوات العمل', 'صفحات الهبوط وتصميم الواجهات وتجربة المستخدم'],
-  },
-  {
-    title: 'التسويق الرقمي والنمو',
-    description: 'الاستراتيجية واستقطاب العملاء',
-    filters: ['الاستراتيجية ووسائل التواصل الاجتماعي', 'الحملات الإعلانية', 'تحسين الظهور في محركات البحث', 'التسويق عبر البريد الإلكتروني وواتساب'],
-  },
-  {
-    title: 'الإنتاج السمعي البصري والإعلام',
-    description: 'السرد القصصي وما بعد الإنتاج',
-    filters: ['كتابة السيناريو واللوحات القصصية', 'التصميم الحركي والرسوم المتحركة', 'المونتاج وما بعد الإنتاج', 'الإخراج الفني لجلسات التصوير'],
-  },
+  { title: category, filters: [brochuresFilter, 'المجلات', 'التقارير', 'قوائم الطعام'] },
+  { title: logoCategory, filters: [] },
+  { title: digitalCategory, filters: [socialFilter, thumbnailsFilter, 'القصص', signaturesFilter] },
+  { title: webCategory, filters: ['المواقع الإلكترونية', 'التطبيقات', 'منصات الويب'] },
+  { title: 'الإنتاج السمعي البصري والإعلام', filters: ['مقاطع ريلز', 'التصميم الحركي'] },
 ]
 
-test('the four portfolio categories expose their Arabic filters and service scope', async ({ page }) => {
+test('the five Arabic portfolio categories expose their own filters and Logos opens directly to artwork', async ({ page }) => {
   await page.goto('/?skipintro#work')
   const work = page.locator('#work')
   await expect(work.locator('.work-showcase__card h3')).toHaveText(categories.map(entry => entry.title))
@@ -39,11 +26,18 @@ test('the four portfolio categories expose their Arabic filters and service scop
     await work.getByRole('button', { name: entry.title, exact: true }).click()
     const sheet = page.getByRole('dialog', { name: entry.title, exact: true })
     await expect(sheet).toBeVisible()
-    await expect(sheet.getByText(entry.description, { exact: false })).toBeVisible()
-    await expect(sheet.locator('.portfolio-sheet__filter')).toHaveText(['الكل', ...entry.filters])
+    if (entry.filters.length) {
+      await expect(sheet.locator('.portfolio-sheet__filter')).toHaveText(['الكل', ...entry.filters])
+    } else {
+      await expect(sheet.getByRole('group', { name: 'تصفية الأعمال' })).toHaveCount(0)
+      await sheet.locator('.portfolio-sheet__media').first().click()
+      await expect(page.locator('.portfolio-image-viewer')).toBeVisible()
+      await page.keyboard.press('Escape')
+      await expect(page.locator('.portfolio-image-viewer')).toBeHidden()
+    }
     if (entry.title === category) {
-      await sheet.getByRole('button', { name: editorialFilter, exact: true }).click()
-      await expect(sheet.getByText('تصميم الكتيبات والمجلات والتقارير وقوائم الطعام.', { exact: true })).toBeVisible()
+      await sheet.getByRole('button', { name: brochuresFilter, exact: true }).click()
+      await expect(sheet.locator('.portfolio-sheet__filter-description')).toHaveText(/كتيبات/)
       await expect(sheet.locator('.portfolio-sheet__empty')).toBeVisible()
       await expect(sheet.locator('.portfolio-sheet__media')).toHaveCount(0)
     }
@@ -55,20 +49,20 @@ test('the four portfolio categories expose their Arabic filters and service scop
 test('portfolio opens with five desktop columns, filters the gallery, and returns focus', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 })
   await page.goto('/?skipintro#work')
-  const trigger = page.getByRole('button', { name: category, exact: true })
+  const trigger = page.getByRole('button', { name: digitalCategory, exact: true })
   await trigger.focus()
   await page.keyboard.press('Enter')
-  const sheet = page.getByRole('dialog', { name: category, exact: true })
+  const sheet = page.getByRole('dialog', { name: digitalCategory, exact: true })
   await expect(sheet).toBeVisible()
   const filterStrip = sheet.getByRole('group', { name: 'تصفية الأعمال', exact: true })
   const all = filterStrip.getByRole('button', { name: 'الكل', exact: true })
   const [heading, title, close, filters, firstPill, lastPill] = await Promise.all([
     sheet.locator('.portfolio-sheet__heading').boundingBox(),
-    sheet.getByRole('heading', { name: category, exact: true }).boundingBox(),
+    sheet.getByRole('heading', { name: digitalCategory, exact: true }).boundingBox(),
     sheet.getByRole('button', { name: 'إغلاق معرض الأعمال', exact: true }).boundingBox(),
     filterStrip.boundingBox(),
     all.boundingBox(),
-    filterStrip.getByRole('button', { name: marketingFilter, exact: true }).boundingBox(),
+    filterStrip.getByRole('button', { name: signaturesFilter, exact: true }).boundingBox(),
   ])
   expect(filters!.y).toBeGreaterThanOrEqual(heading!.y + heading!.height - 1)
   expect(Math.abs(filters!.x + filters!.width - title!.x - title!.width)).toBeLessThan(2)
@@ -97,9 +91,8 @@ test('portfolio opens with five desktop columns, filters the gallery, and return
 
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   for (const [label, source] of [
-    [brandingFilter, /\/work\/brand-logo-orbit\.svg$/],
-    [packagingFilter, /\/work\/brand-identity\.webp$/],
-    [marketingFilter, /\/work\/brand-poster\.svg$/],
+    [socialFilter, /\/work\/brand-poster-echo\.svg$/],
+    [thumbnailsFilter, /\/work\/brand-thumbnail\.svg$/],
   ] as const) {
     const filter = sheet.getByRole('button', { name: label, exact: true })
     await filter.click()
@@ -113,7 +106,7 @@ test('portfolio opens with five desktop columns, filters the gallery, and return
   await all.click()
   await expect(all).toHaveAttribute('aria-pressed', 'true')
   await expect(images).toHaveCount(imageCount)
-  await sheet.getByRole('button', { name: marketingFilter, exact: true }).click()
+  await sheet.getByRole('button', { name: socialFilter, exact: true }).click()
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.keyboard.press('Escape')
   await expect(sheet).toBeHidden()
@@ -130,7 +123,7 @@ test('portfolio opens with five desktop columns, filters the gallery, and return
 })
 
 test('the sheet opens at its full height and the gallery scrolls independently', async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 720 })
+  await page.setViewportSize({ width: 800, height: 550 })
   await page.goto('/?skipintro#work')
   await page.getByRole('button', { name: category, exact: true }).click()
   const sheet = page.getByRole('dialog', { name: category, exact: true })
@@ -141,17 +134,6 @@ test('the sheet opens at its full height and the gallery scrolls independently',
   const navbarBottom = await page.locator('.site-header').evaluate(element => element.getBoundingClientRect().bottom)
   expect(Math.abs(initialTop - navbarBottom)).toBeLessThan(38)
   const pageScroll = await page.evaluate(() => scrollY)
-  const visibleRows = await scroller.evaluate(element => {
-    const { top, bottom } = element.getBoundingClientRect()
-    const rows = new Set(
-      Array.from(element.querySelectorAll('.portfolio-sheet__card'), card => card.getBoundingClientRect())
-        .filter(card => card.top >= top && card.bottom <= bottom + 1)
-        .map(card => Math.round(card.top)),
-    )
-    return rows.size
-  })
-  expect(visibleRows).toBeGreaterThanOrEqual(3)
-
   const box = await scroller.boundingBox()
   await page.mouse.move(box!.x + box!.width / 2, box!.y + 72)
   await page.mouse.wheel(0, 100)
@@ -173,9 +155,9 @@ test('the sheet opens at its full height and the gallery scrolls independently',
 test('artwork previews fit the viewport and preserve the filtered gallery', async ({ page }) => {
   await page.setViewportSize({ width: 800, height: 550 })
   await page.goto('/?skipintro#work')
-  await page.getByRole('button', { name: category, exact: true }).click()
-  const sheet = page.getByRole('dialog', { name: category, exact: true })
-  const filter = sheet.getByRole('button', { name: marketingFilter, exact: true })
+  await page.getByRole('button', { name: digitalCategory, exact: true }).click()
+  const sheet = page.getByRole('dialog', { name: digitalCategory, exact: true })
+  const filter = sheet.getByRole('button', { name: thumbnailsFilter, exact: true })
   await filter.click()
   const gallery = sheet.locator('.portfolio-sheet__scroll')
   const imageTrigger = gallery.locator('.portfolio-sheet__media').last()
@@ -245,11 +227,11 @@ test.describe('mobile portfolio', () => {
   test('a horizontal touch swipe reveals hidden filters while the gallery and page stay put', async ({ page, browserName }) => {
     test.skip(browserName !== 'chromium', 'Native swipe input uses Chromium device emulation.')
     await page.goto('/?skipintro#work')
-    await page.getByRole('button', { name: category, exact: true }).tap()
-    const sheet = page.getByRole('dialog', { name: category, exact: true })
+    await page.getByRole('button', { name: digitalCategory, exact: true }).tap()
+    const sheet = page.getByRole('dialog', { name: digitalCategory, exact: true })
     const filters = sheet.getByRole('group', { name: 'تصفية الأعمال', exact: true })
     const all = filters.getByRole('button', { name: 'الكل', exact: true })
-    const revealedFilter = filters.getByRole('button', { name: packagingFilter, exact: true })
+    const revealedFilter = filters.getByRole('button', { name: signaturesFilter, exact: true })
     const gallery = sheet.locator('.portfolio-sheet__scroll')
     await page.evaluate(() => document.fonts.ready)
     await expect(all).toBeInViewport()

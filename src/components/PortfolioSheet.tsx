@@ -173,24 +173,26 @@ export function PortfolioSheet({ category, trigger, onClose }: {
                 <X aria-hidden="true" />
               </button>
             </header>
-            <div ref={filtersRef} className="portfolio-sheet__filters" data-native-scroll="horizontal" role="group" aria-label="تصفية الأعمال">
-              {[allFilter, ...displayed.filters].map((filter) => (
-                <button
-                  key={filter.id}
-                  className="portfolio-sheet__filter"
-                  type="button"
-                  aria-controls="portfolio-sheet-gallery"
-                  aria-pressed={filterId === filter.id}
-                  onClick={() => {
-                    if (filter.id === filterId) return
-                    setSelection({ ...selection, filterId: filter.id, filterMotion: true })
-                    scrollRef.current?.scrollTo(0, 0)
-                  }}
-                >
-                  {filter.label}
-                </button>
-              ))}
-            </div>
+            {displayed.filters.length > 0 && (
+              <div ref={filtersRef} className="portfolio-sheet__filters" data-native-scroll="horizontal" role="group" aria-label="تصفية الأعمال">
+                {[allFilter, ...displayed.filters].map((filter) => (
+                  <button
+                    key={filter.id}
+                    className="portfolio-sheet__filter"
+                    type="button"
+                    aria-controls="portfolio-sheet-gallery"
+                    aria-pressed={filterId === filter.id}
+                    onClick={() => {
+                      if (filter.id === filterId) return
+                      setSelection({ ...selection, filterId: filter.id, filterMotion: true })
+                      scrollRef.current?.scrollTo(0, 0)
+                    }}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <div
             ref={scrollRef}
@@ -209,27 +211,29 @@ export function PortfolioSheet({ category, trigger, onClose }: {
             )}
             {items.length ? (
               <ul key={filterId} className="portfolio-sheet__grid" role="list" data-filter-motion={filterMotion || undefined}>
-                {items.map((item) => (
-                  <li key={item.id} className="portfolio-sheet__card">
-                    <button className="portfolio-sheet__media" type="button" aria-haspopup="dialog"
-                      aria-label={'عرض الصورة: ' + item.title} onClick={(event) => setViewer({ item, trigger: event.currentTarget })}>
-                      <img
-                        src={import.meta.env.BASE_URL + item.image}
-                        alt={item.alt}
-                        loading="lazy"
-                        decoding="async"
-                        style={item.position ? { objectPosition: item.position } : undefined}
-                      />
-                      <span className="portfolio-sheet__zoom" aria-hidden="true"><Maximize2 /></span>
-                    </button>
-                    <div className="portfolio-sheet__card-body">
-                      <h3 className="portfolio-sheet__card-title">{item.title}</h3>
-                      <p className="portfolio-sheet__card-meta">
-                        {displayed.filters.find((filter) => filter.id === item.filterId)?.label}
-                      </p>
-                    </div>
-                  </li>
-                ))}
+                {items.map((item) => {
+                  const filterLabel = displayed.filters.find((filter) => filter.id === item.filterId)?.label
+
+                  return (
+                    <li key={item.id} className="portfolio-sheet__card">
+                      <button className="portfolio-sheet__media" type="button" aria-haspopup="dialog"
+                        aria-label={'عرض الصورة: ' + item.title} onClick={(event) => setViewer({ item, trigger: event.currentTarget })}>
+                        <img
+                          src={import.meta.env.BASE_URL + item.image}
+                          alt={item.alt}
+                          loading="lazy"
+                          decoding="async"
+                          style={item.position ? { objectPosition: item.position } : undefined}
+                        />
+                        <span className="portfolio-sheet__zoom" aria-hidden="true"><Maximize2 /></span>
+                      </button>
+                      <div className="portfolio-sheet__card-body">
+                        <h3 className="portfolio-sheet__card-title">{item.title}</h3>
+                        {filterLabel && <p className="portfolio-sheet__card-meta">{filterLabel}</p>}
+                      </div>
+                    </li>
+                  )
+                })}
               </ul>
             ) : (
               <p key={filterId} className="portfolio-sheet__empty" data-filter-motion={filterMotion || undefined}>لا تتوفر نماذج بصرية لهذا التصنيف حاليًا.</p>

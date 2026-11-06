@@ -1,7 +1,7 @@
 /* Work and partners compose one viewport beneath the fixed glass navigation. */
 #partners {
   --work-scene-pad: clamp(12px, 2.4svh, 28px);
-  --work-scene-content-height: clamp(510px, 45vw, 710px);
+  --work-scene-content-height: clamp(460px, 40vw, 610px);
   display: flex;
   align-items: center;
   height: calc(100svh - var(--header-offset));
@@ -29,7 +29,7 @@
 .work-showcase__grid {
   flex: 1;
   min-height: 0;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   grid-template-rows: minmax(0, 1fr);
   gap: clamp(8px, 1.35vw, 18px);
 }
@@ -49,13 +49,24 @@
 .partners__mark { min-height: 0; height: clamp(28px, 4.8svh, 54px); }
 .partners__mark svg { width: clamp(25px, 3.3svh, 43px); height: clamp(25px, 3.3svh, 43px); }
 .partners__mark:nth-child(5) { border-inline-start: 1px solid rgb(121 160 238 / 18%); }
-@media (max-width: 620px), (max-width: 1024px) and (orientation: portrait) {
+@media (min-width: 621px) and (max-width: 1024px) and (orientation: portrait) {
   #partners { --work-scene-content-height: 860px; }
   .work-showcase__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-template-rows: repeat(2, minmax(0, 1fr));
   }
+  .work-showcase__card { grid-column: span 2; }
+  .work-showcase__card:nth-child(4) { grid-column: 2 / span 2; }
   .work-showcase__card h3 { font-size: clamp(15px, 2.4vw, 22px); }
+}
+@media (max-width: 620px) {
+  #partners { --work-scene-content-height: 860px; }
+  .work-showcase__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+  }
+  .work-showcase__card { grid-column: span 2; }
+  .work-showcase__card:nth-child(5) { grid-column: 2 / span 2; }
 }
 @media (max-width: 680px) {
   #partners { --work-scene-pad: clamp(10px, 2.2svh, 18px); }
@@ -85,7 +96,8 @@
   .work-showcase__index { top: 5px; left: 6px; font-size: 7px; }
 }
 @media (max-height: 620px) and (min-aspect-ratio: 11/10) {
-  .work-showcase__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); gap: 7px; }
+  .work-showcase__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); gap: 7px; }
+  .work-showcase__card, .work-showcase__card:nth-child(5) { grid-column: auto; }
 }
 @media (max-height: 460px) {
   .work-showcase h2 { font-size: 22px; }
