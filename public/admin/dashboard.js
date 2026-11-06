@@ -77,6 +77,7 @@
     const { document, location } = window
     const selector = '.content-editor .pane[data-mode="edit"][data-locale] :is(#first-pane-body, #second-pane-body) > .content'
     let activeTools
+    let activeContent
     let jumpRequest = 0
 
     function jumpToField(content, keyPath) {
@@ -117,13 +118,14 @@
       if (!editor || (!galleryName && editor.file !== file)) {
         activeTools?.remove()
         activeTools = undefined
+        activeContent = undefined
         return
       }
 
       const content = document.querySelector(selector)
       if (!content) return
 
-      if (activeTools?.nextElementSibling === content && activeTools.dataset.clevioEditor === `${collection}/${file}`) return
+      if (activeContent === content && activeTools?.nextElementSibling === content && activeTools.dataset.clevioEditor === `${collection}/${file}`) return
 
       const tools = document.createElement('section')
       tools.className = 'clevio-editor-tools'
@@ -176,6 +178,7 @@
       activeTools?.remove()
       content.before(tools)
       activeTools = tools
+      activeContent = content
     }
 
     new window.MutationObserver(mount).observe(document.body, { childList: true, subtree: true })
