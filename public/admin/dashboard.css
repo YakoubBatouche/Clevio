@@ -245,3 +245,8 @@
 @media (max-height: 500px) {
   .clevio-editor-tools__intro p:not(.clevio-editor-tools__category) { display: none; }
 }
+
+@media (max-height: 440px) {
+  .clevio-editor-tools { margin-block: .25rem; }
+  .clevio-editor-tools__intro { display: none; }
+}
