@@ -378,42 +378,31 @@
 
 @media (min-width: 840px) {
   .portfolio-sheet__chrome {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(210px, max-content) minmax(0, 1fr) 44px;
-    align-items: center;
-    column-gap: 14px;
     padding-block: 4px 9px;
   }
 
   .portfolio-sheet__grip {
-    grid-column: 1 / -1;
     height: 24px;
     margin: -3px auto 0;
-  }
-
-  .portfolio-sheet__heading {
-    max-inline-size: clamp(230px, 25vw, 350px);
   }
 
   .portfolio-sheet__title {
     font-size: clamp(19px, 1.9vw, 28px);
   }
 
-  .portfolio-sheet__close {
-    position: absolute;
-    inset-inline-end: var(--sheet-gutter);
-    inset-block-end: 9px;
-  }
-
   .portfolio-sheet__filters {
     gap: 6px;
-    margin: 0 -4px;
+    margin: 4px 0 0;
+    padding-inline: 0;
   }
 
   .portfolio-sheet__filter {
     padding-inline: 10px;
     font-size: 12px;
+  }
+
+  .portfolio-sheet__filter:focus-visible {
+    outline-offset: -4px;
   }
 }
 

@@ -173,7 +173,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
                 <X aria-hidden="true" />
               </button>
             </header>
-            <div ref={filtersRef} className="portfolio-sheet__filters" data-native-scroll role="group" aria-label="تصفية الأعمال">
+            <div ref={filtersRef} className="portfolio-sheet__filters" data-native-scroll="horizontal" role="group" aria-label="تصفية الأعمال">
               {[allFilter, ...displayed.filters].map((filter) => (
                 <button
                   key={filter.id}

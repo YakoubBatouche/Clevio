@@ -18,6 +18,9 @@ html.section-paging-mobile :where(#home, #services, #partners, #contact, .site-f
 html.section-paging-mobile :where([data-native-scroll], textarea) {
   touch-action: pan-y pinch-zoom;
 }
+html.section-paging-mobile :where([data-native-scroll='horizontal']) {
+  touch-action: pan-x pinch-zoom;
+}
 @media (prefers-reduced-motion: reduce) {
   html.section-paging-ready { scroll-snap-type: none; }
 }

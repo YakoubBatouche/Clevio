@@ -1,4 +1,4 @@
-import { expect, test, type Locator } from '@playwright/test'
+import { expect, test, type CDPSession, type Locator } from '@playwright/test'
 
 const category = 'المطبوعات والهوية البصرية'
 const webCategory = 'المواقع والتطبيقات'
@@ -59,6 +59,15 @@ test('portfolio opens with five desktop columns, filters the gallery, and return
   await page.keyboard.press('Enter')
   const sheet = page.getByRole('dialog', { name: category, exact: true })
   await expect(sheet).toBeVisible()
+  const [heading, title, close, filters] = await Promise.all([
+    sheet.locator('.portfolio-sheet__heading').boundingBox(),
+    sheet.getByRole('heading', { name: category, exact: true }).boundingBox(),
+    sheet.getByRole('button', { name: 'إغلاق معرض الأعمال', exact: true }).boundingBox(),
+    sheet.getByRole('group', { name: 'تصفية الأعمال', exact: true }).boundingBox(),
+  ])
+  expect(filters!.y).toBeGreaterThanOrEqual(heading!.y + heading!.height - 1)
+  expect(Math.abs(filters!.x + filters!.width - title!.x - title!.width)).toBeLessThan(2)
+  expect(Math.abs(filters!.x - close!.x)).toBeLessThan(2)
   const all = sheet.getByRole('button', { name: 'الكل', exact: true })
   await expect(all).toHaveAttribute('aria-pressed', 'true')
   const images = sheet.locator('.portfolio-sheet__media img')
@@ -204,6 +213,54 @@ test('artwork previews fit the viewport and preserve the filtered gallery', asyn
 test.describe('mobile portfolio', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true })
 
+  async function swipe(
+    touch: CDPSession,
+    target: Locator,
+    { x: deltaX = 0, y: deltaY = 0 }: { x?: number; y?: number },
+    whileHeld?: () => Promise<void>,
+  ) {
+    const box = await target.boundingBox()
+    if (!box) throw new Error('Swipe target has no visible bounds')
+    const x = box.x + (box.width - deltaX) / 2
+    const y = box.y + box.height / 2
+    await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y, id: 1 }] })
+    for (const fraction of [0.3, 0.6, 1]) {
+      await touch.send('Input.dispatchTouchEvent', {
+        type: 'touchMove',
+        touchPoints: [{ x: x + deltaX * fraction, y: y + deltaY * fraction, id: 1 }],
+      })
+    }
+    await whileHeld?.()
+    await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  }
+
+  test('a horizontal touch swipe reveals hidden filters while the gallery and page stay put', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Native swipe input uses Chromium device emulation.')
+    await page.goto('/?skipintro#work')
+    await page.getByRole('button', { name: category, exact: true }).tap()
+    const sheet = page.getByRole('dialog', { name: category, exact: true })
+    const filters = sheet.getByRole('group', { name: 'تصفية الأعمال', exact: true })
+    const all = filters.getByRole('button', { name: 'الكل', exact: true })
+    const lastFilter = filters.getByRole('button', { name: marketingFilter, exact: true })
+    const gallery = sheet.locator('.portfolio-sheet__scroll')
+    await expect(all).toBeInViewport()
+    await expect(lastFilter).not.toBeInViewport()
+    const pageScroll = await page.evaluate(() => scrollY)
+    const galleryScroll = await gallery.evaluate(element => element.scrollTop)
+    const touch = await page.context().newCDPSession(page)
+
+    await swipe(touch, filters, { x: 280 })
+    await expect.poll(() => filters.evaluate(element => element.scrollLeft)).toBeLessThan(0)
+    await swipe(touch, filters, { x: 280 })
+    await expect(lastFilter).toBeInViewport({ ratio: 0.95 })
+    await expect(all).toHaveAttribute('aria-pressed', 'true')
+    expect(await gallery.evaluate(element => element.scrollTop)).toBe(galleryScroll)
+    expect(Math.abs(await page.evaluate(() => scrollY) - pageScroll)).toBeLessThan(2)
+    await lastFilter.tap()
+    await expect(lastFilter).toHaveAttribute('aria-pressed', 'true')
+    await touch.detach()
+  })
+
   test('gallery scrolls within the sheet and keeps the work stage locked', async ({ page }) => {
     await page.goto('/?skipintro#work')
     const trigger = page.getByRole('button', { name: category, exact: true })
@@ -249,35 +306,22 @@ test.describe('mobile portfolio', () => {
     const pageScroll = await page.evaluate(() => scrollY)
     const touch = await page.context().newCDPSession(page)
 
-    async function swipe(target: Locator, distance: number, whileHeld?: () => Promise<void>) {
-      const box = await target.boundingBox()
-      if (!box) throw new Error('Swipe target has no visible bounds')
-      const x = box.x + box.width / 2
-      const y = box.y + box.height / 2
-      await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y, id: 1 }] })
-      for (const fraction of [0.3, 0.6, 1]) {
-        await touch.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y + distance * fraction, id: 1 }] })
-      }
-      await whileHeld?.()
-      await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
-    }
-
-    await swipe(scroller, 170, async () => {
+    await swipe(touch, scroller, { y: 170 }, async () => {
       expect(Math.abs(await handleTop() - restTop)).toBeLessThan(1)
     })
     await expect(sheet).toBeVisible()
-    await swipe(scroller, -170)
+    await swipe(touch, scroller, { y: -170 })
     await expect.poll(() => scroller.evaluate(element => element.scrollTop)).toBeGreaterThan(0)
     expect(Math.abs(await handleTop() - restTop)).toBeLessThan(1)
 
-    await swipe(handle, 40, async () => {
+    await swipe(touch, handle, { y: 40 }, async () => {
       await expect.poll(handleTop).toBeGreaterThan(restTop + 25)
     })
     await expect.poll(async () => Math.abs(await handleTop() - restTop)).toBeLessThan(1)
     await expect(sheet).toBeVisible()
     expect(Math.abs(await page.evaluate(() => scrollY) - pageScroll)).toBeLessThan(2)
 
-    await swipe(handle, 170)
+    await swipe(touch, handle, { y: 170 })
     await expect(sheet).toBeHidden()
     await expect(trigger).toBeFocused()
     await expect(page).toHaveURL(/#work$/)
