@@ -5,6 +5,10 @@ backend:
   branch: main
   auth_methods: [token]
 
+app_title: لوحة محتوى Clevio
+logo:
+  src: /favicon.svg
+  show_in_header: true
 site_url: https://clevio-two.vercel.app
 display_url: https://clevio-two.vercel.app
 media_folder: public/uploads
@@ -19,41 +23,33 @@ editor:
 collections:
   - name: homepage
     label: الصفحة الرئيسية
+    icon: home
+    description: عدّل العنوان الرئيسي، ونبذة الشركة، ومعلومات التواصل، وشعارات الشركاء.
     files:
       - name: site
-        label: محتوى الصفحة ومعلومات الموقع
+        label: تعديل محتوى الصفحة الرئيسية
         file: src/content/site.json
         fields:
           - name: hero
-            label: واجهة الصفحة
+            label: مقدمة الصفحة الرئيسية
             widget: object
             collapsed: false
             fields:
-              - { name: lead, label: السطر الأول من العنوان, widget: string }
-              - { name: focus, label: السطر المميّز من العنوان, widget: string }
-              - { name: descriptionLead, label: السطر الأول من الوصف, widget: string }
-              - { name: descriptionTail, label: السطر الثاني من الوصف, widget: string }
-              - { name: primaryAction, label: زر بدء المشروع, widget: string }
-              - { name: secondaryAction, label: زر اكتشاف الخدمات, widget: string }
-          - name: brand
-            label: العلامة التجارية
+              - { name: lead, label: بداية العنوان الرئيسي, widget: string }
+              - { name: focus, label: الجزء الملوّن من العنوان, widget: string, hint: 'يفضّل أن يكون قصيرًا ليظهر بوضوح على الهاتف.' }
+              - { name: descriptionLead, label: بداية النص أسفل العنوان, widget: string }
+              - { name: descriptionTail, label: تكملة النص أسفل العنوان, widget: string }
+              - { name: primaryAction, label: نص زر بدء المشروع, widget: string }
+              - { name: secondaryAction, label: نص زر اكتشاف الخدمات, widget: string }
+          - name: about
+            label: نبذة عن الشركة
             widget: object
             collapsed: true
             fields:
-              - { name: name, label: اسم العلامة, widget: string }
-              - { name: logo, label: شعار Clevio, widget: image, choose_url: false }
-          - name: navigation
-            label: شريط التنقل
-            widget: object
-            collapsed: true
-            fields:
-              - { name: home, label: الرئيسية, widget: string }
-              - { name: services, label: الخدمات, widget: string }
-              - { name: work, label: الأعمال, widget: string }
-              - { name: contact, label: التواصل, widget: string }
-              - { name: about, label: من نحن, widget: string }
+              - { name: copy, label: نبذة عن Clevio, widget: text }
+              - { name: action, label: نص زر التواصل, widget: string }
           - name: partners
-            label: الشركاء
+            label: الشركاء وشعاراتهم
             widget: object
             collapsed: true
             fields:
@@ -61,6 +57,8 @@ collections:
               - { name: note, label: ملاحظة أسفل الشعارات, widget: string, required: false }
               - name: logos
                 label: شعارات الشركاء
+                label_singular: شعار شريك
+                hint: أضف اسم الشريك وصورة شعاره لعرضه على الموقع.
                 widget: list
                 required: false
                 collapsed: auto
@@ -70,19 +68,19 @@ collections:
                   - { name: name, label: اسم الشريك, widget: string }
                   - { name: image, label: شعار الشريك, widget: image, choose_url: false }
           - name: contact
-            label: التواصل ونموذج المشروع
+            label: معلومات التواصل ونموذج المشروع
             widget: object
             collapsed: true
             fields:
+              - { name: email, label: بريد استقبال رسائل المشاريع, widget: string, required: false }
+              - { name: whatsapp, label: رقم واتساب للتواصل, widget: string, required: false, hint: 'أدخل رقم الهاتف مع رمز البلد.' }
               - { name: eyebrow, label: النص فوق العنوان, widget: string }
               - { name: heading, label: عنوان القسم, widget: string }
               - { name: intro, label: الوصف, widget: text }
-              - { name: email, label: البريد الإلكتروني, widget: string, required: false }
-              - { name: whatsapp, label: رقم واتساب الدولي, widget: string, required: false, hint: 'أدخل الرقم مع رمز البلد.' }
               - { name: whatsappMessage, label: رسالة واتساب المبدئية, widget: text }
               - { name: art, label: الصورة بجانب النموذج, widget: image, choose_url: false }
               - name: form
-                label: عناوين الحقول والأزرار
+                label: نصوص حقول النموذج وأزراره
                 widget: object
                 collapsed: true
                 fields:
@@ -104,15 +102,25 @@ collections:
                   - { name: openEmail, label: زر فتح البريد, widget: string }
                   - { name: validationMessage, label: رسالة بيانات تواصل غير صالحة, widget: string }
                   - { name: subject, label: عنوان رسالة المشروع, widget: string }
-          - name: about
-            label: من نحن
+          - name: brand
+            label: اسم الموقع وشعاره
             widget: object
             collapsed: true
             fields:
-              - { name: copy, label: نبذة عن Clevio, widget: text }
-              - { name: action, label: زر التواصل, widget: string }
+              - { name: name, label: اسم العلامة, widget: string }
+              - { name: logo, label: شعار Clevio, widget: image, choose_url: false }
+          - name: navigation
+            label: روابط القائمة العلوية
+            widget: object
+            collapsed: true
+            fields:
+              - { name: home, label: الرئيسية, widget: string }
+              - { name: services, label: الخدمات, widget: string }
+              - { name: work, label: الأعمال, widget: string }
+              - { name: contact, label: التواصل, widget: string }
+              - { name: about, label: من نحن, widget: string }
           - name: footer
-            label: تذييل الصفحة
+            label: أسفل الصفحة
             widget: object
             collapsed: true
             fields:
@@ -132,7 +140,7 @@ collections:
               - { name: copyright, label: حقوق النشر, widget: string }
               - { name: tagline, label: العبارة الختامية, widget: string }
           - name: seo
-            label: محركات البحث والمشاركة
+            label: ظهور الموقع في البحث وعند مشاركة الرابط
             widget: object
             collapsed: true
             fields:
@@ -142,22 +150,17 @@ collections:
               - { name: shareDescription, label: وصف معاينة المشاركة, widget: text }
 
   - name: services
-    label: خدماتنا
+    label: الخدمات
+    icon: design_services
+    description: اختر بطاقة خدمة لتعديل اسمها وتفاصيلها أو تغيير ترتيب ظهورها.
     files:
       - name: catalog
-        label: بطاقات الخدمات وتفاصيلها
+        label: تعديل بطاقات الخدمات
         file: src/content/services.json
         fields:
-          - { name: eyebrow, label: النص فوق العنوان, widget: string }
-          - { name: title, label: عنوان القسم, widget: string }
-          - name: intro
-            label: سطرا وصف القسم
-            widget: list
-            min: 2
-            max: 2
-            field: { name: line, label: سطر الوصف, widget: string }
           - name: items
-            label: بطاقات الخدمات
+            label: الخدمات المعروضة
+            hint: افتح أي بطاقة لتعديلها، أو اسحبها لتغيير ترتيبها على الموقع.
             widget: list
             collapsed: true
             summary: "{{title}}"
@@ -168,56 +171,66 @@ collections:
               - { name: id, widget: hidden }
               - { name: title, label: اسم الخدمة, widget: string }
               - name: offerings
-                label: الخدمات الفرعية
+                label: ما تشمل هذه الخدمة
+                label_singular: تفصيل
                 widget: list
                 min: 1
-                field: { name: offering, label: الخدمة الفرعية, widget: string }
+                field: { name: offering, label: تفصيل الخدمة, widget: string }
+          - { name: title, label: عنوان القسم, widget: string }
+          - { name: eyebrow, label: النص الصغير فوق عنوان القسم, widget: string }
+          - name: intro
+            label: الوصف أسفل عنوان القسم
+            widget: list
+            min: 2
+            max: 2
+            field: { name: line, label: سطر الوصف, widget: string }
           - { name: exploreLabel, label: نص زر استكشاف الخدمة, widget: string }
           - { name: dialogEyebrow, label: النص فوق عنوان نافذة الخدمة, widget: string }
           - { name: dialogDescription, label: وصف نافذة الخدمة, widget: text }
           - { name: dialogActionLabel, label: زر التواصل في نافذة الخدمة, widget: string }
           - { name: closeLabel, label: اسم زر إغلاق النافذة, widget: string }
 
-  - name: work
-    label: قسم أعمالنا
-    files:
-      - name: presentation
-        label: عنوان القسم ونصوص المعرض
-        file: src/content/portfolio.json
-        fields:
-          - { name: eyebrow, label: النص فوق العنوان, widget: string }
-          - { name: title, label: عنوان القسم, widget: string }
-          - name: intro
-            label: سطرا وصف القسم
-            widget: list
-            min: 2
-            max: 2
-            field: { name: line, label: سطر الوصف, widget: string }
-          - { name: note, label: ملاحظة أسفل البطاقات, widget: string, required: false }
-          - { name: sheetNote, label: ملاحظة داخل المعرض, widget: string, required: false }
-          - { name: emptyMessage, label: رسالة المعرض الفارغ, widget: string }
-          - { name: allFilterLabel, label: زر إظهار كل الأعمال, widget: string }
-          - { name: closeLabel, label: اسم زر إغلاق المعرض, widget: string }
-          - { name: gripLabel, label: اسم مقبض سحب المعرض, widget: string }
-          - { name: filtersLabel, label: الاسم الوصفي لمجموعة التصفيات, widget: string }
-          - { name: galleryLabel, label: الاسم الوصفي للمعرض, widget: string }
-          - { name: previewLabel, label: اسم زر تكبير الصورة, widget: string }
-          - { name: closeImageLabel, label: اسم زر إغلاق الصورة, widget: string }
-
   - name: galleries
     label: معارض الأعمال
+    icon: collections
+    description: اختر معرضًا لإضافة أعمال جديدة، أو لتغيير الصور والعناوين وترتيبها.
     files:
       - name: print
         label: المطبوعات
         file: src/content/portfolio/print.json
         fields:
           - &category_id { name: id, widget: hidden }
-          - &category_title { name: title, label: عنوان الفئة, widget: string }
-          - &category_description { name: description, label: وصف الفئة, widget: text }
-          - &category_cover { name: cover, label: صورة غلاف البطاقة, widget: image, choose_url: false }
+          - name: items
+            label: الأعمال والصور
+            label_singular: عمل
+            hint: &work_list_hint أضف عملًا ثم اختر صورته واكتب عنوانه. اسحب الأعمال لتغيير ترتيبها.
+            widget: list
+            required: false
+            collapsed: auto
+            summary: "{{title}}"
+            thumbnail: image
+            add_to_top: true
+            fields:
+              - &work_id { name: id, widget: uuid }
+              - &work_image { name: image, label: صورة العمل, widget: image, choose_url: false, hint: 'اختر صورة موجودة أو ارفع صورة جديدة حتى 5 ميغابايت.' }
+              - &work_title { name: title, label: عنوان العمل, widget: string }
+              - &work_alt { name: alt, label: وصف قصير للصورة, widget: string, hint: 'صف ما يظهر في الصورة ليستفيد منه زوّار الموقع الذين يستخدمون قارئ الشاشة.' }
+              - &work_position { name: position, widget: hidden, required: false }
+              - name: filterId
+                label: التصنيف داخل المعرض
+                widget: relation
+                collection: galleries
+                file: print
+                value_field: "{{filters.*.id}}"
+                display_fields: ["{{filters.*.label}}"]
+                search_fields: ["{{filters.*.label}}"]
+                required: false
+          - &category_title { name: title, label: اسم المعرض, widget: string }
+          - &category_description { name: description, label: وصف المعرض, widget: text }
+          - &category_cover { name: cover, label: صورة الغلاف, widget: image, choose_url: false, hint: 'تظهر هذه الصورة على بطاقة المعرض في الصفحة الرئيسية.' }
           - &category_filters
             name: filters
-            label: عناوين التصفية
+            label: أسماء التصنيفات وأوصافها
             widget: list
             collapsed: true
             minimize_collapsed: true
@@ -227,42 +240,17 @@ collections:
             allow_duplicate: false
             fields:
               - { name: id, widget: hidden }
-              - { name: label, label: اسم التصفية, widget: string }
-              - { name: description, label: وصف التصفية, widget: text }
-          - name: items
-            label: الأعمال والصور
-            widget: list
-            required: false
-            collapsed: auto
-            summary: "{{title}}"
-            thumbnail: image
-            add_to_top: true
-            fields:
-              - &work_id { name: id, widget: uuid }
-              - &work_title { name: title, label: عنوان العمل, widget: string }
-              - &work_image { name: image, label: صورة العمل, widget: image, choose_url: false }
-              - &work_alt { name: alt, label: وصف الصورة لقارئات الشاشة, widget: string }
-              - &work_position { name: position, widget: hidden, required: false }
-              - name: filterId
-                label: تصنيف العمل
-                widget: relation
-                collection: galleries
-                file: print
-                value_field: "{{filters.*.id}}"
-                display_fields: ["{{filters.*.label}}"]
-                search_fields: ["{{filters.*.label}}"]
-                required: false
+              - { name: label, label: اسم التصنيف, widget: string }
+              - { name: description, label: وصف التصنيف, widget: text }
       - name: logos
         label: الشعارات
         file: src/content/portfolio/logos.json
         fields:
           - *category_id
-          - *category_title
-          - *category_description
-          - *category_cover
-          - { name: filters, widget: hidden, default: [] }
           - name: items
             label: الأعمال والصور
+            label_singular: عمل
+            hint: *work_list_hint
             widget: list
             required: false
             collapsed: auto
@@ -271,21 +259,23 @@ collections:
             add_to_top: true
             fields:
               - *work_id
-              - *work_title
               - *work_image
+              - *work_title
               - *work_alt
               - *work_position
+          - *category_title
+          - *category_description
+          - *category_cover
+          - { name: filters, widget: hidden, default: [] }
       - name: digital-marketing
         label: التسويق الرقمي والنمو
         file: src/content/portfolio/digital-marketing.json
         fields:
           - *category_id
-          - *category_title
-          - *category_description
-          - *category_cover
-          - *category_filters
           - name: items
             label: الأعمال والصور
+            label_singular: عمل
+            hint: *work_list_hint
             widget: list
             required: false
             collapsed: auto
@@ -294,12 +284,12 @@ collections:
             add_to_top: true
             fields:
               - *work_id
-              - *work_title
               - *work_image
+              - *work_title
               - *work_alt
               - *work_position
               - name: filterId
-                label: تصنيف العمل
+                label: التصنيف داخل المعرض
                 widget: relation
                 collection: galleries
                 file: digital-marketing
@@ -307,17 +297,19 @@ collections:
                 display_fields: ["{{filters.*.label}}"]
                 search_fields: ["{{filters.*.label}}"]
                 required: false
+          - *category_title
+          - *category_description
+          - *category_cover
+          - *category_filters
       - name: web-app
         label: المواقع والتطبيقات
         file: src/content/portfolio/web-app.json
         fields:
           - *category_id
-          - *category_title
-          - *category_description
-          - *category_cover
-          - *category_filters
           - name: items
             label: الأعمال والصور
+            label_singular: عمل
+            hint: *work_list_hint
             widget: list
             required: false
             collapsed: auto
@@ -326,12 +318,12 @@ collections:
             add_to_top: true
             fields:
               - *work_id
-              - *work_title
               - *work_image
+              - *work_title
               - *work_alt
               - *work_position
               - name: filterId
-                label: تصنيف العمل
+                label: التصنيف داخل المعرض
                 widget: relation
                 collection: galleries
                 file: web-app
@@ -339,17 +331,19 @@ collections:
                 display_fields: ["{{filters.*.label}}"]
                 search_fields: ["{{filters.*.label}}"]
                 required: false
+          - *category_title
+          - *category_description
+          - *category_cover
+          - *category_filters
       - name: audiovisual-media
         label: الإنتاج السمعي البصري والإعلام
         file: src/content/portfolio/audiovisual-media.json
         fields:
           - *category_id
-          - *category_title
-          - *category_description
-          - *category_cover
-          - *category_filters
           - name: items
             label: الأعمال والصور
+            label_singular: عمل
+            hint: *work_list_hint
             widget: list
             required: false
             collapsed: auto
@@ -358,12 +352,12 @@ collections:
             add_to_top: true
             fields:
               - *work_id
-              - *work_title
               - *work_image
+              - *work_title
               - *work_alt
               - *work_position
               - name: filterId
-                label: تصنيف العمل
+                label: التصنيف داخل المعرض
                 widget: relation
                 collection: galleries
                 file: audiovisual-media
@@ -371,3 +365,35 @@ collections:
                 display_fields: ["{{filters.*.label}}"]
                 search_fields: ["{{filters.*.label}}"]
                 required: false
+          - *category_title
+          - *category_description
+          - *category_cover
+          - *category_filters
+
+  - name: work
+    label: نصوص قسم الأعمال
+    icon: tune
+    description: عدّل النصوص المشتركة بين المعارض. لإضافة الصور، افتح معارض الأعمال.
+    files:
+      - name: presentation
+        label: تعديل عناوين قسم الأعمال
+        file: src/content/portfolio.json
+        fields:
+          - { name: title, label: عنوان القسم, widget: string }
+          - { name: eyebrow, label: النص الصغير فوق عنوان القسم, widget: string }
+          - name: intro
+            label: الوصف أسفل عنوان القسم
+            widget: list
+            min: 2
+            max: 2
+            field: { name: line, label: سطر الوصف, widget: string }
+          - { name: note, label: ملاحظة أسفل البطاقات, widget: string, required: false }
+          - { name: sheetNote, label: ملاحظة داخل المعرض, widget: string, required: false }
+          - { name: emptyMessage, label: الرسالة التي تظهر عندما يكون المعرض فارغًا, widget: string }
+          - { name: allFilterLabel, label: نص زر عرض كل الأعمال, widget: string }
+          - { name: closeLabel, label: اسم زر إغلاق المعرض, widget: string }
+          - { name: gripLabel, label: اسم مقبض سحب المعرض, widget: string }
+          - { name: filtersLabel, label: اسم أدوات التصفية لقارئ الشاشة, widget: string }
+          - { name: galleryLabel, label: اسم المعرض لقارئ الشاشة, widget: string }
+          - { name: previewLabel, label: اسم زر تكبير الصورة, widget: string }
+          - { name: closeImageLabel, label: اسم زر إغلاق الصورة, widget: string }
