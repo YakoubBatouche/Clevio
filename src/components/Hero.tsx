@@ -49,7 +49,9 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
           </div>
           <div key="cube" className="hero__float-track hero__float-track--cube" data-hero-parallax="cube">
             <div className="hero__float-intro">
-            <img className="hero__float hero__float--cube" data-hero-object="cube" src={import.meta.env.BASE_URL + 'hero-layers/hires/floating-cube-2k.png'} srcSet={heroSources('floating-cube')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
+            <img className="hero__float hero__float--cube" data-hero-object="rounded-crystal"
+              src={import.meta.env.BASE_URL + 'hero-layers/hires/floating-rounded-crystal.webp'}
+              alt="" width="640" height="640" decoding="async" />
             </div>
           </div>
           <div key="lime-bubble" className="hero__float-track hero__float-track--lime" data-hero-parallax="lime">

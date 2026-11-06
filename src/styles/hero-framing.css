@@ -37,6 +37,14 @@
   mask-image: none;
 }
 .hero__registered-frame .hero__float { object-fit: fill; }
+/* The trimmed crystal occupies the former sprite bounds on the registered frame. */
+.hero__registered-frame .hero__float--cube {
+  inset: 15.37% auto auto 46.2%;
+  width: 6.56%;
+  height: 11.76%;
+  object-fit: contain;
+  object-position: center;
+}
 .hero__content { top: max(16.8%, var(--header-offset)); }
 .hero__heading { font-size: clamp(68px, min(7.6vw, 12.5svh), 154px); }
 .hero__description { margin-top: clamp(18px, 1.85vw, 36px); }

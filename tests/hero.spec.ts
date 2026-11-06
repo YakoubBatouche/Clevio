@@ -213,7 +213,7 @@ test('hero contact action reaches the form and prepares a valid email draft', as
   await expect(draft).not.toBeVisible()
 })
 
-test('eight service categories use three desktop columns and accessible details', async ({ page }) => {
+test('eight service categories use four desktop columns and accessible details', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/')
   await page.getByRole('button', { name: 'اكتشف خدماتنا', exact: true }).click()
@@ -224,8 +224,11 @@ test('eight service categories use three desktop columns and accessible details'
     const box = item.getBoundingClientRect()
     return { x: box.x, y: box.y }
   }))
-  expect(new Set(boxes.slice(0, 3).map((box) => Math.round(box.x))).size).toBe(3)
-  expect(Math.max(...boxes.slice(0, 3).map((box) => box.y)) - Math.min(...boxes.slice(0, 3).map((box) => box.y))).toBeLessThan(2)
+  for (const row of [boxes.slice(0, 4), boxes.slice(4)]) {
+    expect(new Set(row.map((box) => Math.round(box.x))).size).toBe(4)
+    expect(Math.max(...row.map((box) => box.y)) - Math.min(...row.map((box) => box.y))).toBeLessThan(2)
+  }
+  expect(boxes[4].y).toBeGreaterThan(boxes[0].y + 2)
   const card = cards.filter({ hasText: 'التصميم الإبداعي' })
   await card.click()
   const dialog = page.getByRole('dialog', { name: 'التصميم الإبداعي', exact: true })
@@ -373,6 +376,8 @@ test('floating artwork moves gently while the background and headline stay still
     await expect(line).toHaveCSS('opacity', '1')
   }
 
+  const crystal = page.locator('[data-hero-object="rounded-crystal"]')
+  await expect.poll(() => crystal.evaluate((element) => (element as HTMLImageElement).naturalWidth)).toBe(640)
   const floats = page.locator('.hero__float')
   const positions = () => floats.evaluateAll((elements) => elements.map((element) => {
     const { x, y } = element.getBoundingClientRect()
@@ -513,7 +518,7 @@ test('work and partner marks fit together below the navbar on compact and wide s
   }
 })
 
-test('hero mouse cue navigates to services and the contact communication visual remains static', async ({ page }) => {
+test('hero mouse cue navigates to services and Contact respects reduced motion', async ({ page }) => {
   await page.goto('/?skipintro')
   const cue = page.getByRole('link', { name: 'انتقل إلى خدماتنا', exact: true })
   await expect(cue).toHaveCount(1)
@@ -528,6 +533,24 @@ test('hero mouse cue navigates to services and the contact communication visual 
   await expect(art).toHaveCSS('transform', 'none')
   await expect(art.locator('[data-contact-piece="crystal-plane"]')).toHaveCount(1)
   await expect.poll(() => art.locator('img').evaluate((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0)).toBe(true)
+})
+
+test('Contact reveals the artwork and form when scrolling in from Work', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/?skipintro#work')
+  await expect(page.locator('#work-heading')).toBeInViewport()
+  const contact = page.locator('#contact')
+  const artwork = contact.locator('.contact-section__art')
+  const content = contact.locator('.contact-section__content')
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await expect(artwork).toHaveCSS('opacity', '0')
+  await expect(content).toHaveCSS('opacity', '0')
+
+  await page.mouse.move(720, 400)
+  await page.mouse.wheel(0, 450)
+  await expect(contact).toHaveAttribute('data-section-revealed', 'true')
+  await expectFullyRevealed(artwork)
+  await expectFullyRevealed(content)
 })
 
 test('service panels reassemble when returning after a full section exit', async ({ page }) => {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { gsap } from '../lib/animation'
 
-type Kind = 'heading' | 'services' | 'work' | 'partners' | 'contact' | 'footer'
+type Kind = 'heading' | 'services' | 'work' | 'partners' | 'contact-art' | 'contact-content' | 'footer'
 const definitions: { selector: string; kind: Kind }[] = [
   { selector: '#services .services-section__header', kind: 'heading' },
   { selector: '#services .service-card', kind: 'services' },
@@ -9,7 +9,8 @@ const definitions: { selector: string; kind: Kind }[] = [
   { selector: '#partners .work-showcase__card', kind: 'work' },
   { selector: '#partners .partners__header', kind: 'heading' },
   { selector: '#partners .partners__mark', kind: 'partners' },
-  { selector: '#contact .contact-section__content', kind: 'contact' },
+  { selector: '#contact .contact-section__art', kind: 'contact-art' },
+  { selector: '#contact .contact-section__content', kind: 'contact-content' },
   { selector: 'footer .site-footer__column', kind: 'footer' },
   { selector: 'footer .site-footer__bottom', kind: 'heading' },
 ]
@@ -22,7 +23,9 @@ type Group = {
 export function useSectionTransitions() {
   useEffect(() => {
     const groups: Group[] = definitions.flatMap(({ selector, kind }) => {
-      const elements = [...document.querySelectorAll<HTMLElement>(selector)].filter((element) => !element.closest('dialog') && element.getClientRects().length > 0)
+      // The artwork can become visible after a viewport change.
+      const elements = [...document.querySelectorAll<HTMLElement>(selector)].filter((element) =>
+        !element.closest('dialog') && (kind === 'contact-art' || element.getClientRects().length > 0))
       const owner = elements[0]?.closest<HTMLElement>('section, footer')
       return owner ? [{ elements, owner, kind, prepared: false, playing: false, finishTimer: 0, tween: null, originals: elements.map((element) => element.getAttribute('style')) }] : []
     })
@@ -63,28 +66,42 @@ export function useSectionTransitions() {
     }
     function reveal(group: Group) {
       if (!group.prepared || group.playing) return
-      if (reduced.matches || document.hidden) { restore(group); return }
+      const artworkHidden = group.kind === 'contact-art' && group.elements[0].getClientRects().length === 0
+      if (reduced.matches || document.hidden || artworkHidden) { restore(group); return }
       group.playing = true
       context.add(() => {
         const common = { opacity: 0, force3D: true, willChange: 'transform, opacity' }
-        if (group.kind === 'heading') gsap.set(group.elements, { ...common, y: 24, clipPath: 'inset(0% 0% 100% 0%)' })
-        else if (group.kind === 'services') gsap.set(group.elements, { ...common, y: 38, rotationX: -9, rotationY: (index: number) => index % 3 === 0 ? -5 : 5, scale: 0.96, transformOrigin: '50% 100%' })
+        let duration = 1.05
+        let delay = 0
+        if (group.kind === 'heading') {
+          duration = 0.8
+          gsap.set(group.elements, { ...common, y: 24, clipPath: 'inset(0% 0% 100% 0%)' })
+        } else if (group.kind === 'services') gsap.set(group.elements, { ...common, y: 38, rotationX: -9, rotationY: (index: number) => index % 3 === 0 ? -5 : 5, scale: 0.96, transformOrigin: '50% 100%' })
         else if (group.kind === 'work') gsap.set(group.elements, { ...common, x: (index: number) => index % 2 ? -24 : 24, y: 22, rotationY: (index: number) => index % 2 ? 8 : -8, rotationZ: (index: number) => index % 2 ? -1 : 1, scale: 0.95 })
         else if (group.kind === 'partners') gsap.set(group.elements, { ...common, y: 15, scale: 0.72, rotation: (index: number) => index % 2 ? 7 : -7 })
-        else if (group.kind === 'contact') gsap.set(group.elements, { ...common, x: -24, y: 24, rotationY: -4, transformOrigin: '100% 50%' })
-        else gsap.set(group.elements, { ...common, y: 30, rotationX: -5, scale: 0.98 })
-        const duration = group.kind === 'heading' ? 0.8 : 1.05
+        else if (group.kind === 'contact-art') {
+          duration = 1.24
+          gsap.set(group.elements, {
+            ...common, x: -32, y: 52, rotation: -4, rotationX: 10, rotationY: -22,
+            scale: 0.86, transformPerspective: 960, transformOrigin: '50% 62%',
+          })
+        } else if (group.kind === 'contact-content') {
+          duration = touch.matches ? 0.68 : 0.88
+          delay = touch.matches ? 0.06 : 0.14
+          // Keep the translated form inside the mobile panel's existing scroll range.
+          gsap.set(group.elements, { ...common, y: touch.matches ? -12 : 26 })
+        } else gsap.set(group.elements, { ...common, y: 30, rotationX: -5, scale: 0.98 })
         const stagger = group.kind === 'partners' ? 0.055 : group.kind === 'heading' ? 0 : 0.065
         group.tween = gsap.to(group.elements, {
           opacity: 1, x: 0, y: 0, rotation: 0, rotationX: 0, rotationY: 0, scale: 1,
           ...(group.kind === 'heading' ? { clipPath: 'inset(0% 0% 0% 0%)' } : {}),
-          duration,
+          duration, delay,
           stagger,
           ease: group.kind === 'partners' ? 'back.out(1.3)' : 'power3.out',
           overwrite: 'auto', force3D: true, onComplete: () => restore(group),
         })
         // Finish the reveal if throttled frames leave visible content partly hidden.
-        const revealTime = (duration + (group.elements.length - 1) * stagger) * 1000
+        const revealTime = (delay + duration + (group.elements.length - 1) * stagger) * 1000
         group.finishTimer = window.setTimeout(() => restore(group), revealTime + 750)
       })
     }
@@ -135,9 +152,11 @@ export function useSectionTransitions() {
           else {
             const bounds = owner.getBoundingClientRect()
             // Re-arm only after the entire owner has left: no blinking between internal rows.
-            if ((bounds.bottom <= headerInset() + 1 || bounds.top >= innerHeight - 1) && !(document.activeElement instanceof Element && owner.contains(document.activeElement) && document.activeElement.matches('a, button, input, textarea, select, [contenteditable]'))) {
-              groups.filter((group) => group.owner === owner).forEach(prepare)
-              if (!reduced.matches && !document.hidden) owner.removeAttribute('data-section-revealed')
+            if (bounds.bottom <= headerInset() + 1 || bounds.top >= innerHeight - 1) {
+              const active = document.activeElement
+              const controlFocused = active instanceof Element && owner.contains(active) && active.matches('a, button, input, textarea, select, [contenteditable]')
+              groups.filter((group) => group.owner === owner && (!controlFocused || group.kind === 'contact-art')).forEach(prepare)
+              if (!controlFocused && !reduced.matches && !document.hidden) owner.removeAttribute('data-section-revealed')
             }
           }
         }

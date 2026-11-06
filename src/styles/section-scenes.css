@@ -13,6 +13,26 @@
   gap: clamp(10px, 1.6svh, 18px);
 }
 .service-card { min-height: 0; padding-block: clamp(14px, 2svh, 24px); }
+@media (min-width: 980px) {
+  .services-section__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+  .service-card, .service-card:nth-last-child(2), .service-card:last-child { grid-column: auto; }
+}
+@media (min-width: 980px) and (min-height: 621px) {
+  .service-card {
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(8px, 1.6svh, 18px);
+    padding-inline: clamp(12px, 1.4vw, 22px);
+    text-align: center;
+  }
+  .service-card > .service-card__glass { width: clamp(70px, 12svh, 128px); }
+  .service-card__body { align-items: center; gap: clamp(6px, 1svh, 12px); }
+  .service-card__body strong { font-size: clamp(17px, 1.4vw, 23px); line-height: 1.45; }
+  .service-card__explore { gap: 8px; }
+}
 @media (max-width: 979px), (pointer: coarse) {
   #contact, .site-footer {
     --scene-panel-inset: clamp(14px, 2.5svh, 24px);
