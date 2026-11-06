@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { ArrowLeft, X } from 'lucide-react'
 import { ContactForm } from './ContactForm'
-import { services, workAreas } from '../content/site'
+import { services, siteContent, workAreas } from '../content/site'
 import type { Panel } from '../content/site'
 
 const titles: Record<Panel, string> = {
-  services: 'خدماتنا', work: 'أعمالنا', about: 'من نحن', contact: 'لنبدأ مشروعك',
+  services: siteContent.navigation.services, work: siteContent.navigation.work,
+  about: siteContent.navigation.about, contact: siteContent.hero.primaryAction,
 }
 
 export function ContentDialog({ panel, onClose, onNavigate }: {
@@ -30,14 +31,14 @@ export function ContentDialog({ panel, onClose, onNavigate }: {
       onCancel={onClose} onClick={(event) => { if (event.target === event.currentTarget) onClose() }}>
       <div className="content-dialog__inner">
         <button type="button" className="icon-button content-dialog__close" aria-label="إغلاق النافذة" onClick={onClose}><X aria-hidden="true" /></button>
-        <p className="panel-eyebrow" lang="en" dir="ltr">CLEVIO</p>
+        <p className="panel-eyebrow" dir="auto">{siteContent.brand.name.toUpperCase()}</p>
         <h2 id="panel-title">{panel ? titles[panel] : ''}</h2>
         {panel === 'contact' && <ContactForm />}
         {panel === 'services' && <ul className="service-list">{services.map((service) => <li key={service}>{service}<ArrowLeft aria-hidden="true" /></li>)}</ul>}
         {panel === 'work' && <div className="work-areas">{workAreas.map((area) => <article key={area.title}><h3>{area.title}</h3><p>{area.description}</p></article>)}</div>}
-        {panel === 'about' && <p className="panel-copy">نحن كليفيو. شريكك الإبداعي في عالم التصميم والتسويق والتكنولوجيا. نحوّل الأفكار الجريئة إلى هويات وتجارب رقمية مؤثرة، ونرافقك من الفكرة إلى النمو.</p>}
+        {panel === 'about' && <p className="panel-copy">{siteContent.about.copy}</p>}
         {panel && panel !== 'contact' && <button type="button" className="action action--primary panel-cta" onClick={() => onNavigate('contact')}>
-          <span>تحدّث معنا عن مشروعك</span><ArrowLeft aria-hidden="true" />
+          <span>{siteContent.about.action}</span><ArrowLeft aria-hidden="true" />
         </button>}
       </div>
     </dialog>

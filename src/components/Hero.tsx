@@ -4,12 +4,14 @@ import { HeroCrystalDefinitions, HeroOrbit } from './HeroOrbit'
 import { useHeroFloatInteraction } from '../hooks/useHeroFloatInteraction'
 import { useHeroCrystalIdle } from '../hooks/useHeroCrystalIdle'
 import { ActionButton } from './ActionButton'
+import { siteContent } from '../content/site'
 import type { Panel } from '../content/site'
 
 const heroImageSizes = '(max-width: 979px) min(187vw, 1210px), (max-aspect-ratio: 16/9) 178svh, 100vw'
 const heroSources = (name: string, type = 'png') => [['2k', 1920], ['4k', 3840], ['8k', 7680]].map(([size, width]) => import.meta.env.BASE_URL + 'hero-layers/hires/' + name + '-' + size + '.' + type + ' ' + width + 'w').join(', ')
 
 export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
+  const { hero } = siteContent
   const root = useRef<HTMLElement>(null)
   useHeroFloatInteraction(root)
   useHeroCrystalIdle(root)
@@ -62,17 +64,17 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
           </div>
         </div>
         <div className="hero__content">
-          <h1 id="hero-heading" className="hero__heading" aria-label="أفكار خارج الإطار">
-            <span className="hero__line-mask hero__line-mask--lead"><span className="hero__line">أفكار خارج</span></span>
-            <span className="hero__line-mask hero__line-mask--focus"><span className="hero__line">الإطار</span></span>
+          <h1 id="hero-heading" className="hero__heading" aria-label={`${hero.lead} ${hero.focus}`}>
+            <span className="hero__line-mask hero__line-mask--lead"><span className="hero__line">{hero.lead}</span></span>
+            <span className="hero__line-mask hero__line-mask--focus"><span className="hero__line">{hero.focus}</span></span>
           </h1>
           <p className="hero__description">
-            <span>نحوّل أفكارك إلى هويات وتجارب رقمية مؤثرة،</span>
-            <span>من الفكرة إلى النمو، نرافقك في كل خطوة.</span>
+            <span>{hero.descriptionLead}</span>
+            <span>{hero.descriptionTail}</span>
           </p>
           <div className="hero__actions">
-            <ActionButton onClick={() => onNavigate('contact')}>لنبدأ مشروعك</ActionButton>
-            <ActionButton variant="secondary" onClick={() => onNavigate('services')}>اكتشف خدماتنا</ActionButton>
+            <ActionButton onClick={() => onNavigate('contact')}>{hero.primaryAction}</ActionButton>
+            <ActionButton variant="secondary" onClick={() => onNavigate('services')}>{hero.secondaryAction}</ActionButton>
           </div>
         </div>
         <a className="hero__scroll-indicator" href="#services" aria-label="انتقل إلى خدماتنا">

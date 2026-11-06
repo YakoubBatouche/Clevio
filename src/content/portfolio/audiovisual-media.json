@@ -1,0 +1,28 @@
+{
+  "id": "audiovisual-media",
+  "title": "الإنتاج السمعي البصري والإعلام",
+  "description": "إنتاج محتوى مرئي ومسموع من التصوير إلى المونتاج.",
+  "filters": [
+    {
+      "id": "reels",
+      "label": "مقاطع ريلز",
+      "description": "تصوير ومونتاج مقاطع عمودية قصيرة لمنصّات التواصل."
+    },
+    {
+      "id": "motion-design",
+      "label": "التصميم الحركي",
+      "description": "تحريك الشعارات والرسوم والعناصر البصرية للفيديو."
+    }
+  ],
+  "cover": "/work/visual-story.webp",
+  "items": [
+    {
+      "id": "studio-direction",
+      "filterId": null,
+      "title": "تصوّر لإضاءة الاستوديو",
+      "alt": "كاميرا سينمائية تحت إضاءة الاستوديو الزرقاء والكهرمانية",
+      "position": "75% center",
+      "image": "/work/visual-story.webp"
+    }
+  ]
+}

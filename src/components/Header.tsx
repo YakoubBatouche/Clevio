@@ -82,12 +82,12 @@ export function Header({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
   function items() {
     return navigation.map(({ label, panel }) => {
       if (panel === null || panel === 'services' || panel === 'work' || panel === 'contact') {
-        return <a key={label} href={panel ? '#' + panel : '#home'}
+        return <a key={panel ?? 'home'} href={panel ? '#' + panel : '#home'}
           className={panel === activePanel ? 'is-active' : undefined}
           aria-current={panel === activePanel ? 'location' : undefined}
           onClick={(event) => choose(panel, event)}>{label}</a>
       }
-      return <button key={label} type="button" onClick={() => choose(panel)}>{label}</button>
+      return <button key={panel} type="button" onClick={() => choose(panel)}>{label}</button>
     })
   }
 

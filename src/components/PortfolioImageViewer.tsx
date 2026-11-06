@@ -1,6 +1,8 @@
 import { useLayoutEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
+import { portfolioContent } from '../content/portfolio'
+import { siteImageUrl } from '../content/site'
 
 export type PortfolioImageSelection = {
   item: { title: string; image: string; alt: string }
@@ -42,12 +44,12 @@ export function PortfolioImageViewer({ item, trigger, onClose }: PortfolioImageS
     >
       <div className="portfolio-image-viewer__bar">
         <h2 id="portfolio-image-viewer-title">{item.title}</h2>
-        <button className="portfolio-image-viewer__close" type="button" aria-label="إغلاق الصورة" autoFocus onClick={onClose}>
+        <button className="portfolio-image-viewer__close" type="button" aria-label={portfolioContent.closeImageLabel} autoFocus onClick={onClose}>
           <X aria-hidden="true" />
         </button>
       </div>
       <div className="portfolio-image-viewer__art">
-        <img className="portfolio-image-viewer__image" src={import.meta.env.BASE_URL + item.image} alt={item.alt} decoding="async" />
+        <img className="portfolio-image-viewer__image" src={siteImageUrl(item.image)} alt={item.alt} decoding="async" />
       </div>
     </dialog>,
     document.body,

@@ -44,13 +44,15 @@
   transition: color 180ms ease, transform 180ms ease;
 }
 .partners__mark + .partners__mark { border-inline-start: 1px solid rgb(121 160 238 / 18%); }
-.partners__mark svg {
+.partners__mark img {
   display: block;
   width: clamp(40px, 4.1vw, 63px);
   height: clamp(40px, 4.1vw, 63px);
+  object-fit: contain;
 }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .partners__mark:hover { color: #e0e9ff; transform: translateY(-2px); }
+  .partners__mark:hover img { filter: brightness(1.2); }
 }
 @media (max-width: 760px) {
   .partners { padding-block: 34px 30px; }
@@ -60,11 +62,11 @@
   .partners__marks { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 24px; row-gap: 16px; }
   .partners__mark { min-height: 64px; }
   .partners__mark:nth-child(5) { border-inline-start: 0; }
-  .partners__mark svg { width: 44px; height: 44px; }
+  .partners__mark img { width: 44px; height: 44px; }
 }
 @media (max-width: 374px) {
   .partners__heading { font-size: 23px; }
-  .partners__mark svg { width: 39px; height: 39px; }
+  .partners__mark img { width: 39px; height: 39px; }
 }
 
 /* Work categories and partner signatures share one composed page section. */

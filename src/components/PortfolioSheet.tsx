@@ -1,10 +1,11 @@
 import { useLayoutEffect, useRef, useState, type PointerEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { Maximize2, X } from 'lucide-react'
-import { portfolioCategories } from '../content/portfolio'
+import { portfolioCategories, portfolioContent } from '../content/portfolio'
+import { siteImageUrl } from '../content/site'
 import { PortfolioImageViewer, type PortfolioImageSelection } from './PortfolioImageViewer'
 
-const allFilter = { id: 'all', label: 'الكل' }
+const allFilter = { id: 'all', label: portfolioContent.allFilterLabel }
 const gripClickSlop = 6
 
 type GripDrag = {
@@ -151,7 +152,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
             <button
               className="portfolio-sheet__grip"
               type="button"
-              aria-label="اسحب لإغلاق معرض الأعمال"
+              aria-label={portfolioContent.gripLabel}
               onPointerDown={startGripDrag}
               onPointerMove={moveGripDrag}
               onPointerUp={endGripDrag}
@@ -166,15 +167,15 @@ export function PortfolioSheet({ category, trigger, onClose }: {
                 <h2 id="portfolio-sheet-title" className="portfolio-sheet__title">{displayed.title}</h2>
                 <div className="portfolio-sheet__summary">
                   <p className="portfolio-sheet__description">{displayed.description}</p>
-                  <p className="portfolio-sheet__eyebrow">نماذج بصرية توضيحية</p>
+                  {portfolioContent.sheetNote && <p className="portfolio-sheet__eyebrow">{portfolioContent.sheetNote}</p>}
                 </div>
               </div>
-              <button className="portfolio-sheet__close" type="button" aria-label="إغلاق معرض الأعمال" autoFocus onClick={onClose}>
+              <button className="portfolio-sheet__close" type="button" aria-label={portfolioContent.closeLabel} autoFocus onClick={onClose}>
                 <X aria-hidden="true" />
               </button>
             </header>
             {displayed.filters.length > 0 && (
-              <div ref={filtersRef} className="portfolio-sheet__filters" data-native-scroll="horizontal" role="group" aria-label="تصفية الأعمال">
+              <div ref={filtersRef} className="portfolio-sheet__filters" data-native-scroll="horizontal" role="group" aria-label={portfolioContent.filtersLabel}>
                 {[allFilter, ...displayed.filters].map((filter) => (
                   <button
                     key={filter.id}
@@ -200,7 +201,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
             className="portfolio-sheet__scroll"
             data-native-scroll
             role="region"
-            aria-label="نماذج الأعمال"
+            aria-label={portfolioContent.galleryLabel}
             aria-describedby={selectedFilter ? 'portfolio-sheet-filter-description' : undefined}
             tabIndex={0}
           >
@@ -211,15 +212,15 @@ export function PortfolioSheet({ category, trigger, onClose }: {
             )}
             {items.length ? (
               <ul key={filterId} className="portfolio-sheet__grid" role="list" data-filter-motion={filterMotion || undefined}>
-                {items.map((item) => {
+                {items.map((item, index) => {
                   const filterLabel = displayed.filters.find((filter) => filter.id === item.filterId)?.label
 
                   return (
-                    <li key={item.id} className="portfolio-sheet__card">
+                    <li key={item.id ?? index} className="portfolio-sheet__card">
                       <button className="portfolio-sheet__media" type="button" aria-haspopup="dialog"
-                        aria-label={'عرض الصورة: ' + item.title} onClick={(event) => setViewer({ item, trigger: event.currentTarget })}>
+                        aria-label={portfolioContent.previewLabel + ': ' + item.title} onClick={(event) => setViewer({ item, trigger: event.currentTarget })}>
                         <img
-                          src={import.meta.env.BASE_URL + item.image}
+                          src={siteImageUrl(item.image)}
                           alt={item.alt}
                           loading="lazy"
                           decoding="async"
@@ -236,7 +237,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
                 })}
               </ul>
             ) : (
-              <p key={filterId} className="portfolio-sheet__empty" data-filter-motion={filterMotion || undefined}>لا تتوفر نماذج بصرية لهذا التصنيف حاليًا.</p>
+              <p key={filterId} className="portfolio-sheet__empty" data-filter-motion={filterMotion || undefined}>{portfolioContent.emptyMessage}</p>
             )}
           </div>
         </div>

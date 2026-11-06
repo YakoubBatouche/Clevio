@@ -1,0 +1,86 @@
+{
+  "id": "digital-marketing",
+  "title": "التسويق الرقمي والنمو",
+  "description": "تصميم محتوى بصري للتواصل مع الجمهور عبر القنوات الرقمية.",
+  "filters": [
+    {
+      "id": "social-posts",
+      "label": "منشورات التواصل الاجتماعي",
+      "description": "تصميم منشورات وقوالب تناسب هوية العلامة والمنصّة."
+    },
+    {
+      "id": "thumbnails",
+      "label": "الصور المصغّرة",
+      "description": "تصميم صور مصغّرة تعرّف المشاهد بموضوع الفيديو."
+    },
+    {
+      "id": "stories",
+      "label": "القصص",
+      "description": "تصميم محتوى عمودي للقصص على منصّات التواصل."
+    },
+    {
+      "id": "email-signatures",
+      "label": "توقيعات البريد الإلكتروني",
+      "description": "توقيعات تحمل هوية العلامة وتعرض بيانات التواصل."
+    }
+  ],
+  "cover": "/work/brand-thumbnail-chroma.svg",
+  "items": [
+    {
+      "id": "echo-poster",
+      "filterId": "social-posts",
+      "title": "تصوّر لمنشور الصدى",
+      "alt": "حلقات خضراء مائلة تتكرر حول كلمة «الصدى» بالإنجليزية على خلفية خضراء داكنة",
+      "image": "/work/brand-poster-echo.svg"
+    },
+    {
+      "id": "identity-thumbnail",
+      "filterId": "thumbnails",
+      "title": "صورة مصغّرة للهوية البصرية",
+      "alt": "صورة مصغّرة تجريبية برمز بنفسجي لامع ونص تفاصيل الهوية",
+      "image": "/work/brand-thumbnail.svg"
+    },
+    {
+      "id": "chroma-thumbnail",
+      "filterId": "thumbnails",
+      "title": "صورة مصغّرة لتحوّلات اللون",
+      "alt": "وجوه صفراء ووردية وبنفسجية بجوار عبارة «تحوّل اللون» بالإنجليزية",
+      "image": "/work/brand-thumbnail-chroma.svg"
+    },
+    {
+      "id": "grain-thumbnail",
+      "filterId": "thumbnails",
+      "title": "صورة مصغّرة لملمس الطباعة",
+      "alt": "مشهد دائري بجبال مثلثة وخطوط محزّزة على خلفية مرجانية",
+      "image": "/work/brand-thumbnail-grain.svg"
+    },
+    {
+      "id": "motion-thumbnail",
+      "filterId": "thumbnails",
+      "title": "صورة مصغّرة لأثر الحركة",
+      "alt": "خطوط سماوية متموجة تترك أثرًا متكررًا بجوار عبارة «الأثر البصري» بالإنجليزية",
+      "image": "/work/brand-thumbnail-motion.svg"
+    },
+    {
+      "id": "type-thumbnail",
+      "filterId": "thumbnails",
+      "title": "صورة مصغّرة لتباين الخطوط",
+      "alt": "حروف لاتينية كبيرة بخطّين مختلفين فوق دائرة برتقالية",
+      "image": "/work/brand-thumbnail-type.svg"
+    },
+    {
+      "id": "nocturne-thumbnail",
+      "filterId": "thumbnails",
+      "title": "صورة مصغّرة لألوان الليل",
+      "alt": "هلال وردي ونجوم صغيرة فوق تلال داكنة بجوار عبارة «ألوان الليل» بالإنجليزية",
+      "image": "/work/brand-thumbnail-nocturne.svg"
+    },
+    {
+      "id": "cut-thumbnail",
+      "filterId": "thumbnails",
+      "title": "صورة مصغّرة للقصاصات الورقية",
+      "alt": "قصاصات هندسية وردية وبنفسجية فوق بطاقة مائلة بجانب عبارة «قصاصات» بالإنجليزية",
+      "image": "/work/brand-thumbnail-cut.svg"
+    }
+  ]
+}

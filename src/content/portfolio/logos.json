@@ -1,0 +1,51 @@
+{
+  "id": "logos",
+  "title": "الشعارات",
+  "description": "تصميم رموز وشعارات تعبّر عن شخصية العلامة.",
+  "filters": [],
+  "cover": "/work/brand-logo-orbit.svg",
+  "items": [
+    {
+      "id": "orbit-mark",
+      "filterId": null,
+      "title": "شعار المدار",
+      "alt": "مداران متقاطعان بلون أخضر داكن حول نقطة برتقالية على شبكة ورقية",
+      "image": "/work/brand-logo-orbit.svg"
+    },
+    {
+      "id": "terrace-mark",
+      "filterId": null,
+      "title": "شعار الأقواس",
+      "alt": "ثلاثة أقواس بلون الطين على بطاقة كريمية مائلة",
+      "image": "/work/brand-logo-terrace.svg"
+    },
+    {
+      "id": "signal-mark",
+      "filterId": null,
+      "title": "شعار الإشارة",
+      "alt": "ثلاث شرائط مائلة ونقطة في شعار يعرض تنويعاته اللونية",
+      "image": "/work/brand-logo-signal.svg"
+    },
+    {
+      "id": "tide-mark",
+      "filterId": null,
+      "title": "شعار المدّ",
+      "alt": "شارة دائرية زرقاء تضم موجتين ونقطة ذهبية",
+      "image": "/work/brand-logo-tide.svg"
+    },
+    {
+      "id": "petal-mark",
+      "filterId": null,
+      "title": "شعار البتلات",
+      "alt": "رمز مستوحى من بتلات زهرة مع أربع عينات لونية وردية وبنفسجية",
+      "image": "/work/brand-logo-petal.svg"
+    },
+    {
+      "id": "weave-mark",
+      "filterId": null,
+      "title": "شعار النسيج",
+      "alt": "خطّان متشابكان باللونين الذهبي والكريمي فوق خلفية داكنة",
+      "image": "/work/brand-logo-weave.svg"
+    }
+  ]
+}

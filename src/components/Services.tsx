@@ -1,18 +1,15 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { Fragment, useEffect, useId, useRef, useState } from 'react'
 import { ArrowUpLeft, ArrowLeft, X } from 'lucide-react'
-import { services } from '../content/site'
+import servicesContent from '../content/services.json'
 import { useCardTilt } from '../hooks/useWorkCardTilt'
 
-const offerings = [
-  ['التصميم الجرافيكي', 'تصميم المطبوعات', 'المحتوى الإبداعي'],
-  ['إدارة المنصات الاجتماعية', 'الحملات الإعلانية', 'استراتيجية المحتوى'],
-  ['المواقع والتطبيقات', 'تصميم تجربة المستخدم', 'التكاملات الرقمية'],
-  ['التصوير والإنتاج', 'الموشن جرافيك', 'المونتاج والمعالجة'],
-  ['بناء الهوية البصرية', 'استراتيجية العلامة', 'دليل استخدام الهوية'],
-  ['دراسة السوق', 'خطط التسويق', 'تطوير استراتيجية النمو'],
-  ['تنظيم الفعاليات', 'تجارب العلامات', 'التغطية والإنتاج'],
-  ['الدعم التقني', 'الصيانة والتطوير', 'الحلول الرقمية المتكاملة'],
+const iconIds = [
+  'creative-design', 'digital-marketing', 'technology', 'audiovisual',
+  'brand-identity', 'marketing-consulting', 'events', 'technical-support',
 ]
+
+type Service = { id: string; title: string; offerings?: readonly string[] | null }
+const serviceItems: readonly Service[] = servicesContent.items
 
 const shapes = [
   'M30 72 42 37 70 20 89 39 73 67 38 79Z M42 37 73 67 M38 79 56 54',
@@ -25,7 +22,8 @@ const shapes = [
   'M42 31 35 24 23 36 31 44 27 54 17 56 17 72 29 73 34 82 31 92 46 99 52 89 63 89 70 98 83 89 78 79 83 68 95 65 92 49 80 48 74 39 76 28 61 23 55 33Z M69 61 A15 15 0 1 1 39 61 A15 15 0 1 1 69 61Z',
 ]
 
-function ServiceGlassIcon({ index }: { index: number }) {
+function ServiceGlassIcon({ serviceId }: { serviceId: string }) {
+  const index = Math.max(0, iconIds.indexOf(serviceId))
   const id = 'service-glass-' + useId().replaceAll(':', '')
   return <svg className="service-card__glass" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
     <defs>
@@ -57,7 +55,7 @@ function ServiceGlassIcon({ index }: { index: number }) {
 }
 
 export function Services({ onStartProject }: { onStartProject: () => void }) {
-  const [selected, setSelected] = useState<number | null>(null)
+  const [selected, setSelected] = useState<Service | null>(null)
   const section = useRef<HTMLElement>(null)
   useCardTilt(section, '.service-card')
   const dialog = useRef<HTMLDialogElement>(null)
@@ -107,14 +105,16 @@ export function Services({ onStartProject }: { onStartProject: () => void }) {
   return <section ref={section} id="services" className="services-section" aria-labelledby="services-heading" tabIndex={-1}>
     <div className="services-section__shell">
       <header className="services-section__header">
-        <div><p className="services-section__eyebrow">خبرات تتكامل. أفكار تتحوّل.</p><h2 id="services-heading">خدماتنا</h2></div>
-        <p className="services-section__intro">ثمانية مسارات إبداعية،<br />وإمكانيات تتجاوز الإطار.</p>
+        <div><p className="services-section__eyebrow">{servicesContent.eyebrow}</p><h2 id="services-heading">{servicesContent.title}</h2></div>
+        <p className="services-section__intro">
+          {servicesContent.intro.map((line, index) => <Fragment key={index}>{index > 0 && <br />}{line}</Fragment>)}
+        </p>
       </header>
       <div className="services-section__grid">
-        {services.map((category, index) => <button key={category} className="service-card" type="button" onClick={(event) => { trigger.current = event.currentTarget; setSelected(index) }}>
+        {serviceItems.map((service, index) => <button key={service.id} className="service-card" type="button" onClick={(event) => { trigger.current = event.currentTarget; setSelected(service) }}>
           <span className="service-card__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-          <ServiceGlassIcon index={index} />
-          <span className="service-card__body"><strong>{category}</strong><span className="service-card__explore">استكشف الخدمات <ArrowUpLeft aria-hidden="true" strokeWidth={1.5} /></span></span>
+          <ServiceGlassIcon serviceId={service.id} />
+          <span className="service-card__body"><strong>{service.title}</strong><span className="service-card__explore">{servicesContent.exploreLabel} <ArrowUpLeft aria-hidden="true" strokeWidth={1.5} /></span></span>
           <span className="service-card__facet" aria-hidden="true" />
           <span className="service-card__corner" aria-hidden="true" />
         </button>)}
@@ -122,13 +122,13 @@ export function Services({ onStartProject }: { onStartProject: () => void }) {
     </div>
     <dialog ref={dialog} className="services-dialog" aria-labelledby="service-dialog-title" onCancel={() => { setSelected(null); trigger.current?.focus() }} onClick={(event) => { if (event.target === event.currentTarget) close() }}>
       {selected !== null && <div className="services-dialog__body">
-        <button className="services-dialog__close" type="button" aria-label="إغلاق تفاصيل الخدمة" onClick={close}><X aria-hidden="true" /></button>
-        <ServiceGlassIcon index={selected} />
-        <p className="services-section__eyebrow">من الفكرة إلى التنفيذ</p>
-        <h2 id="service-dialog-title">{services[selected]}</h2>
-        <p>خبرات متكاملة تمنح مشروعك وضوحًا وحضورًا وتأثيرًا.</p>
-        <ul>{offerings[selected].map((item) => <li key={item}>{item}</li>)}</ul>
-        <button className="services-dialog__cta" type="button" onClick={() => { close(); onStartProject() }}><span>لنتحدث عن مشروعك</span><ArrowLeft aria-hidden="true" /></button>
+        <button className="services-dialog__close" type="button" aria-label={servicesContent.closeLabel} onClick={close}><X aria-hidden="true" /></button>
+        <ServiceGlassIcon serviceId={selected.id} />
+        <p className="services-section__eyebrow">{servicesContent.dialogEyebrow}</p>
+        <h2 id="service-dialog-title">{selected.title}</h2>
+        <p>{servicesContent.dialogDescription}</p>
+        {!!selected.offerings?.length && <ul>{selected.offerings.map((item, index) => <li key={index}>{item}</li>)}</ul>}
+        <button className="services-dialog__cta" type="button" onClick={() => { close(); onStartProject() }}><span>{servicesContent.dialogActionLabel}</span><ArrowLeft aria-hidden="true" /></button>
       </div>}
     </dialog>
   </section>

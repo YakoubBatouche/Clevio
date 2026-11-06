@@ -1,16 +1,16 @@
 import { useState } from 'react'
 import { ArrowLeft, Mail } from 'lucide-react'
+import { contactEmail, siteContent } from '../content/site'
 
 export function ContactForm() {
   const [draft, setDraft] = useState('')
-  const email = import.meta.env.VITE_CONTACT_EMAIL || 'info@clevio.dz'
 
   return (
     <form className="contact-form" onSubmit={(event) => {
       event.preventDefault()
       const data = new FormData(event.currentTarget)
       const body = 'الاسم: ' + data.get('name') + '\nالبريد: ' + data.get('email') + '\n\n' + data.get('brief')
-      setDraft('mailto:' + encodeURIComponent(email) + '?subject=' + encodeURIComponent('مشروع جديد — Clevio') + '&body=' + encodeURIComponent(body))
+      setDraft('mailto:' + encodeURIComponent(contactEmail) + '?subject=' + encodeURIComponent(siteContent.contact.form.subject) + '&body=' + encodeURIComponent(body))
     }}>
       <p className="panel-copy">أخبرنا عن فكرتك، ولنعطها المساحة التي تستحقها.</p>
       <div className="contact-form__row">

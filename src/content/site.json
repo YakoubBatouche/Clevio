@@ -1,0 +1,84 @@
+{
+  "seo": {
+    "title": "Clevio — أفكار خارج الإطار",
+    "description": "كليفيو — نحوّل أفكارك إلى هويات وتجارب رقمية مؤثرة. من الفكرة إلى النمو، نرافقك في كل خطوة.",
+    "shareTitle": "Clevio — أفكار خارج الإطار",
+    "shareDescription": "شريكك الإبداعي في التصميم والتسويق والتكنولوجيا."
+  },
+  "brand": {
+    "name": "Clevio",
+    "logo": "/images/clevio-logo.svg"
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "services": "خدماتنا",
+    "work": "أعمالنا",
+    "contact": "تواصل معنا",
+    "about": "من نحن"
+  },
+  "hero": {
+    "lead": "أفكار خارج",
+    "focus": "الإطار",
+    "descriptionLead": "نحوّل أفكارك إلى هويات وتجارب رقمية مؤثرة،",
+    "descriptionTail": "من الفكرة إلى النمو، نرافقك في كل خطوة.",
+    "primaryAction": "لنبدأ مشروعك",
+    "secondaryAction": "اكتشف خدماتنا"
+  },
+  "partners": {
+    "heading": "شركاء صنعنا معهم الفرق",
+    "note": "نماذج لشعارات توضيحية",
+    "logos": [
+      { "name": "نموذج المدارات", "image": "/partners/placeholder-orbit.svg" },
+      { "name": "نموذج الزهرة", "image": "/partners/placeholder-bloom.svg" },
+      { "name": "نموذج الجوهرة", "image": "/partners/placeholder-gem.svg" },
+      { "name": "نموذج الطيّات", "image": "/partners/placeholder-fold.svg" },
+      { "name": "نموذج الوصلات", "image": "/partners/placeholder-link.svg" },
+      { "name": "نموذج الشريط", "image": "/partners/placeholder-ribbon.svg" },
+      { "name": "نموذج اللمعة", "image": "/partners/placeholder-spark.svg" },
+      { "name": "نموذج الحدود", "image": "/partners/placeholder-contour.svg" }
+    ]
+  },
+  "contact": {
+    "eyebrow": "لنبدأ شيئًا مختلفًا",
+    "heading": "لديك فكرة؟ لنحوّلها إلى شيء مميز.",
+    "intro": "أخبرنا عن مشروعك، وسنتواصل معك في أقرب وقت.",
+    "email": "",
+    "whatsapp": "",
+    "whatsappMessage": "مرحبًا كليفيو، أود مناقشة مشروع جديد.",
+    "art": "/contact/contact-crystal-768.webp",
+    "form": {
+      "label": "تفاصيل مشروع جديد",
+      "nameLabel": "الاسم الكامل",
+      "namePlaceholder": "كيف نناديك؟",
+      "contactLabel": "البريد الإلكتروني أو رقم الهاتف",
+      "contactPlaceholder": "وسيلة التواصل المناسبة لك",
+      "serviceLabel": "نوع الخدمة أو المشروع",
+      "servicePlaceholder": "اختر الخدمة المناسبة",
+      "completeProject": "مشروع متكامل",
+      "briefLabel": "تفاصيل المشروع",
+      "briefPlaceholder": "حدثنا عن فكرتك، وما الذي تطمح إلى تحقيقه...",
+      "required": "جميع الحقول مطلوبة.",
+      "submit": "جهّز تفاصيل مشروعك",
+      "viaEmail": "أو تواصل معنا عبر البريد",
+      "viaWhatsapp": "أو تواصل معنا عبر واتساب",
+      "draftMessage": "تفاصيل مشروعك جاهزة. افتح تطبيق البريد لمراجعة الرسالة وإرسالها.",
+      "openEmail": "فتح تطبيق البريد",
+      "validationMessage": "أدخل بريدًا إلكترونيًا أو رقم هاتف صحيحًا.",
+      "subject": "مشروع جديد — Clevio"
+    }
+  },
+  "about": {
+    "copy": "نحن كليفيو. شريكك الإبداعي في عالم التصميم والتسويق والتكنولوجيا. نحوّل الأفكار الجريئة إلى هويات وتجارب رقمية مؤثرة، ونرافقك من الفكرة إلى النمو.",
+    "action": "تحدّث معنا عن مشروعك"
+  },
+  "footer": {
+    "linksHeading": "روابط سريعة",
+    "contactCopy": "لنصنع شيئًا يستحق أن يُرى.",
+    "contactAction": "لنبدأ الحديث",
+    "servicesHeading": "خدماتنا",
+    "serviceLinks": ["الهوية البصرية", "التصميم والإبداع", "التسويق الرقمي", "المواقع والتطبيقات"],
+    "brandCopy": "شريكك الإبداعي في عالم التصميم والتسويق والتكنولوجيا.",
+    "copyright": "جميع الحقوق محفوظة.",
+    "tagline": "التصميم · التسويق · التكنولوجيا"
+  }
+}

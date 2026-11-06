@@ -1,0 +1,80 @@
+{
+  "id": "print",
+  "title": "المطبوعات",
+  "description": "تصميم المطبوعات وتنسيق النصوص والصور على الورق.",
+  "filters": [
+    {
+      "id": "brochures",
+      "label": "الكتيبات",
+      "description": "كتيبات تعريفية تعرض المنتجات والخدمات بوضوح."
+    },
+    {
+      "id": "magazines",
+      "label": "المجلات",
+      "description": "تصميم الأغلفة وتنسيق المقالات والصور داخل المجلات."
+    },
+    {
+      "id": "reports",
+      "label": "التقارير",
+      "description": "تصميم التقارير وعرض البيانات في رسوم وجداول واضحة."
+    },
+    {
+      "id": "menus",
+      "label": "قوائم الطعام",
+      "description": "قوائم مرتّبة تسهّل قراءة الأطباق والأسعار."
+    }
+  ],
+  "cover": "/work/brand-poster.svg",
+  "items": [
+    {
+      "id": "identity-poster",
+      "filterId": null,
+      "title": "ملصق للهوية البصرية",
+      "alt": "ملصق بنفسجي تجريبي يجمع بين رمز هندسي وشبكة تصميم وعبارة من الفكرة إلى الشكل",
+      "image": "/work/brand-poster.svg"
+    },
+    {
+      "id": "foil-mark",
+      "filterId": null,
+      "title": "شعار بطباعة فضية",
+      "alt": "رمز هندسي فضي مطبوع على علبة بنفسجية",
+      "position": "center 28%",
+      "image": "/work/brand-identity.webp"
+    },
+    {
+      "id": "solar-poster",
+      "filterId": null,
+      "title": "ملصق ساعات الشمس",
+      "alt": "قرص شمسي ذهبي يطل على تلال داكنة بجوار عبارة «ساعات الشمس» بالإنجليزية",
+      "image": "/work/brand-poster-solar.svg"
+    },
+    {
+      "id": "modular-poster",
+      "filterId": null,
+      "title": "ملصق الوحدات الهندسية",
+      "alt": "ملصق بأرباع دوائر ومساحات هندسية حمراء وصفراء وزرقاء",
+      "image": "/work/brand-poster-modular.svg"
+    },
+    {
+      "id": "contour-poster",
+      "filterId": null,
+      "title": "ملصق خطوط التضاريس",
+      "alt": "خطوط طبوغرافية متداخلة وعلامات حمراء على خلفية زرقاء فاتحة",
+      "image": "/work/brand-poster-contours.svg"
+    },
+    {
+      "id": "paper-poster",
+      "filterId": null,
+      "title": "ملصق طيّات الورق",
+      "alt": "ورقة صفراء مطوية تبرز أسطحها وظلالها على خلفية مسطّرة",
+      "image": "/work/brand-poster-paper.svg"
+    },
+    {
+      "id": "letterpress-poster",
+      "filterId": null,
+      "title": "ملصق الطباعة البارزة",
+      "alt": "حرف لاتيني بطبقتين متداخلتين باللونين الأحمر والأخضر على ورق كريمي",
+      "image": "/work/brand-poster-letterpress.svg"
+    }
+  ]
+}

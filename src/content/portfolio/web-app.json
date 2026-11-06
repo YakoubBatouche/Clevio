@@ -1,0 +1,33 @@
+{
+  "id": "web-app",
+  "title": "المواقع والتطبيقات",
+  "description": "تصميم وتطوير واجهات رقمية سهلة الاستخدام.",
+  "filters": [
+    {
+      "id": "websites",
+      "label": "المواقع الإلكترونية",
+      "description": "مواقع تعريفية وصفحات هبوط ومتاجر إلكترونية."
+    },
+    {
+      "id": "apps",
+      "label": "التطبيقات",
+      "description": "تصميم وتطوير تطبيقات للهواتف الذكية."
+    },
+    {
+      "id": "web-platforms",
+      "label": "منصات الويب",
+      "description": "منصّات تفاعلية تشمل لوحات التحكّم وأنظمة الحجز."
+    }
+  ],
+  "cover": "/work/digital-experience.webp",
+  "items": [
+    {
+      "id": "website-preview",
+      "filterId": "websites",
+      "title": "تصوّر لواجهة ويب",
+      "alt": "حاسوب محمول يعرض واجهة موقع بخلفية زرقاء داكنة",
+      "position": "30% center",
+      "image": "/work/digital-experience.webp"
+    }
+  ]
+}
