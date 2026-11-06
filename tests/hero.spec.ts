@@ -15,7 +15,7 @@ test('intro waits for hero assets, unlocks the unchanged scene, and replays on r
   })
 
   try {
-    await page.goto('/', { waitUntil: 'domcontentloaded' })
+    await page.goto('/?hero=classic', { waitUntil: 'domcontentloaded' })
     const loader = page.locator('#preloader')
     const lockedContent = page.locator('.site-header, #main-content, .site-footer, .skip-link')
     await expect(loader).toBeVisible()
@@ -94,8 +94,8 @@ test('intro waits for hero assets, unlocks the unchanged scene, and replays on r
 test('development bypass and reduced motion leave content unlocked without the loader', async ({ page }) => {
   const criticalImage = '**/hero-layers/regenerated/main-c-clean-v2-*.png'
   for (const mode of [
-    { url: '/?skipintro', reducedMotion: 'no-preference' },
-    { url: '/', reducedMotion: 'reduce' },
+    { url: '/?hero=classic&skipintro', reducedMotion: 'no-preference' },
+    { url: '/?hero=classic', reducedMotion: 'reduce' },
   ] as const) {
     await page.emulateMedia({ reducedMotion: mode.reducedMotion })
     let releaseAsset = () => {}
@@ -121,11 +121,37 @@ test('development bypass and reduced motion leave content unlocked without the l
   }
 })
 
+test('the published Spline hero is the default and the classic artwork remains available', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
+  const hero = page.locator('#home')
+  await expect(hero).toHaveCount(1)
+  await expect(hero).toHaveClass(/hero--spline/)
+  await expect(hero.locator('.spline-hero__frame')).toHaveAttribute('src', /^https:\/\/my\.spline\.design\/reededliquidglassprismherosectionconcept-/)
+  await expect(hero.locator('.hero__artwork')).toHaveCount(0)
+  await expect(page.locator('#preloader')).toHaveCount(0)
+  await expect(page.locator('html')).not.toHaveClass(/intro-pending/)
+  await expect(hero.getByRole('heading', { name: 'أفكار خارج الإطار', exact: true })).toBeVisible()
+  await expect(hero.getByRole('button', { name: 'لنبدأ مشروعك', exact: true })).toBeVisible()
+  await hero.getByRole('button', { name: 'اكتشف خدماتنا', exact: true }).click()
+  await expect(page).toHaveURL(/#services$/)
+
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.reload({ waitUntil: 'domcontentloaded' })
+  await expect(page).toHaveURL(/#home$/)
+  await expect(hero.locator('.spline-hero__poster')).toBeInViewport()
+  await expect(hero.locator('.spline-hero__frame')).toHaveCount(0)
+
+  await page.goto('/?hero=classic&skipintro', { waitUntil: 'domcontentloaded' })
+  await expect(hero).not.toHaveClass(/hero--spline/)
+  await expect(hero.locator('[data-hero-scene="separated"]')).toHaveCount(1)
+})
+
 test('desktop hero uses selectable Arabic text and individually interactive actions', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 1672, height: 941 })
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
-  await page.goto('/')
+  await page.goto('/?hero=classic')
   await page.evaluate(() => document.fonts.ready)
   await expect(page.getByRole('heading', { name: 'أفكار خارج الإطار', exact: true })).toBeVisible()
   await expect(page.getByRole('navigation', { name: 'التنقل الرئيسي', exact: true })).toBeVisible()
@@ -149,7 +175,7 @@ test('desktop hero uses selectable Arabic text and individually interactive acti
 for (const width of [320, 390, 768, 1024, 1440, 1920]) {
   test('hero remains usable without horizontal scrolling at ' + width + 'px', async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: width < 768 ? 844 : 900 })
-    await page.goto('/')
+    await page.goto('/?hero=classic')
     await page.evaluate(() => document.fonts.ready)
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy()
     const title = await page.locator('h1').boundingBox()
@@ -366,7 +392,7 @@ test('direct contact links reveal content and keep a focused field on screen', a
 test('floating artwork moves gently while the background and headline stay still', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.setViewportSize({ width: 1672, height: 941 })
-  await page.goto('/')
+  await page.goto('/?hero=classic')
   await expect(page.locator('html')).not.toHaveClass(/intro-pending/, { timeout: 22000 })
   await page.evaluate(() => document.fonts.ready)
   for (const line of await page.locator('.hero__line').all()) {
@@ -401,7 +427,7 @@ test('floating artwork moves gently while the background and headline stay still
 test('pointer movement stays subtle and resets when leaving the artwork', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.setViewportSize({ width: 1672, height: 941 })
-  await page.goto('/')
+  await page.goto('/?hero=classic')
   await expect(page.locator('html')).not.toHaveClass(/intro-pending/, { timeout: 22000 })
   const scene = await page.locator('.hero__artwork').boundingBox()
   expect(scene).not.toBeNull()
@@ -425,7 +451,7 @@ test('pointer movement stays subtle and resets when leaving the artwork', async 
 
 test('reduced motion leaves the full headline and actions visible', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/')
+  await page.goto('/?hero=classic')
   await expect(page.locator('h1')).toHaveCSS('opacity', '1')
   expect(await page.evaluate(() => document.getAnimations().filter((animation) => animation.playState === 'running').length)).toBe(0)
   for (const line of await page.locator('.hero__line').all()) {
@@ -446,7 +472,7 @@ test('reduced motion leaves the full headline and actions visible', async ({ pag
 test('separated C, pedestal and orbit keep the original cover registration', async ({ page }) => {
   for (const width of [390, 1672]) {
     await page.setViewportSize({ width, height: 941 })
-    await page.goto('/')
+    await page.goto('/?hero=classic')
     const parts = page.locator('[data-hero-piece]')
     await expect(parts).toHaveCount(4)
     const images = page.locator('img[data-hero-piece]')
@@ -633,11 +659,13 @@ test('hero fits one screen with visible actions on wide and compact displays', a
     await page.evaluate(() => document.fonts.ready)
     const boxes = await page.evaluate(() => ({
       height: document.querySelector('#home')!.getBoundingClientRect().height,
+      artwork: document.querySelector('.spline-hero__artwork')!.getBoundingClientRect().height,
       actions: document.querySelector('.hero__actions')!.getBoundingClientRect().bottom,
       next: document.querySelector('#services')!.getBoundingClientRect().top,
       overflow: document.documentElement.scrollWidth > innerWidth,
     }))
     expect(Math.abs(boxes.height - viewport.height)).toBeLessThan(1)
+    expect(boxes.artwork).toBeGreaterThan(0)
     expect(boxes.actions).toBeLessThan(viewport.height)
     expect(boxes.next).toBeGreaterThanOrEqual(viewport.height - 1)
     expect(boxes.overflow).toBe(false)

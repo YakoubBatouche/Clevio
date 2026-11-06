@@ -9,11 +9,12 @@ import { Partners } from './components/Partners'
 import { ContactSection } from './components/ContactSection'
 import { Footer } from './components/Footer'
 import { ContentDialog } from './components/ContentDialog'
+import type { HeroConfig } from './content/hero-config'
 import type { Panel } from './content/site'
 import { scrollToSection, useSectionNavigation } from './hooks/useSectionNavigation'
 import { useSectionTransitions } from './hooks/useSectionTransitions'
 
-export function App() {
+export function App({ hero }: { hero: HeroConfig }) {
   useSectionNavigation()
   useSectionPaging()
   useSectionTransitions()
@@ -36,11 +37,11 @@ export function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <IntroPreloader />
+      {hero.variant === 'classic' && <IntroPreloader />}
       <a className="skip-link" href="#hero-heading">انتقل إلى المحتوى</a>
       <Header onNavigate={navigate} />
       <main id="main-content">
-        <Hero onNavigate={navigate} />
+        <Hero config={hero} onNavigate={navigate} />
         <Services onStartProject={() => navigate('contact')} />
         <Partners />
         <ContactSection />

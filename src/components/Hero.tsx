@@ -1,6 +1,8 @@
 import { useRef } from 'react'
+import type { HeroConfig } from '../content/hero-config'
 import { heroStaticLayers } from '../content/hero-layers'
 import { HeroCrystalDefinitions, HeroOrbit } from './HeroOrbit'
+import { SplineHeroArtwork } from './SplineHeroArtwork'
 import { useHeroFloatInteraction } from '../hooks/useHeroFloatInteraction'
 import { useHeroCrystalIdle } from '../hooks/useHeroCrystalIdle'
 import { ActionButton } from './ActionButton'
@@ -9,7 +11,7 @@ import type { Panel } from '../content/site'
 const heroImageSizes = '(max-width: 979px) min(187vw, 1210px), (max-aspect-ratio: 16/9) 178svh, 100vw'
 const heroSources = (name: string, type = 'png') => [['2k', 1920], ['4k', 3840], ['8k', 7680]].map(([size, width]) => import.meta.env.BASE_URL + 'hero-layers/hires/' + name + '-' + size + '.' + type + ' ' + width + 'w').join(', ')
 
-export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
+export function Hero({ config, onNavigate }: { config: HeroConfig; onNavigate: (panel: Panel) => void }) {
   const root = useRef<HTMLElement>(null)
   useHeroFloatInteraction(root)
   useHeroCrystalIdle(root)
@@ -31,34 +33,40 @@ export function Hero({ onNavigate }: { onNavigate: (panel: Panel) => void }) {
 
 
   return (
-      <section id="home" className="hero" tabIndex={-1} ref={root} aria-labelledby="hero-heading">
-        <HeroCrystalDefinitions />
-        <div className="hero__artwork" aria-hidden="true">
-          <img key="background" className="hero__background" src={import.meta.env.BASE_URL + 'hero-layers/separated/background-2k.webp'} srcSet={[1920, 3840, 7680].map((width, index) => import.meta.env.BASE_URL + 'hero-layers/separated/background-' + ['2k', '4k', '8k'][index] + '.webp ' + width + 'w').join(', ')} sizes={heroImageSizes} alt="" width="7680" height="4320" fetchPriority="high" decoding="async" />
-          <div className="hero__registered-frame">
-          <div key="scene" className="hero__scene" data-hero-scene="separated">
-            {sceneImage(heroStaticLayers.find((part) => part.name === 'main-c')!, true)}
-            <HeroOrbit part="back" />
-            {heroStaticLayers.filter((part) => part.name === 'stage' || part.name === 'main-c').map((part) => sceneImage(part))}
-            <HeroOrbit part="front" />
-          </div>
-          <div key="blue-bubble" className="hero__float-track hero__float-track--blue" data-hero-parallax="blue">
-            <div className="hero__float-intro">
-            <img className="hero__float hero__float--blue" data-hero-object="blue-bubble" src={import.meta.env.BASE_URL + 'hero-layers/hires/bubble-blue-2k.png'} srcSet={heroSources('bubble-blue')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
+      <section id="home" className={config.variant === 'spline' ? 'hero hero--spline' : 'hero'} tabIndex={-1} ref={root} aria-labelledby="hero-heading">
+        {config.variant === 'spline' ? (
+          <SplineHeroArtwork sceneUrl={config.sceneUrl} />
+        ) : (
+          <>
+            <HeroCrystalDefinitions />
+            <div className="hero__artwork" aria-hidden="true">
+              <img key="background" className="hero__background" src={import.meta.env.BASE_URL + 'hero-layers/separated/background-2k.webp'} srcSet={[1920, 3840, 7680].map((width, index) => import.meta.env.BASE_URL + 'hero-layers/separated/background-' + ['2k', '4k', '8k'][index] + '.webp ' + width + 'w').join(', ')} sizes={heroImageSizes} alt="" width="7680" height="4320" fetchPriority="high" decoding="async" />
+              <div className="hero__registered-frame">
+                <div key="scene" className="hero__scene" data-hero-scene="separated">
+                  {sceneImage(heroStaticLayers.find((part) => part.name === 'main-c')!, true)}
+                  <HeroOrbit part="back" />
+                  {heroStaticLayers.filter((part) => part.name === 'stage' || part.name === 'main-c').map((part) => sceneImage(part))}
+                  <HeroOrbit part="front" />
+                </div>
+                <div key="blue-bubble" className="hero__float-track hero__float-track--blue" data-hero-parallax="blue">
+                  <div className="hero__float-intro">
+                    <img className="hero__float hero__float--blue" data-hero-object="blue-bubble" src={import.meta.env.BASE_URL + 'hero-layers/hires/bubble-blue-2k.png'} srcSet={heroSources('bubble-blue')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
+                  </div>
+                </div>
+                <div key="cube" className="hero__float-track hero__float-track--cube" data-hero-parallax="cube">
+                  <div className="hero__float-intro">
+                    <img className="hero__float hero__float--cube" data-hero-object="cube" src={import.meta.env.BASE_URL + 'hero-layers/hires/floating-cube-2k.png'} srcSet={heroSources('floating-cube')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
+                  </div>
+                </div>
+                <div key="lime-bubble" className="hero__float-track hero__float-track--lime" data-hero-parallax="lime">
+                  <div className="hero__float-intro">
+                    <img className="hero__float hero__float--lime" data-hero-object="lime-bubble" src={import.meta.env.BASE_URL + 'hero-layers/hires/bubble-lime-2k.png'} srcSet={heroSources('bubble-lime')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div key="cube" className="hero__float-track hero__float-track--cube" data-hero-parallax="cube">
-            <div className="hero__float-intro">
-            <img className="hero__float hero__float--cube" data-hero-object="cube" src={import.meta.env.BASE_URL + 'hero-layers/hires/floating-cube-2k.png'} srcSet={heroSources('floating-cube')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
-            </div>
-          </div>
-          <div key="lime-bubble" className="hero__float-track hero__float-track--lime" data-hero-parallax="lime">
-            <div className="hero__float-intro">
-            <img className="hero__float hero__float--lime" data-hero-object="lime-bubble" src={import.meta.env.BASE_URL + 'hero-layers/hires/bubble-lime-2k.png'} srcSet={heroSources('bubble-lime')} sizes={heroImageSizes} alt="" width="7680" height="4320" decoding="async" />
-            </div>
-          </div>
-          </div>
-        </div>
+          </>
+        )}
         <div className="hero__content">
           <h1 id="hero-heading" className="hero__heading" aria-label="أفكار خارج الإطار">
             <span className="hero__line-mask hero__line-mask--lead"><span className="hero__line">أفكار خارج</span></span>

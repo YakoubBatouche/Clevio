@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import '@fontsource-variable/alexandria'
 import { App } from './App'
+import { getHeroConfig } from './content/hero-config'
 import { prepareIntro } from './intro/bootstrap'
 import './styles/intro.css'
 import './styles/intro-transition.css'
@@ -10,10 +11,11 @@ import './styles/global.css'
 import './styles/hero.css'
 import './styles/dialog.css'
 
-prepareIntro()
+const hero = getHeroConfig(window.location.search)
+prepareIntro(hero.variant === 'spline')
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode><App /></StrictMode>,
+  <StrictMode><App hero={hero} /></StrictMode>,
 )
 
 import './styles/services.css'

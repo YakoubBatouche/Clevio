@@ -15,14 +15,14 @@ function prepareReload(bootWindow: IntroBootWindow) {
   window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
 }
 
-export function prepareIntro() {
+export function prepareIntro(skipCrystalIntro: boolean) {
   const root = document.documentElement
   const bootWindow = window as IntroBootWindow
   prepareReload(bootWindow)
   window.clearTimeout(bootWindow.__clevioIntroBoot?.watchdog)
   root.classList.add('js')
   root.classList.remove('intro-failed', 'intro-revealing')
-  const skip = window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+  const skip = skipCrystalIntro || window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
     (import.meta.env.DEV && new URLSearchParams(window.location.search).has('skipintro'))
   const previousOverflow = document.body.style.overflow
   if (!skip) root.classList.add('intro-pending')
