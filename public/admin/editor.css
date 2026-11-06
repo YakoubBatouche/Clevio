@@ -174,17 +174,17 @@
   content: 'طي القسم';
 }
 
-.content-editor .pane[data-mode='edit'] section.field[data-field-type='list'] > .field-wrapper > .toolbar {
+.content-editor .pane[data-mode='edit'] section.field[data-field-type='list'] > .field-wrapper > .sui.group > .inner > .toolbar {
   background: var(--clevio-form-card);
 }
 
-.content-editor .pane[data-mode='edit'] section.field[data-field-type='list'] > .field-wrapper > .toolbar .actions > .sui.button[data-label]:not(:disabled):has(+ .sui.button.iconic) {
+.content-editor .pane[data-mode='edit'] section.field[data-field-type='list'] > .field-wrapper > .sui.group > .inner > .toolbar.top .actions > .sui.button[data-label]:not(.iconic, :disabled):has(+ .sui.button.iconic) {
   min-block-size: 2.4rem;
   padding-inline: .75rem;
   border-color: transparent;
   border-radius: .65rem;
-  background: var(--clevio-form-subtle);
-  color: var(--clevio-form-text);
+  background: #7af4fc;
+  color: #07172e;
   font-weight: 650;
 }
 
