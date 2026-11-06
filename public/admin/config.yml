@@ -215,7 +215,7 @@ collections:
               - &work_image { name: image, label: صورة العمل, widget: image, choose_url: false, hint: 'اختر صورة موجودة أو ارفع صورة جديدة حتى 5 ميغابايت.' }
               - &work_title { name: title, label: عنوان العمل, widget: string }
               - &work_alt { name: alt, label: وصف قصير للصورة, widget: string, hint: 'صف ما يظهر في الصورة ليستفيد منه زوّار الموقع الذين يستخدمون قارئ الشاشة.' }
-              - &work_position { name: position, widget: hidden, required: false }
+              - &work_position { name: position, widget: hidden }
               - name: filterId
                 label: التصنيف داخل المعرض
                 widget: relation

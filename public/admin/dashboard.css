@@ -188,14 +188,16 @@
   padding: .65rem clamp(.65rem, 2vw, 1rem);
 }
 
-.clevio-editor-tools__sections span {
+.clevio-editor-tools__sections span,
+.clevio-editor-tools__compact span {
   margin-inline: .35rem .15rem;
   color: var(--clevio-admin-muted, light-dark(#485c73, #b4c7db));
   font-size: .8rem;
   font-weight: 650;
 }
 
-.clevio-editor-tools__sections button {
+.clevio-editor-tools__sections button,
+.clevio-editor-tools__compact select {
   min-block-size: 2.75rem;
   max-inline-size: 100%;
   padding: .48rem .85rem;
@@ -215,7 +217,31 @@
   border-color: var(--clevio-admin-focus, light-dark(#007c91, #7af4fc));
 }
 
-.clevio-editor-tools__sections button:focus-visible {
+.clevio-editor-tools__sections button:focus-visible,
+.clevio-editor-tools__compact select:focus-visible {
   outline: 2px solid var(--clevio-admin-focus, light-dark(#007c91, #7af4fc));
   outline-offset: 2px;
+}
+
+.clevio-editor-tools__compact { display: none; }
+
+@media (max-width: 640px), (max-height: 500px) {
+  .clevio-editor-tools { margin-block: .5rem .25rem; }
+  .clevio-editor-tools__intro { padding: .55rem .8rem; }
+  .clevio-editor-tools__intro h2 { margin: .08rem 0 .2rem; font-size: 1.15rem; }
+  .clevio-editor-tools__sections { display: none; }
+
+  .clevio-editor-tools__compact {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .35rem .6rem;
+  }
+
+  .clevio-editor-tools__compact span { flex: none; }
+  .clevio-editor-tools__compact select { flex: 1; min-inline-size: 0; }
+}
+
+@media (max-height: 500px) {
+  .clevio-editor-tools__intro p:not(.clevio-editor-tools__category) { display: none; }
 }

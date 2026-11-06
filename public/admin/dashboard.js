@@ -77,6 +77,36 @@
     const { document, location } = window
     const selector = '.content-editor .pane[data-mode="edit"][data-locale] :is(#first-pane-body, #second-pane-body) > .content'
     let activeTools
+    let jumpRequest = 0
+
+    function jumpToField(content, keyPath) {
+      const request = ++jumpRequest
+      const route = location.hash
+
+      function reveal(attempt = 0) {
+        if (request !== jumpRequest || route !== location.hash || !content.isConnected) return
+
+        const field = content.querySelector(`:scope > [data-key-path="${keyPath}"]`)
+        if (!field) {
+          // Sveltia mounts fields below the viewport when their placeholders scroll into view.
+          const placeholder = content.querySelector(':scope > .placeholder')
+          if (!placeholder || attempt >= 16) return
+          placeholder.scrollIntoView({ block: 'center', inline: 'nearest' })
+          window.setTimeout(() => reveal(attempt + 1), 45)
+          return
+        }
+
+        field.querySelector(':scope > .field-wrapper > .wrapper > .header button[aria-expanded="false"]')?.click()
+        window.requestAnimationFrame(() => {
+          if (request !== jumpRequest || route !== location.hash || !field.isConnected) return
+          field.tabIndex = -1
+          field.focus({ preventScroll: true })
+          field.scrollIntoView({ block: 'start', inline: 'nearest' })
+        })
+      }
+
+      reveal()
+    }
 
     function mount() {
       const route = location.hash.match(/^#\/collections\/([\w-]+)\/entries\/([\w-]+)(?:\?|$)/)
@@ -95,7 +125,6 @@
 
       if (activeTools?.nextElementSibling === content && activeTools.dataset.clevioEditor === `${collection}/${file}`) return
 
-      const pane = content.closest('[data-mode="edit"][data-locale]')
       const tools = document.createElement('section')
       tools.className = 'clevio-editor-tools'
       tools.dataset.clevioEditor = `${collection}/${file}`
@@ -120,20 +149,30 @@
       caption.textContent = 'انتقل إلى'
       nav.append(caption)
 
+      const compact = document.createElement('label')
+      compact.className = 'clevio-editor-tools__compact'
+      const compactCaption = document.createElement('span')
+      compactCaption.textContent = caption.textContent
+      const select = document.createElement('select')
+      select.add(new window.Option('اختر قسمًا', ''))
+      select.addEventListener('change', () => {
+        if (select.value) jumpToField(content, select.value)
+        select.selectedIndex = 0
+      })
+      compact.append(compactCaption, select)
+
       for (const [keyPath, label] of editor.sections) {
         if (keyPath === 'filters' && file === 'logos') continue
 
         const button = document.createElement('button')
         button.type = 'button'
         button.textContent = label
-        button.addEventListener('click', () => {
-          // Use the same field reveal action as the native editor navigation.
-          window.postMessage({ type: 'highlight-editor-field', payload: { locale: pane.dataset.locale, keyPath } }, location.origin)
-        })
+        button.addEventListener('click', () => jumpToField(content, keyPath))
         nav.append(button)
+        select.add(new window.Option(label, keyPath))
       }
 
-      tools.append(heading, nav)
+      tools.append(heading, nav, compact)
       activeTools?.remove()
       content.before(tools)
       activeTools = tools
