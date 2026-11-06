@@ -17,7 +17,7 @@
   box-sizing: border-box;
   max-inline-size: 76rem;
   margin-inline: auto;
-  padding: clamp(1rem, 2.5vw, 2rem);
+  padding: clamp(1rem, 2vw, 1.5rem);
 }
 
 .clevio-editor-home__header {
@@ -51,7 +51,7 @@
 }
 
 .clevio-editor-home__intro {
-  padding: clamp(1.15rem, 2vw, 1.65rem);
+  padding: clamp(1rem, 1.6vw, 1.25rem);
   border: 1px solid #223e58;
   border-radius: 1.25rem;
   color: #f5fbff;
@@ -71,14 +71,15 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
   gap: .85rem;
-  margin-block: 1rem;
+  margin-block: .8rem;
 }
 
 .clevio-editor-home__task {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: .5rem;
+  gap: .375rem;
   min-inline-size: 0;
   padding: .9rem 1rem;
   border: 1px solid var(--editor-edge);
@@ -101,7 +102,11 @@
 
 .clevio-editor-home__icon svg { inline-size: 1.4rem; block-size: 1.4rem; }
 .clevio-editor-home__action { display: flex; gap: .55rem; margin-block-start: auto; padding-block-start: .4rem; font-weight: 700; font-size: .92rem; }
-.clevio-editor-home__action, .clevio-editor-home__arrow { color: var(--editor-accent); }
+.clevio-editor-home a.clevio-editor-home__action:any-link,
+.clevio-editor-home__arrow { color: var(--editor-accent); }
+.clevio-editor-home__action::after { position: absolute; inset: 0; content: ''; }
+.clevio-editor-home__task:hover,
+.clevio-editor-home__task:focus-within { border-color: var(--editor-focus); }
 
 .clevio-editor-home__galleries,
 .clevio-editor-home__guide {
