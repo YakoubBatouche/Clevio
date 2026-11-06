@@ -1,0 +1,262 @@
+/* Sveltia CMS 0.260 uses these shell, collection and media layout hooks. */
+body > .sui.app-shell {
+  --clevio-admin-bg: var(--sui-primary-background-color);
+  --clevio-admin-card: var(--sui-content-background-color);
+  --clevio-admin-text: var(--sui-primary-foreground-color);
+  --clevio-admin-muted: var(--sui-secondary-foreground-color);
+  --clevio-admin-edge: var(--sui-primary-border-color);
+  --clevio-admin-accent: var(--sui-primary-accent-color-text);
+  --clevio-admin-focus: var(--sui-focus-ring-color);
+  --clevio-admin-tint: var(--sui-secondary-background-color);
+  --clevio-admin-selected: var(--sui-selected-background-color);
+}
+
+@media (forced-colors: none) and (prefers-contrast: no-preference) {
+  /* light-dark() follows the theme chosen in the CMS Appearance settings. */
+  :root:not([data-contrast="more"]) body > .sui.app-shell {
+    --clevio-admin-bg: light-dark(#eef3f8, #0c1727);
+    --clevio-admin-card: light-dark(#fff, #132338);
+    --clevio-admin-text: light-dark(#0e213a, #f0f6fd);
+    --clevio-admin-muted: light-dark(#485c73, #b4c7db);
+    --clevio-admin-edge: light-dark(#cddbe8, #30465d);
+    --clevio-admin-accent: light-dark(#006078, #7af4fc);
+    --clevio-admin-focus: light-dark(#007c91, #7af4fc);
+    --clevio-admin-tint: light-dark(#e4eef7, #192d44);
+    --clevio-admin-selected: light-dark(#d9eff5, #1a3b51);
+  }
+
+  :root:not([data-contrast="more"]) body > .sui.app-shell {
+    --sui-content-background-color: var(--clevio-admin-card);
+    --sui-primary-background-color: var(--clevio-admin-bg);
+    --sui-secondary-background-color: var(--clevio-admin-card);
+    --sui-tertiary-background-color: var(--clevio-admin-tint);
+    --sui-primary-background-color-translucent: var(--clevio-admin-bg);
+    --sui-secondary-background-color-translucent: var(--clevio-admin-card);
+    --sui-tertiary-background-color-translucent: var(--clevio-admin-tint);
+    --sui-highlight-foreground-color: var(--clevio-admin-text);
+    --sui-primary-foreground-color: var(--clevio-admin-text);
+    --sui-secondary-foreground-color: var(--clevio-admin-muted);
+    --sui-tertiary-foreground-color: var(--clevio-admin-muted);
+    --sui-primary-border-color: var(--clevio-admin-edge);
+    --sui-secondary-border-color: var(--clevio-admin-edge);
+    --sui-hover-background-color: var(--clevio-admin-tint);
+    --sui-selected-background-color: var(--clevio-admin-selected);
+    --sui-active-background-color: var(--clevio-admin-selected);
+    --sui-primary-accent-color: var(--clevio-admin-accent);
+    --sui-primary-accent-color-text: var(--clevio-admin-accent);
+    --sui-primary-accent-color-light: light-dark(#00758e, #9ef9ff);
+    --sui-primary-accent-color-dark: light-dark(#004e66, #54dbe6);
+    --sui-primary-accent-color-inverted: light-dark(#fff, #07172e);
+    --sui-focus-ring-color: var(--clevio-admin-focus);
+  }
+}
+
+body > .sui.app-shell {
+  --sui-dialog-content-border-radius: 1rem;
+  --sui-dialog-content-border-width: 1px;
+  --sui-dialog-content-background-color: var(--clevio-admin-card);
+  --sui-button-primary-font-weight: 650;
+}
+
+body > .sui.app-shell :is(.toolbar-wrapper > .sui.toolbar, .bottom-navigation .sui.toolbar) {
+  --toolbar-background-color: var(--clevio-admin-card);
+  border-block-end: 1px solid var(--clevio-admin-edge);
+}
+
+body > .sui.app-shell .sui.toolbar [role="radio"][aria-checked="true"] {
+  color: var(--clevio-admin-accent);
+  background: var(--clevio-admin-selected);
+}
+
+@media (min-width: 1180px) {
+  body > .sui.app-shell .toolbar-wrapper > .sui.toolbar [role="radiogroup"] button.sui.iconic[role="radio"][aria-label] {
+    gap: .35rem;
+    padding-inline: .55rem;
+    aspect-ratio: auto;
+  }
+
+  body > .sui.app-shell .toolbar-wrapper > .sui.toolbar [role="radiogroup"] button.sui.iconic[role="radio"][aria-label]::after {
+    overflow: hidden;
+    max-inline-size: 7rem;
+    font-size: .82rem;
+    font-weight: 650;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    content: attr(aria-label);
+  }
+}
+
+body > .sui.app-shell #page-container .primary-sidebar {
+  box-sizing: border-box;
+  padding: .6rem .3rem;
+  background: var(--clevio-admin-card);
+}
+
+body > .sui.app-shell #page-container .primary-sidebar :is([role="treeitem"] > .row, [role="option"]) {
+  min-block-size: 2.75rem;
+  border-radius: .7rem;
+}
+
+body > .sui.app-shell #page-container .primary-sidebar :is([role="treeitem"] > .row, [role="option"]) .label {
+  font-size: .91rem;
+  font-weight: 650;
+  line-height: 1.45;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+body > .sui.app-shell #page-container .primary-sidebar :is([role="treeitem"][aria-selected="true"] > .row, [role="option"][aria-selected="true"]) {
+  box-shadow: inset 0 0 0 1px var(--clevio-admin-edge);
+  color: var(--clevio-admin-accent);
+  background: var(--clevio-admin-selected);
+}
+
+body > .sui.app-shell #page-container .primary-sidebar .count {
+  margin-inline-start: .25rem;
+  padding: .12rem .4rem;
+  border-radius: 1rem;
+  background: var(--clevio-admin-bg);
+}
+
+body > .sui.app-shell :is(#collection-container, #assets-container) {
+  border-color: var(--clevio-admin-edge);
+  background: var(--clevio-admin-bg);
+}
+
+body > .sui.app-shell :is(#collection-container, #assets-container) > .sui.toolbar.primary {
+  --toolbar-background-color: var(--clevio-admin-card);
+  --sui-primary-toolbar-size: 4.125rem;
+  padding-inline: clamp(.5rem, 1.6vw, 1.35rem);
+  border-block-end: 1px solid var(--clevio-admin-edge);
+}
+
+body > .sui.app-shell :is(#collection-container, #assets-container) > .sui.toolbar.primary h2 {
+  max-inline-size: 100%;
+  color: var(--clevio-admin-text);
+  font-size: clamp(1.05rem, 2vw, 1.4rem);
+  font-weight: 750;
+}
+
+body > .sui.app-shell #collection-container > .sui.toolbar.primary .description {
+  color: var(--clevio-admin-muted);
+  font-size: .9rem;
+  opacity: 1;
+}
+
+body > .sui.app-shell :is(#collection-container, #assets-container) .list-container {
+  --icon-size: 2.45rem;
+}
+
+body > .sui.app-shell :is(#collection-container, #assets-container) .list-container :is(.list-view, .table-view, .grid-view) {
+  box-sizing: border-box;
+  padding-inline: clamp(.75rem, 2.4vw, 1.5rem);
+}
+
+body > .sui.app-shell #collection-container .list-container .list-view [role="grid"] {
+  border-collapse: separate;
+  border-spacing: 0 .65rem;
+}
+
+body > .sui.app-shell #collection-container .list-container .list-view .grid-row > .grid-cell {
+  height: 3.55rem;
+  border-block: 1px solid var(--clevio-admin-edge);
+  color: var(--clevio-admin-text);
+  background: var(--clevio-admin-card);
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+body > .sui.app-shell #collection-container .list-container .list-view .grid-cell:first-child {
+  border-inline-start: 1px solid var(--clevio-admin-edge);
+  border-start-start-radius: .85rem;
+  border-end-start-radius: .85rem;
+}
+
+body > .sui.app-shell #collection-container .list-container .list-view .grid-cell:last-child {
+  border-inline-end: 1px solid var(--clevio-admin-edge);
+  border-start-end-radius: .85rem;
+  border-end-end-radius: .85rem;
+}
+
+body > .sui.app-shell #collection-container .list-container .list-view .grid-cell .label > .icon {
+  border-radius: .65rem;
+  color: var(--clevio-admin-accent);
+  background: var(--clevio-admin-selected);
+}
+
+body > .sui.app-shell #collection-container .list-container .list-view .grid-row:is(:hover, :focus-visible) > .grid-cell {
+  border-color: var(--clevio-admin-focus);
+  background: var(--clevio-admin-tint);
+}
+
+body > .sui.app-shell #assets-container .list-container .grid-view {
+  padding-block-start: .8rem;
+}
+
+body > .sui.app-shell #assets-container .drop-target > .sui.empty-state {
+  box-sizing: border-box;
+  max-inline-size: 40rem;
+  margin: clamp(.75rem, 3vw, 1.75rem) auto;
+  padding: 1rem;
+  border: 1px dashed var(--clevio-admin-edge);
+  border-radius: 1rem;
+  background: var(--clevio-admin-card);
+}
+
+body > .sui.app-shell #assets-container .list-container .grid-view .grid-row[tabindex] {
+  box-sizing: border-box;
+  border: 1px solid var(--clevio-admin-edge);
+  border-radius: .9rem;
+  background: var(--clevio-admin-card);
+}
+
+body > .sui.app-shell #assets-container .list-container .grid-view .grid-row[tabindex]:is(:hover, :focus-visible, [aria-selected="true"]) {
+  border-color: var(--clevio-admin-focus);
+  background: var(--clevio-admin-selected);
+}
+
+body > .sui.app-shell #assets-container .list-container .grid-view .grid-row .title .label {
+  color: var(--clevio-admin-text);
+  font-weight: 600;
+}
+
+body > .sui.app-shell #assets-container .list-container .list-view .grid-row .grid-cell {
+  height: 3rem;
+  background: var(--clevio-admin-card);
+}
+
+body > .sui.app-shell #assets-container .list-container .list-view .grid-row:is(:hover, :focus-visible, [aria-selected="true"]) .grid-cell {
+  background: var(--clevio-admin-selected);
+}
+
+body > .sui.app-shell .main > .container > .inner:has(> .logo) {
+  box-sizing: border-box;
+  inline-size: min(100%, 31rem);
+  min-inline-size: 0;
+  min-block-size: auto;
+  gap: 1.25rem;
+  padding: clamp(1.15rem, 5vw, 2.5rem);
+  border: 1px solid var(--clevio-admin-edge);
+  border-radius: 1.35rem;
+  color: var(--clevio-admin-text);
+  background: var(--clevio-admin-card);
+}
+
+body > .sui.app-shell .main > .container > .inner > .logo {
+  block-size: clamp(4rem, 13vw, 6rem);
+}
+
+body > .sui.app-shell .main > .container > .inner > .buttons {
+  inline-size: 100%;
+}
+
+body > .sui.app-shell .main > .container > .inner > .buttons > .sui.button {
+  max-inline-size: 100%;
+  min-block-size: 2.75rem;
+}
+
+body > .sui.app-shell [id^="prefs-tab-"] {
+  color: var(--clevio-admin-text);
+  background: var(--clevio-admin-bg);
+}
+

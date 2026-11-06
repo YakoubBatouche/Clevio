@@ -1,12 +1,12 @@
 .clevio-editor-home {
-  --editor-bg: #eef3f8;
-  --editor-card: #fff;
-  --editor-text: #0e213a;
-  --editor-muted: #485c73;
-  --editor-edge: #d3deea;
-  --editor-accent: #006078;
-  --editor-icon: #e2f7fb;
-  --editor-focus: #007c91;
+  --editor-bg: var(--clevio-admin-bg, #eef3f8);
+  --editor-card: var(--clevio-admin-card, #fff);
+  --editor-text: var(--clevio-admin-text, #0e213a);
+  --editor-muted: var(--clevio-admin-muted, #485c73);
+  --editor-edge: var(--clevio-admin-edge, #d3deea);
+  --editor-accent: var(--clevio-admin-accent, #006078);
+  --editor-icon: var(--clevio-admin-selected, #e2f7fb);
+  --editor-focus: var(--clevio-admin-focus, #007c91);
   min-block-size: 100%;
   color: var(--editor-text);
   background: var(--editor-bg);
@@ -140,13 +140,82 @@
 
 @media (prefers-color-scheme: dark) {
   .clevio-editor-home {
-    --editor-bg: #0c1727;
-    --editor-card: #132338;
-    --editor-text: #f0f6fd;
-    --editor-muted: #b4c7db;
-    --editor-edge: #30465d;
-    --editor-accent: #7af4fc;
-    --editor-icon: #1a3b51;
-    --editor-focus: #7af4fc;
+    --editor-bg: var(--clevio-admin-bg, #0c1727);
+    --editor-card: var(--clevio-admin-card, #132338);
+    --editor-text: var(--clevio-admin-text, #f0f6fd);
+    --editor-muted: var(--clevio-admin-muted, #b4c7db);
+    --editor-edge: var(--clevio-admin-edge, #30465d);
+    --editor-accent: var(--clevio-admin-accent, #7af4fc);
+    --editor-icon: var(--clevio-admin-selected, #1a3b51);
+    --editor-focus: var(--clevio-admin-focus, #7af4fc);
   }
+}
+
+.clevio-editor-tools {
+  box-sizing: border-box;
+  flex: none;
+  inline-size: min(var(--clevio-form-width, 70rem), calc(100% - var(--clevio-form-gutter, 1rem) * 2));
+  margin: 1rem auto .25rem;
+  overflow: hidden;
+  border: 1px solid var(--clevio-admin-edge, light-dark(#d3deea, #30465d));
+  border-radius: 1rem;
+  background: var(--clevio-admin-card, light-dark(#fff, #132338));
+  color: var(--clevio-admin-text, light-dark(#0e213a, #f0f6fd));
+}
+
+.clevio-editor-tools__intro {
+  padding: clamp(.95rem, 2.2vw, 1.5rem) clamp(1rem, 3vw, 1.7rem);
+  background: linear-gradient(120deg, #12314d, #07172e 76%);
+  color: #f5fbff;
+  text-align: start;
+}
+
+.clevio-editor-tools__intro h2 {
+  margin: .16rem 0 .3rem;
+  color: inherit;
+  font-size: clamp(1.35rem, 2.8vw, 2rem);
+  line-height: 1.35;
+}
+
+.clevio-editor-tools__intro p { margin: 0; color: #d6e5f3; font-size: .875rem; line-height: 1.6; }
+.clevio-editor-tools__intro .clevio-editor-tools__category { color: #7af4fc; font-size: .78rem; font-weight: 700; }
+
+.clevio-editor-tools__sections {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem;
+  padding: .65rem clamp(.65rem, 2vw, 1rem);
+}
+
+.clevio-editor-tools__sections span {
+  margin-inline: .35rem .15rem;
+  color: var(--clevio-admin-muted, light-dark(#485c73, #b4c7db));
+  font-size: .8rem;
+  font-weight: 650;
+}
+
+.clevio-editor-tools__sections button {
+  min-block-size: 2.75rem;
+  max-inline-size: 100%;
+  padding: .48rem .85rem;
+  border: 1px solid var(--clevio-admin-edge, light-dark(#d3deea, #30465d));
+  border-radius: .65rem;
+  background: var(--clevio-admin-bg, light-dark(#eef3f8, #0c1727));
+  color: inherit;
+  font: inherit;
+  font-size: .875rem;
+  font-weight: 650;
+  text-align: start;
+  white-space: normal;
+  cursor: pointer;
+}
+
+.clevio-editor-tools__sections button:hover {
+  border-color: var(--clevio-admin-focus, light-dark(#007c91, #7af4fc));
+}
+
+.clevio-editor-tools__sections button:focus-visible {
+  outline: 2px solid var(--clevio-admin-focus, light-dark(#007c91, #7af4fc));
+  outline-offset: 2px;
 }

@@ -39,6 +39,111 @@
     ['audiovisual-media', 'الإنتاج السمعي البصري والإعلام'],
   ]
 
+  const editors = {
+    homepage: {
+      file: 'site',
+      category: 'محتوى الموقع',
+      title: 'الصفحة الرئيسية',
+      help: 'اختر الجزء الذي تريد تحديثه، ثم عدّل حقوله واحفظ التغييرات.',
+      sections: [
+        ['hero', 'واجهة الصفحة'], ['about', 'نبذة الشركة'], ['partners', 'الشركاء'],
+        ['contact', 'التواصل'], ['brand', 'الشعار والاسم'], ['navigation', 'القائمة العلوية'],
+        ['footer', 'أسفل الصفحة'], ['seo', 'محركات البحث'],
+      ],
+    },
+    services: {
+      file: 'catalog',
+      category: 'محتوى الموقع',
+      title: 'الخدمات',
+      help: 'افتح بطاقة خدمة لتعديل اسمها أو تفاصيلها. احفظ عند الانتهاء.',
+      sections: [['items', 'بطاقات الخدمات'], ['title', 'عنوان القسم'], ['dialogEyebrow', 'نافذة تفاصيل الخدمة']],
+    },
+    galleries: {
+      category: 'معارض الأعمال',
+      title: 'صور الأعمال',
+      help: 'ابدأ من الأعمال والصور لإضافة عمل أو تغييره أو إعادة ترتيبه.',
+      sections: [['items', 'الأعمال والصور'], ['title', 'اسم المعرض ووصفه'], ['cover', 'صورة الغلاف'], ['filters', 'تصنيفات الأعمال']],
+    },
+    work: {
+      file: 'presentation',
+      category: 'محتوى الموقع',
+      title: 'نصوص قسم الأعمال',
+      help: 'عدّل العناوين والنصوص المشتركة التي تظهر للزوّار في معارض الأعمال.',
+      sections: [['title', 'عنوان القسم'], ['sheetNote', 'نصوص المعرض'], ['allFilterLabel', 'الأزرار وأدوات العرض']],
+    },
+  }
+
+  function addEditorTools() {
+    const { document, location } = window
+    const selector = '.content-editor .pane[data-mode="edit"][data-locale] :is(#first-pane-body, #second-pane-body) > .content'
+    let activeTools
+
+    function mount() {
+      const route = location.hash.match(/^#\/collections\/([\w-]+)\/entries\/([\w-]+)(?:\?|$)/)
+      const [, collection, file] = route ?? []
+      const editor = Object.hasOwn(editors, collection) ? editors[collection] : undefined
+      const galleryName = collection === 'galleries' ? galleries.find(([id]) => id === file)?.[1] : undefined
+
+      if (!editor || (!galleryName && editor.file !== file)) {
+        activeTools?.remove()
+        activeTools = undefined
+        return
+      }
+
+      const content = document.querySelector(selector)
+      if (!content) return
+
+      if (activeTools?.nextElementSibling === content && activeTools.dataset.clevioEditor === `${collection}/${file}`) return
+
+      const pane = content.closest('[data-mode="edit"][data-locale]')
+      const tools = document.createElement('section')
+      tools.className = 'clevio-editor-tools'
+      tools.dataset.clevioEditor = `${collection}/${file}`
+      tools.lang = 'ar'
+      tools.dir = 'rtl'
+
+      const heading = document.createElement('div')
+      heading.className = 'clevio-editor-tools__intro'
+      const category = document.createElement('p')
+      category.className = 'clevio-editor-tools__category'
+      category.textContent = editor.category
+      const title = document.createElement('h2')
+      title.textContent = galleryName || editor.title
+      const help = document.createElement('p')
+      help.textContent = editor.help
+      heading.append(category, title, help)
+
+      const nav = document.createElement('nav')
+      nav.className = 'clevio-editor-tools__sections'
+      nav.setAttribute('aria-label', 'الانتقال إلى جزء من النموذج')
+      const caption = document.createElement('span')
+      caption.textContent = 'انتقل إلى'
+      nav.append(caption)
+
+      for (const [keyPath, label] of editor.sections) {
+        if (keyPath === 'filters' && file === 'logos') continue
+
+        const button = document.createElement('button')
+        button.type = 'button'
+        button.textContent = label
+        button.addEventListener('click', () => {
+          // Use the same field reveal action as the native editor navigation.
+          window.postMessage({ type: 'highlight-editor-field', payload: { locale: pane.dataset.locale, keyPath } }, location.origin)
+        })
+        nav.append(button)
+      }
+
+      tools.append(heading, nav)
+      activeTools?.remove()
+      content.before(tools)
+      activeTools = tools
+    }
+
+    new window.MutationObserver(mount).observe(document.body, { childList: true, subtree: true })
+    window.addEventListener('hashchange', mount)
+    mount()
+  }
+
   function arrow() {
     return h('span', { className: 'clevio-editor-home__arrow', 'aria-hidden': 'true' }, '←')
   }
@@ -91,5 +196,6 @@
   if (!window.location.hash || window.location.hash === '#/') {
     window.history.replaceState(window.history.state, '', start)
   }
+  addEditorTools()
   cms.init()
 })()

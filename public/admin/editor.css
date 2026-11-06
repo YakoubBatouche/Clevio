@@ -1,0 +1,210 @@
+/* These rules target the native entry editor in the pinned Sveltia build. */
+.content-editor {
+  --clevio-form-width: 70rem;
+  --clevio-form-gutter: clamp(.65rem, 2vw, 1.5rem);
+  --clevio-form-bg: var(--clevio-admin-bg, light-dark(#edf3f8, #0c1727));
+  --clevio-form-card: var(--clevio-admin-card, light-dark(#fff, #132338));
+  --clevio-form-text: var(--clevio-admin-text, light-dark(#0e213a, #f0f6fd));
+  --clevio-form-muted: var(--clevio-admin-muted, light-dark(#485c73, #b4c7db));
+  --clevio-form-edge: var(--clevio-admin-edge, light-dark(#c7d5e2, #3a536b));
+  --clevio-form-focus: var(--clevio-admin-focus, light-dark(#007c91, #7af4fc));
+  --clevio-form-subtle: light-dark(#eef5fa, #1b3047);
+  --clevio-form-input: light-dark(#fff, #0f1d2f);
+  --clevio-form-control-edge: light-dark(#879eaf, #65819a);
+  background-color: var(--clevio-form-bg);
+}
+
+.content-editor > .sui.toolbar.primary {
+  --sui-primary-foreground-color: #f4f9ff;
+  --sui-secondary-foreground-color: #c6d9ed;
+  --sui-control-foreground-color: #e7f2ff;
+  --sui-hover-background-color: #1d3b58;
+  --sui-active-background-color: #284865;
+  --sui-focus-ring-color: #7af4fc;
+  min-block-size: 3.5rem;
+  padding-inline: var(--clevio-form-gutter);
+  border-block-end: 1px solid #274764;
+  color: #f4f9ff;
+  background: linear-gradient(110deg, #122b45, #07172e 75%);
+}
+
+.content-editor > .sui.toolbar.primary > .inner h2 {
+  color: #f4f9ff;
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+}
+
+.content-editor > .sui.toolbar.primary .sui.button.primary {
+  --sui-button-primary-border-color: #7af4fc;
+  --sui-button-primary-background-color: #7af4fc;
+  --sui-button-primary-background-color-focus: #a7faff;
+  --sui-button-primary-background-color-active: #67dce5;
+  --sui-button-primary-foreground-color: #071b30;
+  --sui-button-primary-font-weight: 700;
+  min-block-size: 2.4rem;
+  min-inline-size: 5rem;
+  border-radius: .7rem;
+}
+
+.content-editor .body .content-area {
+  background-color: var(--clevio-form-bg);
+}
+
+.content-editor .pane[data-mode='edit'] :is(#first-pane-header, #second-pane-header) > .sui.toolbar {
+  max-width: calc(var(--clevio-form-width) + var(--clevio-form-gutter) * 2);
+  padding-inline: var(--clevio-form-gutter);
+  color: var(--clevio-form-text);
+}
+
+.content-editor .pane[data-mode='edit'] :is(#first-pane-body, #second-pane-body) > .content {
+  container: clevio-editor / inline-size;
+  padding-block-end: 1.25rem;
+  color: var(--clevio-form-text);
+}
+
+.content-editor .pane[data-mode='edit'] :is(#first-pane-body, #second-pane-body) > .content > section.field {
+  box-sizing: border-box;
+  inline-size: min(var(--clevio-form-width), calc(100% - var(--clevio-form-gutter) * 2));
+  margin: 0 auto .85rem;
+  padding: clamp(.8rem, 1.65vw, 1.3rem);
+  border: 1px solid var(--clevio-form-edge);
+  border-radius: 1rem;
+  background: var(--clevio-form-card);
+  box-shadow: 0 3px 10px rgb(7 23 46 / 5%);
+  scroll-margin-block-start: .8rem;
+}
+
+.content-editor .pane[data-mode='edit'] :is(#first-pane-body, #second-pane-body) > .content > section.field:first-child {
+  margin-block-start: .35rem;
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-field-type][data-key-path] {
+  --sui-focus-ring-color: var(--clevio-form-focus);
+  --sui-textbox-background-color: var(--clevio-form-input);
+  --sui-textbox-border-color: var(--clevio-form-control-edge);
+  --sui-textbox-border-radius: .65rem;
+  --sui-textbox-height: 2.75rem;
+  --sui-textbox-singleline-min-width: 0px;
+  --sui-textbox-multiline-min-width: 0px;
+  --sui-textbox-font-size: 1rem;
+  --sui-textbox-foreground-color: var(--clevio-form-text);
+  --sui-textbox-singleline-padding: 0 .75rem;
+  --sui-textbox-multiline-padding: .75rem;
+  min-inline-size: 0;
+  direction: rtl;
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-key-path] > * {
+  max-width: none;
+  min-inline-size: 0;
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-key-path]::after {
+  content: none;
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-key-path] > header {
+  margin-block-end: .4rem;
+  min-block-size: 1.85rem;
+  height: auto;
+  gap: .25rem;
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-key-path] > header > h4 {
+  color: var(--clevio-form-text);
+  font-size: .94rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.content-editor .pane[data-mode='edit'] :is(#first-pane-body, #second-pane-body) > .content > section.field > header > h4 {
+  font-size: 1.12rem;
+  font-weight: 750;
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-key-path] > .footer > .hint {
+  color: var(--clevio-form-muted);
+  font-size: .86rem;
+  line-height: 1.65;
+}
+
+.content-editor .pane[data-mode='edit'] section.field :is(input:not([dir]), textarea:not([dir])) {
+  unicode-bidi: plaintext;
+}
+
+.content-editor .pane[data-mode='edit'] :is(
+  [data-key-path='contact.email'],
+  [data-key-path='contact.whatsapp'],
+  [data-field-type='image'],
+  [data-field-type='file']
+) input {
+  direction: ltr;
+  text-align: start;
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-field-type='object'] > .field-wrapper > .wrapper {
+  border: 1px solid var(--clevio-form-edge);
+  border-radius: .75rem;
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-field-type='object'] > .field-wrapper > .wrapper > .header,
+.content-editor .pane[data-mode='edit'] section.field[data-field-type='list'] .item-list .item > .header {
+  block-size: auto;
+  min-block-size: 2.5rem;
+  padding-inline: .3rem;
+  border-start-start-radius: calc(.75rem - 1px);
+  border-start-end-radius: calc(.75rem - 1px);
+  background: var(--clevio-form-subtle);
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-field-type='object'] > .field-wrapper > .wrapper > .header button[aria-expanded] {
+  min-block-size: 2.4rem;
+  color: var(--clevio-form-text);
+}
+
+.content-editor .pane[data-mode='edit'] :is(#first-pane-body, #second-pane-body) > .content > section.field[data-field-type='object']
+  > .field-wrapper > .wrapper > .header button[aria-expanded]::after {
+  color: var(--clevio-form-muted);
+  font-size: .86rem;
+  font-weight: 650;
+  content: 'فتح القسم';
+}
+
+.content-editor .pane[data-mode='edit'] :is(#first-pane-body, #second-pane-body) > .content > section.field[data-field-type='object']
+  > .field-wrapper > .wrapper > .header button[aria-expanded='true']::after {
+  content: 'طي القسم';
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-field-type='list'] > .field-wrapper > .toolbar {
+  background: var(--clevio-form-card);
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-field-type='list'] > .field-wrapper > .toolbar .actions > .sui.button[data-label]:not(:disabled):has(+ .sui.button.iconic) {
+  min-block-size: 2.4rem;
+  padding-inline: .75rem;
+  border-color: transparent;
+  border-radius: .65rem;
+  background: var(--clevio-form-subtle);
+  color: var(--clevio-form-text);
+  font-weight: 650;
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-field-type='list'] .item-list .item {
+  border: 1px solid var(--clevio-form-edge);
+  border-radius: .75rem;
+  background: var(--clevio-form-card);
+}
+
+.content-editor .pane[data-mode='edit'] section.field[data-field-type='list'] .item-body > .summary {
+  padding: .65rem .8rem;
+  color: var(--clevio-form-text);
+  font-size: .94rem;
+  font-weight: 600;
+}
+
+@container clevio-editor (min-width: 46rem) {
+  .content-editor .pane[data-mode='edit'] section.field[data-key-path='hero'] > .field-wrapper > .wrapper.expanded > .item-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
