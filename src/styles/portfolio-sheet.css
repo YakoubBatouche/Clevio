@@ -397,6 +397,7 @@
   }
 
   .portfolio-sheet__filter {
+    flex-grow: 1;
     padding-inline: 10px;
     font-size: 12px;
   }

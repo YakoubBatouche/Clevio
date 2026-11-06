@@ -1,3 +1,4 @@
+import { setTimeout as pause } from 'node:timers/promises'
 import { expect, test, type CDPSession, type Locator } from '@playwright/test'
 
 const category = 'المطبوعات والهوية البصرية'
@@ -59,16 +60,21 @@ test('portfolio opens with five desktop columns, filters the gallery, and return
   await page.keyboard.press('Enter')
   const sheet = page.getByRole('dialog', { name: category, exact: true })
   await expect(sheet).toBeVisible()
-  const [heading, title, close, filters] = await Promise.all([
+  const filterStrip = sheet.getByRole('group', { name: 'تصفية الأعمال', exact: true })
+  const all = filterStrip.getByRole('button', { name: 'الكل', exact: true })
+  const [heading, title, close, filters, firstPill, lastPill] = await Promise.all([
     sheet.locator('.portfolio-sheet__heading').boundingBox(),
     sheet.getByRole('heading', { name: category, exact: true }).boundingBox(),
     sheet.getByRole('button', { name: 'إغلاق معرض الأعمال', exact: true }).boundingBox(),
-    sheet.getByRole('group', { name: 'تصفية الأعمال', exact: true }).boundingBox(),
+    filterStrip.boundingBox(),
+    all.boundingBox(),
+    filterStrip.getByRole('button', { name: marketingFilter, exact: true }).boundingBox(),
   ])
   expect(filters!.y).toBeGreaterThanOrEqual(heading!.y + heading!.height - 1)
   expect(Math.abs(filters!.x + filters!.width - title!.x - title!.width)).toBeLessThan(2)
   expect(Math.abs(filters!.x - close!.x)).toBeLessThan(2)
-  const all = sheet.getByRole('button', { name: 'الكل', exact: true })
+  expect(Math.abs(firstPill!.x + firstPill!.width - title!.x - title!.width)).toBeLessThan(2)
+  expect(Math.abs(lastPill!.x - close!.x)).toBeLessThan(2)
   await expect(all).toHaveAttribute('aria-pressed', 'true')
   const images = sheet.locator('.portfolio-sheet__media img')
   const imageCount = await images.count()
@@ -224,7 +230,9 @@ test.describe('mobile portfolio', () => {
     const x = box.x + (box.width - deltaX) / 2
     const y = box.y + box.height / 2
     await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y, id: 1 }] })
-    for (const fraction of [0.3, 0.6, 1]) {
+    for (let step = 1; step <= 8; step++) {
+      await pause(65)
+      const fraction = step / 8
       await touch.send('Input.dispatchTouchEvent', {
         type: 'touchMove',
         touchPoints: [{ x: x + deltaX * fraction, y: y + deltaY * fraction, id: 1 }],
@@ -241,23 +249,24 @@ test.describe('mobile portfolio', () => {
     const sheet = page.getByRole('dialog', { name: category, exact: true })
     const filters = sheet.getByRole('group', { name: 'تصفية الأعمال', exact: true })
     const all = filters.getByRole('button', { name: 'الكل', exact: true })
-    const lastFilter = filters.getByRole('button', { name: marketingFilter, exact: true })
+    const revealedFilter = filters.getByRole('button', { name: packagingFilter, exact: true })
     const gallery = sheet.locator('.portfolio-sheet__scroll')
+    await page.evaluate(() => document.fonts.ready)
     await expect(all).toBeInViewport()
-    await expect(lastFilter).not.toBeInViewport()
+    await expect(revealedFilter).not.toBeInViewport()
     const pageScroll = await page.evaluate(() => scrollY)
     const galleryScroll = await gallery.evaluate(element => element.scrollTop)
     const touch = await page.context().newCDPSession(page)
 
-    await swipe(touch, filters, { x: 280 })
+    // Pause before lifting the finger so the browser does not fling the strip.
+    await swipe(touch, filters, { x: 325 }, () => pause(180))
     await expect.poll(() => filters.evaluate(element => element.scrollLeft)).toBeLessThan(0)
-    await swipe(touch, filters, { x: 280 })
-    await expect(lastFilter).toBeInViewport({ ratio: 0.95 })
+    await expect(revealedFilter).toBeInViewport({ ratio: 0.95 })
     await expect(all).toHaveAttribute('aria-pressed', 'true')
     expect(await gallery.evaluate(element => element.scrollTop)).toBe(galleryScroll)
     expect(Math.abs(await page.evaluate(() => scrollY) - pageScroll)).toBeLessThan(2)
-    await lastFilter.tap()
-    await expect(lastFilter).toHaveAttribute('aria-pressed', 'true')
+    await revealedFilter.tap()
+    await expect(revealedFilter).toHaveAttribute('aria-pressed', 'true')
     await touch.detach()
   })
 
