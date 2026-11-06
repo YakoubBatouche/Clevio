@@ -78,6 +78,7 @@
 .work-showcase__visual { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
 .work-showcase__visual::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, #020c2480, transparent 25%, transparent 46%, #030d24de 90%, #030d24 100%); }
 .work-showcase__visual img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.work-showcase__card[data-category='digital-marketing'] img { object-position: right center; }
 .work-showcase__glass { position: absolute; top: -25%; left: -25%; width: 65%; height: 135%; transform: rotate(28deg); background: linear-gradient(100deg,transparent,#5faaff12,transparent); border-right: 1px solid #9bceff30; }
 .work-showcase__orbit { position: absolute; width: 100%; height: 40%; right: -40%; top: 24%; border: 1px solid #b5dbff35; border-radius: 50%; transform: rotate(-34deg); }
 .work-showcase__index { position: absolute; top: 15px; left: 16px; color: #e1ff87; font: 500 11px/1.2 system-ui,sans-serif; letter-spacing: 1px; }

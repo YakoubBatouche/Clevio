@@ -50,7 +50,7 @@ function WorkShowcase() {
       <p className="work-showcase__intro">أفكار تأخذ شكلها.<br />وتجارب تترك أثرها.</p>
     </div>
     <div className="work-showcase__grid">
-      {portfolioCategories.map((category, index) => <article className="work-showcase__card" key={category.id}>
+      {portfolioCategories.map((category, index) => <article className="work-showcase__card" data-category={category.id} key={category.id}>
         <div className="work-showcase__visual" aria-hidden="true">
           <img src={import.meta.env.BASE_URL + category.cover} alt="" loading="lazy" decoding="async" />
           <span className="work-showcase__glass" />
