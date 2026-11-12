@@ -142,18 +142,23 @@
         const shown = leads.filter(lead => (filter === 'all' || lead.status === filter)
           && (!query || [lead.name, lead.contact, lead.service, lead.brief].join(' ').toLocaleLowerCase('ar').includes(query)))
         const counts = statuses.map(status => ({ ...status, count: leads.filter(lead => lead.status === status.value).length }))
+        const hasNew = counts.some(status => status.value === 'new' && status.count > 0)
 
         function leadCard(lead) {
           const action = contactAction(lead.contact)
           const id = 'clevio-lead-' + String(lead.id).replace(/[^a-zA-Z0-9_-]/g, '')
+          const status = lead.status || 'new'
           return h('li', { className: 'clevio-clients__item', key: lead.id },
-            h('article', { className: 'clevio-clients__card', 'aria-labelledby': id, 'data-status': lead.status || 'new' },
+            h('article', { className: 'clevio-clients__card', 'aria-labelledby': id, 'data-status': status },
               h('div', { className: 'clevio-clients__card-top' },
                 h('div', null,
                   h('p', { className: 'clevio-clients__service' }, lead.service || 'طلب مشروع'),
                   h('h3', { id }, lead.name),
                 ),
-                h('span', { className: 'clevio-clients__badge', 'data-status': lead.status || 'new' }, statusLabel(lead.status)),
+                h('span', {
+                  className: 'clevio-clients__badge', 'data-status': status,
+                  'data-attention': status === 'new' ? '' : undefined,
+                }, statusLabel(status)),
               ),
               h('div', { className: 'clevio-clients__contact' },
                 h('span', null, 'بيانات التواصل'),
@@ -169,7 +174,7 @@
               h('div', { className: 'clevio-clients__status-row' },
                 h('label', { htmlFor: id + '-status' }, 'حالة الطلب'),
                 h('select', {
-                  id: id + '-status', value: lead.status || 'new', disabled: !!saving[lead.id] || loading,
+                  id: id + '-status', value: status, disabled: !!saving[lead.id] || loading,
                   'aria-label': 'حالة طلب ' + lead.name,
                   'aria-describedby': saveErrors[lead.id] ? id + '-error' : undefined,
                   onChange: event => changeStatus(lead, event.target.value),
@@ -194,6 +199,7 @@
               [['all', cursor ? 'الطلبات المحمّلة' : 'كل الطلبات', leads.length], ...counts.filter(status => ['new', 'contacted', 'confirmed'].includes(status.value)).map(status => [status.value, status.label, status.count])]
                 .map(([value, label, count]) => h('button', {
                   key: value, className: 'clevio-clients__summary-card', type: 'button',
+                  'data-status': value, 'data-attention': value === 'new' && hasNew ? '' : undefined,
                   'aria-pressed': filter === value, onClick: () => setFilter(value),
                 }, h('span', null, label), h('strong', null, (loading || error) && !leads.length ? '—' : number(count)))),
             ),
@@ -211,6 +217,7 @@
               h('nav', { className: 'clevio-clients__filters', 'aria-label': 'تصفية حسب حالة الطلب' },
                 [{ value: 'all', label: 'الكل' }, ...statuses].map(status => h('button', {
                   key: status.value, type: 'button', 'aria-pressed': filter === status.value,
+                  'data-status': status.value, 'data-attention': status.value === 'new' && hasNew ? '' : undefined,
                   onClick: () => setFilter(status.value),
                 }, status.label)),
               ),

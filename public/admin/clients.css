@@ -34,7 +34,7 @@
 .clevio-clients__summary-card { display: flex; flex-direction: column; align-items: flex-start; gap: .15rem; min-inline-size: 0; padding: .9rem 1rem; border: 1px solid var(--clients-edge); border-radius: .9rem; background: var(--clients-card); color: var(--clients-text); text-align: start; }
 .clevio-clients__summary-card span { color: var(--clients-muted); font-size: .875rem; }
 .clevio-clients__summary-card strong { font-size: 1.65rem; line-height: 1.35; }
-.clevio-clients__summary-card[aria-pressed="true"] { border-color: var(--clients-accent); box-shadow: inset 0 0 0 1px var(--clients-accent); }
+.clevio-clients__summary-card[aria-pressed="true"] { border-color: var(--clients-status-ink, var(--clients-accent)); box-shadow: inset 0 0 0 1px var(--clients-status-ink, var(--clients-accent)); }
 .clevio-clients__workspace { padding: clamp(.9rem, 2vw, 1.4rem); border: 1px solid var(--clients-edge); border-radius: 1rem; background: var(--clients-card); }
 .clevio-clients__toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .8rem; }
 .clevio-clients__toolbar h2 { color: inherit; font-size: 1.15rem; }
@@ -44,7 +44,7 @@
 .clevio-clients__search input::placeholder { color: var(--clients-muted); opacity: 1; }
 .clevio-clients__filters { display: flex; flex-wrap: wrap; gap: .4rem; margin-block: 1rem .65rem; }
 .clevio-clients__filters button { min-block-size: 2.75rem; padding: .45rem .85rem; border: 1px solid var(--clients-edge); border-radius: 2rem; background: var(--clients-bg); color: var(--clients-text); font-size: .85rem; font-weight: 650; }
-.clevio-clients__filters button[aria-pressed="true"] { color: #07172e; border-color: #7af4fc; background: #7af4fc; }
+.clevio-clients__filters button[aria-pressed="true"] { color: var(--clients-status-ink, #07172e); border-color: var(--clients-status-ink, #7af4fc); background: var(--clients-status-selected, #7af4fc); }
 .clevio-clients__result-count { margin-block-end: .6rem !important; }
 .clevio-clients__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; list-style: none; margin: 0; padding: 0; }
 .clevio-clients__more { display: block; margin: .95rem auto 0; }
@@ -55,10 +55,59 @@
 .clevio-clients__card h3 { color: inherit; font-size: 1.12rem; overflow-wrap: anywhere; }
 .clevio-clients__service { color: var(--clients-muted); font-size: .8rem; overflow-wrap: anywhere; }
 .clevio-clients__badge { flex: none; max-inline-size: 45%; padding: .18rem .55rem; border: 1px solid var(--clients-edge); border-radius: 1rem; color: var(--clients-muted); font-size: .75rem; font-weight: 700; }
-.clevio-clients__badge[data-status="new"] { border-color: light-dark(#4192a4, #386976); background: light-dark(#dff6f9, #153945); color: light-dark(#075568, #8cedf4); }
-.clevio-clients__badge[data-status="contacted"] { border-color: light-dark(#b78c29, #77652a); background: light-dark(#fff3cf, #3c3219); color: light-dark(#6a4d00, #f7d580); }
-.clevio-clients__badge[data-status="confirmed"] { border-color: light-dark(#5f9c69, #42624a); background: light-dark(#e1f3e4, #193728); color: light-dark(#235d30, #a8e3b3); }
-.clevio-clients__badge[data-status="declined"] { border-color: light-dark(#c18b89, #785552); background: light-dark(#fae9e6, #3b2628); color: light-dark(#8a3a35, #f2b0ab); }
+.clevio-clients [data-status="new"] {
+  --clients-status-edge: light-dark(#4192a4, #4b8795);
+  --clients-status-fill: light-dark(#dff6f9, #153945);
+  --clients-status-ink: light-dark(#075568, #8cedf4);
+  --clients-status-selected: light-dark(#b8edf3, #214e5a);
+}
+.clevio-clients [data-status="contacted"] {
+  --clients-status-edge: light-dark(#b78c29, #8e7630);
+  --clients-status-fill: light-dark(#fff3cf, #3c3219);
+  --clients-status-ink: light-dark(#6a4d00, #f7d580);
+  --clients-status-selected: light-dark(#fce5a1, #584621);
+}
+.clevio-clients [data-status="confirmed"] {
+  --clients-status-edge: light-dark(#5f9c69, #4f8b62);
+  --clients-status-fill: light-dark(#e1f3e4, #193728);
+  --clients-status-ink: light-dark(#235d30, #a8e3b3);
+  --clients-status-selected: light-dark(#c8ebcf, #254d36);
+}
+.clevio-clients [data-status="declined"] {
+  --clients-status-edge: light-dark(#c18b89, #9a5e5b);
+  --clients-status-fill: light-dark(#fae9e6, #3b2628);
+  --clients-status-ink: light-dark(#8a3a35, #f2b0ab);
+  --clients-status-selected: light-dark(#f8d6d0, #542f32);
+}
+.clevio-clients [data-status="closed"] {
+  --clients-status-edge: light-dark(#a1adc0, #52637a);
+  --clients-status-fill: light-dark(#e9eef4, #243245);
+  --clients-status-ink: light-dark(#41536b, #c8d2e0);
+  --clients-status-selected: light-dark(#dce5ef, #33435a);
+}
+.clevio-clients :is(.clevio-clients__badge, .clevio-clients__summary-card, .clevio-clients__filters button)[data-status]:not([data-status="all"]):not([aria-pressed="true"]) {
+  border-color: var(--clients-status-edge);
+  background: var(--clients-status-fill);
+  color: var(--clients-status-ink);
+}
+.clevio-clients__summary-card[data-status]:not([data-status="all"]) span { color: var(--clients-status-ink); }
+.clevio-clients [data-attention] { position: relative; }
+.clevio-clients [data-attention]::after {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow: 0 0 .8rem light-dark(#27b0c6, #7af4fc), inset 0 0 .4rem light-dark(#42b9cb, #7af4fc);
+  opacity: .36;
+  pointer-events: none;
+  content: '';
+}
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  .clevio-clients [data-attention]::after { animation: clevio-new-request-glow 3s ease-in-out infinite; }
+}
+@keyframes clevio-new-request-glow {
+  0%, 100% { opacity: .22; }
+  50% { opacity: .62; }
+}
 .clevio-clients__contact { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem .6rem; font-size: .87rem; }
 .clevio-clients__contact > span { color: var(--clients-muted); }
 .clevio-clients__contact bdi { overflow-wrap: anywhere; min-inline-size: 0; }
