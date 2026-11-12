@@ -9,6 +9,13 @@
 
   const tasks = [
     {
+      title: 'طلبات العملاء',
+      text: 'راجع طلبات المشاريع الواردة وحدّث حالة كل عميل.',
+      link: 'افتح صندوق الطلبات',
+      href: '#/pages/clients',
+      icon: ['M4 5h16v14H4z', 'M4 13h5l1.5 3h3l1.5-3H20', 'M8 9h8'],
+    },
+    {
       title: 'تعديل الصفحة الرئيسية',
       text: 'حدّث العناوين والنصوص والشعار والشركاء ومعلومات التواصل.',
       link: 'افتح محتوى الصفحة',
@@ -234,7 +241,39 @@
     )
   }
 
+  async function requestClients({ cursor, body } = {}) {
+    let account
+    try {
+      // This is the account cache used by the pinned Sveltia build.
+      account = JSON.parse(window.localStorage.getItem('sveltia-cms.user') || 'null')
+    } catch {
+      account = null
+    }
+
+    if (account?.backendName !== 'github' || typeof account.token !== 'string' || !account.token) {
+      throw Object.assign(new Error('Dashboard sign-in required'), { status: 401 })
+    }
+
+    const url = new window.URL('/api/admin/leads', window.location.origin)
+    if (cursor) url.searchParams.set('cursor', cursor)
+    const headers = { Authorization: 'Bearer ' + account.token, Accept: 'application/json' }
+    if (body) headers['Content-Type'] = 'application/json'
+    const response = await window.fetch(url, {
+      method: body ? 'PATCH' : 'GET',
+      body: body ? JSON.stringify(body) : undefined,
+      headers,
+      cache: 'no-store',
+      redirect: 'error',
+    })
+    if (!response.ok) throw Object.assign(new Error('Client inbox request failed'), { status: response.status })
+    return response.json()
+  }
+
   cms.registerCustomPage({ id: 'start', label: 'ابدأ هنا', icon: 'space_dashboard', component: Welcome })
+  window.ClevioClients?.register(cms, {
+    loadLeads: requestClients,
+    updateLead: (id, status) => requestClients({ body: { id, status } }),
+  })
   if (!window.location.hash || window.location.hash === '#/') {
     window.history.replaceState(window.history.state, '', start)
   }

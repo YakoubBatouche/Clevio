@@ -189,7 +189,19 @@ test('mobile navigation supports keyboard dismissal and focus return', async ({ 
   await expect(trigger).toHaveAttribute('aria-expanded', 'false')
 })
 
-test('hero contact action reaches the form and prepares a valid email draft', async ({ page }) => {
+test('contact form validates, retains an unavailable submission and clears a successful retry', async ({ page }) => {
+  const submissions: { body: unknown; key: string }[] = []
+  await page.route('**/api/leads', async (route) => {
+    const request = route.request()
+    expect(request.method()).toBe('POST')
+    submissions.push({ body: request.postDataJSON(), key: request.headers()['idempotency-key'] })
+    if (submissions.length === 1) {
+      await route.fulfill({ status: 503, json: { error: 'unavailable' } })
+    } else {
+      await route.fulfill({ status: 201, json: { ok: true } })
+    }
+  })
+
   await page.goto('/')
   await page.getByRole('button', { name: 'لنبدأ مشروعك', exact: true }).click()
   await expect(page).toHaveURL(/#contact$/)
@@ -198,19 +210,38 @@ test('hero contact action reaches the form and prepares a valid email draft', as
   await expect(name).toBeFocused()
   await name.fill('عميل كليفيو')
   const contact = form.getByLabel('البريد الإلكتروني أو رقم الهاتف')
+  const service = form.getByLabel('نوع الخدمة أو المشروع')
+  const brief = form.getByLabel('تفاصيل المشروع')
+  const submit = form.locator('button[type="submit"]')
   await contact.fill('invalid')
-  await form.getByLabel('نوع الخدمة أو المشروع').selectOption('التصميم الإبداعي')
-  await form.getByLabel('تفاصيل المشروع').fill('هوية بصرية وموقع جديد')
-  await form.getByRole('button', { name: 'جهّز تفاصيل مشروعك' }).click()
+  await service.selectOption('التصميم الإبداعي')
+  await brief.fill('هوية بصرية وموقع جديد')
+  await submit.click()
   expect(await contact.evaluate((input) => (input as HTMLInputElement).validity.valid)).toBe(false)
-  await expect(form.getByRole('link', { name: 'فتح تطبيق البريد' })).not.toBeVisible()
+  expect(submissions).toHaveLength(0)
   await contact.fill('hello@example.com')
-  await form.getByRole('button', { name: 'جهّز تفاصيل مشروعك' }).click()
+  await submit.click()
   const draft = form.getByRole('link', { name: 'فتح تطبيق البريد' })
+  await expect(draft).toBeVisible()
   expect((await draft.getAttribute('href'))?.startsWith('mailto:info@clevio.dz?subject=')).toBe(true)
   expect(decodeURIComponent((await draft.getAttribute('href'))!)).toContain('هوية بصرية وموقع جديد')
-  await form.getByLabel('تفاصيل المشروع').fill('فكرة محدثة')
+  await expect(name).toHaveValue('عميل كليفيو')
+  await expect(brief).toHaveValue('هوية بصرية وموقع جديد')
+  await brief.fill('فكرة محدثة')
   await expect(draft).not.toBeVisible()
+  await brief.fill('هوية بصرية وموقع جديد')
+  await submit.click()
+  await expect(form.getByRole('status')).toHaveText('وصلنا طلبك. سنتواصل معك قريبًا.')
+  await expect(name).toHaveValue('')
+  await expect(contact).toHaveValue('')
+  await expect(service).toHaveValue('')
+  await expect(brief).toHaveValue('')
+  expect(submissions).toHaveLength(2)
+  expect(submissions[0].key).toMatch(/^[0-9a-f-]{36}$/i)
+  expect(submissions[1]).toEqual(submissions[0])
+  expect(submissions[0].body).toEqual({
+    name: 'عميل كليفيو', contact: 'hello@example.com', service: 'التصميم الإبداعي', brief: 'هوية بصرية وموقع جديد', website: '',
+  })
 })
 
 test('eight service categories use four desktop columns and accessible details', async ({ page }) => {
