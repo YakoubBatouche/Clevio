@@ -26,6 +26,27 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: 'NaN SuperX Serif Display Arabic';
+  src: url('/fonts/NaNSuperXSerifDisplayArabic-Medium-TRIAL.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'NaN SuperX Serif Display Arabic';
+  src: url('/fonts/NaNSuperXSerifDisplayArabic-Semibold-TRIAL.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'NaN SuperX Serif Display Arabic';
+  src: url('/fonts/NaNSuperXSerifDisplayArabic-ExtraBold-TRIAL.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
 :root {
   color-scheme: dark;
   font-family: var(--font-body);
@@ -41,6 +62,14 @@
   --cyan: #7af4fc;
   --font-body: 'RH ZAK', 'Alexandria Variable', sans-serif;
   --font-display: 'NaN SuperX Sans Arabic', 'Alexandria Variable', sans-serif;
+}
+#hero-heading,
+#services-heading,
+#work-heading,
+#partners-heading,
+#contact-heading {
+  font-family: 'NaN SuperX Serif Display Arabic', var(--font-display);
+  font-weight: 800;
 }
 * { box-sizing: border-box; }
 html { min-width: 320px; }
