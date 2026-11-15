@@ -6,6 +6,7 @@
   const h = cms.React.createElement
   const start = '#/pages/start'
   const entry = (collection, file) => `#/collections/${collection}/entries/${file}`
+  const reelsGallery = 'audiovisual-media'
 
   const tasks = [
     {
@@ -30,8 +31,8 @@
       icon: ['M5 5h5v5H5z', 'M14 5h5v5h-5z', 'M5 14h5v5H5z', 'M14 14h5v5h-5z'],
     },
     {
-      title: 'إدارة صور الأعمال',
-      text: 'اختر معرضًا لإضافة صور جديدة أو إعادة ترتيب الأعمال أو إزالتها.',
+      title: 'إدارة معارض الأعمال',
+      text: 'اختر معرضًا لإضافة صور أو فيديوهات أو إعادة ترتيب الأعمال.',
       link: 'اعرض كل المعارض',
       href: '#/collections/galleries',
       icon: ['M4 5h16v14H4z', 'M4 17l5-5 3 3 3-3 5 5', 'M15 9h.01'],
@@ -43,7 +44,7 @@
     ['logos', 'الشعارات'],
     ['digital-marketing', 'التسويق الرقمي والنمو'],
     ['web-app', 'المواقع والتطبيقات'],
-    ['audiovisual-media', 'الإنتاج السمعي البصري والإعلام'],
+    [reelsGallery, 'الإنتاج السمعي البصري والإعلام'],
   ]
 
   const editors = {
@@ -78,6 +79,15 @@
       help: 'عدّل العناوين والنصوص المشتركة التي تظهر للزوّار في معارض الأعمال.',
       sections: [['title', 'عنوان القسم'], ['sheetNote', 'نصوص المعرض'], ['allFilterLabel', 'الأزرار وأدوات العرض']],
     },
+  }
+
+  const reelsEditor = {
+    ...editors.galleries,
+    help: 'أضف فيديو من قسم الفيديوهات والصور، اكتب عنوانه، ثم احفظ. تظهر مقاطع ريلز على الموقع بعد النشر.',
+    sections: [
+      ['items', 'الفيديوهات والصور'],
+      ...editors.galleries.sections.slice(1),
+    ],
   }
 
   function addEditorTools() {
@@ -119,7 +129,9 @@
     function mount() {
       const route = location.hash.match(/^#\/collections\/([\w-]+)\/entries\/([\w-]+)(?:\?|$)/)
       const [, collection, file] = route ?? []
-      const editor = Object.hasOwn(editors, collection) ? editors[collection] : undefined
+      const editor = collection === 'galleries' && file === reelsGallery
+        ? reelsEditor
+        : Object.hasOwn(editors, collection) ? editors[collection] : undefined
       const galleryName = collection === 'galleries' ? galleries.find(([id]) => id === file)?.[1] : undefined
 
       if (!editor || (!galleryName && editor.file !== file)) {
@@ -210,6 +222,9 @@
           h('p', { className: 'clevio-editor-home__eyebrow' }, 'لوحة إدارة المحتوى'),
           h('h1', { id: 'clevio-editor-title' }, 'ماذا تريد أن تعدّل؟'),
           h('p', null, 'ابدأ باختيار إحدى المهام. بعد الحفظ، يظهر التغيير على الموقع عند اكتمال النشر.'),
+          h('a', { className: 'clevio-editor-home__reels', href: entry('galleries', reelsGallery) },
+            'رفع ريلز لمعرض الأعمال', h('span', { 'aria-hidden': 'true' }, '←'),
+          ),
         ),
         h('nav', { className: 'clevio-editor-home__tasks', 'aria-label': 'مهام التحرير' },
           tasks.map((task) => h('article', { className: 'clevio-editor-home__task', key: task.href },
@@ -233,7 +248,7 @@
           h('h2', { id: 'clevio-editor-help' }, 'أول مرة تستخدم اللوحة؟'),
           h('ol', null,
             h('li', null, 'افتح القسم الذي تريد تعديله.'),
-            h('li', null, 'عدّل النص أو أضف صورة.'),
+            h('li', null, 'عدّل النص أو أضف صورة أو فيديو.'),
             h('li', null, 'اضغط حفظ، ثم عاين الموقع بعد النشر.'),
           ),
         ),

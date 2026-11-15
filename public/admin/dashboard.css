@@ -67,6 +67,24 @@
 .clevio-editor-home__intro p { margin: 0; color: #d6e5f3; }
 .clevio-editor-home__intro .clevio-editor-home__eyebrow { color: #7af4fc; font-size: .875rem; font-weight: 700; }
 
+.clevio-editor-home a.clevio-editor-home__reels:any-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  min-block-size: 2.75rem;
+  box-sizing: border-box;
+  margin-block-start: .9rem;
+  padding: .5rem .85rem;
+  border-radius: .75rem;
+  background: #7af4fc;
+  color: #07172e;
+  font-weight: 700;
+}
+
+.clevio-editor-home a.clevio-editor-home__reels:is(:hover, :focus-visible) {
+  background: #b2faff;
+}
+
 .clevio-editor-home__tasks {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));

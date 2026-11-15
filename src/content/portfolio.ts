@@ -57,7 +57,11 @@ export const portfolioContent: {
 export const portfolioCategories: readonly PortfolioCategory[] = portfolioFiles.map((category) => ({
   ...category,
   filters: category.filters ?? [],
-  items: (category.items ?? []).filter((item) => item.image?.trim() || item.video?.trim()),
+  items: (category.items ?? [])
+    .filter((item) => item.image?.trim() || item.video?.trim())
+    .map((item) => category.id === 'audiovisual-media' && item.video?.trim() && !item.filterId?.trim()
+      ? { ...item, filterId: 'reels' }
+      : item),
 }))
 
 export function portfolioVideoUrl(path: string | null | undefined) {
