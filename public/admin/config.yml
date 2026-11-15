@@ -341,9 +341,9 @@ collections:
         fields:
           - *category_id
           - name: items
-            label: الأعمال والصور
+            label: الفيديوهات والصور
             label_singular: عمل
-            hint: *work_list_hint
+            hint: أضف فيديو عموديًا بنسبة 9:16 أو صورة، ثم اكتب عنوان العمل. اسحب الأعمال لتغيير ترتيبها.
             widget: list
             required: false
             collapsed: auto
@@ -352,9 +352,24 @@ collections:
             add_to_top: true
             fields:
               - *work_id
-              - *work_image
+              - name: video
+                label: الفيديو
+                widget: file
+                required: false
+                choose_url: true
+                accept: 'video/mp4,video/webm,.mp4,.webm'
+                hint: ارفع فيديو MP4 أو WebM حتى 25 ميغابايت، أو ألصق رابط HTTPS مباشرًا للفيديو.
+                media_libraries:
+                  all:
+                    max_file_size: 26214400
+              - name: image
+                label: الصورة أو غلاف الفيديو
+                widget: image
+                required: false
+                choose_url: false
+                hint: اختر صورة للعمل أو غلافًا اختياريًا للفيديو. يُفضّل استخدام صورة عمودية بنسبة 9:16.
               - *work_title
-              - *work_alt
+              - { name: alt, label: وصف قصير للعمل, widget: string, required: false }
               - *work_position
               - name: filterId
                 label: التصنيف داخل المعرض

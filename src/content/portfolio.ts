@@ -4,6 +4,7 @@ import digitalMarketing from './portfolio/digital-marketing.json'
 import logos from './portfolio/logos.json'
 import print from './portfolio/print.json'
 import webApp from './portfolio/web-app.json'
+import { siteImageUrl } from './site'
 
 type PortfolioFilter = {
   id: string
@@ -11,12 +12,13 @@ type PortfolioFilter = {
   description: string
 }
 
-type PortfolioItem = {
+export type PortfolioItem = {
   id?: string | null
   filterId?: string | null
   title: string
-  image: string
-  alt: string
+  image?: string | null
+  alt?: string | null
+  video?: string | null
   position?: string | null
 }
 
@@ -55,5 +57,11 @@ export const portfolioContent: {
 export const portfolioCategories: readonly PortfolioCategory[] = portfolioFiles.map((category) => ({
   ...category,
   filters: category.filters ?? [],
-  items: category.items ?? [],
+  items: (category.items ?? []).filter((item) => item.image?.trim() || item.video?.trim()),
 }))
+
+export function portfolioVideoUrl(path: string | null | undefined) {
+  const video = path?.trim()
+  if (!video) return undefined
+  return /^https:\/\//i.test(video) ? video : siteImageUrl(video)
+}

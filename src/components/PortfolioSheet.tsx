@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState, type PointerEvent } from 'react'
 import { createPortal } from 'react-dom'
-import { Maximize2, X } from 'lucide-react'
-import { portfolioCategories, portfolioContent } from '../content/portfolio'
+import { Maximize2, Play, X } from 'lucide-react'
+import { portfolioCategories, portfolioContent, portfolioVideoUrl } from '../content/portfolio'
 import { siteImageUrl } from '../content/site'
 import { PortfolioImageViewer, type PortfolioImageSelection } from './PortfolioImageViewer'
 
@@ -121,6 +121,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
   }
 
   const { displayed, filterId, filterMotion } = selection
+  const format = displayed?.id === 'audiovisual-media' ? 'reel' : undefined
   const selectedFilter = displayed?.filters.find((filter) => filter.id === filterId)
   const items = displayed?.items.filter((item) => filterId === allFilter.id || item.filterId === filterId) ?? []
 
@@ -129,6 +130,7 @@ export function PortfolioSheet({ category, trigger, onClose }: {
       ref={dialogRef}
       id="portfolio-sheet"
       className="portfolio-sheet"
+      data-format={format}
       dir="rtl"
       aria-labelledby="portfolio-sheet-title"
       onCancel={(event) => {
@@ -214,19 +216,32 @@ export function PortfolioSheet({ category, trigger, onClose }: {
               <ul key={filterId} className="portfolio-sheet__grid" role="list" data-filter-motion={filterMotion || undefined}>
                 {items.map((item, index) => {
                   const filterLabel = displayed.filters.find((filter) => filter.id === item.filterId)?.label
+                  const video = portfolioVideoUrl(item.video)
+                  const image = item.image?.trim()
+                  const position = item.position ? { objectPosition: item.position } : undefined
 
                   return (
                     <li key={item.id ?? index} className="portfolio-sheet__card">
                       <button className="portfolio-sheet__media" type="button" aria-haspopup="dialog"
-                        aria-label={portfolioContent.previewLabel + ': ' + item.title} onClick={(event) => setViewer({ item, trigger: event.currentTarget })}>
-                        <img
-                          src={siteImageUrl(item.image)}
-                          alt={item.alt}
-                          loading="lazy"
-                          decoding="async"
-                          style={item.position ? { objectPosition: item.position } : undefined}
-                        />
-                        <span className="portfolio-sheet__zoom" aria-hidden="true"><Maximize2 /></span>
+                        aria-label={(video ? 'عرض الفيديو' : portfolioContent.previewLabel) + ': ' + item.title}
+                        onClick={(event) => setViewer({ item, video, format, trigger: event.currentTarget })}>
+                        {image ? (
+                          <img src={siteImageUrl(image)} alt={item.alt ?? ''} loading="lazy" decoding="async" style={position} />
+                        ) : video && (
+                          <video
+                            src={video.includes('#') ? video : video + '#t=0.001'}
+                            preload="metadata"
+                            muted
+                            playsInline
+                            aria-hidden="true"
+                            style={position}
+                          />
+                        )}
+                        {video ? (
+                          <span className="portfolio-sheet__play" aria-hidden="true"><Play /></span>
+                        ) : (
+                          <span className="portfolio-sheet__zoom" aria-hidden="true"><Maximize2 /></span>
+                        )}
                       </button>
                       <div className="portfolio-sheet__card-body">
                         <h3 className="portfolio-sheet__card-title">{item.title}</h3>

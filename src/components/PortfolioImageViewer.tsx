@@ -1,17 +1,21 @@
 import { useLayoutEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
-import { portfolioContent } from '../content/portfolio'
+import { portfolioContent, type PortfolioItem } from '../content/portfolio'
 import { siteImageUrl } from '../content/site'
 
 export type PortfolioImageSelection = {
-  item: { title: string; image: string; alt: string }
+  item: PortfolioItem
+  video?: string
+  format?: 'reel'
   trigger: HTMLButtonElement
 }
 
-export function PortfolioImageViewer({ item, trigger, onClose }: PortfolioImageSelection & { onClose: () => void }) {
+export function PortfolioImageViewer({ item, video, format, trigger, onClose }: PortfolioImageSelection & { onClose: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const backdropPressed = useRef(false)
+  const poster = item.image?.trim()
+  const image = poster ? siteImageUrl(poster) : undefined
 
   useLayoutEffect(() => {
     const dialog = dialogRef.current
@@ -28,6 +32,7 @@ export function PortfolioImageViewer({ item, trigger, onClose }: PortfolioImageS
     <dialog
       ref={dialogRef}
       className="portfolio-image-viewer"
+      data-format={format}
       dir="rtl"
       aria-labelledby="portfolio-image-viewer-title"
       onCancel={(event) => {
@@ -44,12 +49,24 @@ export function PortfolioImageViewer({ item, trigger, onClose }: PortfolioImageS
     >
       <div className="portfolio-image-viewer__bar">
         <h2 id="portfolio-image-viewer-title">{item.title}</h2>
-        <button className="portfolio-image-viewer__close" type="button" aria-label={portfolioContent.closeImageLabel} autoFocus onClick={onClose}>
+        <button className="portfolio-image-viewer__close" type="button" aria-label={video ? 'إغلاق الفيديو' : portfolioContent.closeImageLabel} autoFocus onClick={onClose}>
           <X aria-hidden="true" />
         </button>
       </div>
       <div className="portfolio-image-viewer__art">
-        <img className="portfolio-image-viewer__image" src={siteImageUrl(item.image)} alt={item.alt} decoding="async" />
+        {video ? (
+          <video
+            className="portfolio-image-viewer__image"
+            src={video}
+            poster={image}
+            aria-label={item.title}
+            controls
+            playsInline
+            preload="metadata"
+          />
+        ) : (
+          <img className="portfolio-image-viewer__image" src={image} alt={item.alt ?? ''} decoding="async" />
+        )}
       </div>
     </dialog>,
     document.body,
