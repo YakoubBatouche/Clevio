@@ -83,7 +83,7 @@
 
   const reelsEditor = {
     ...editors.galleries,
-    help: 'أضف فيديو من قسم الفيديوهات والصور، اكتب عنوانه، ثم احفظ. تظهر مقاطع ريلز على الموقع بعد النشر.',
+    help: 'عدّل الأعمال الموجودة أو أضف رابط فيديو مباشرًا. لرفع ملف من جهازك، افتح «رفع ريلز».',
     sections: [
       ['items', 'الفيديوهات والصور'],
       ...editors.galleries.sections.slice(1),
@@ -162,6 +162,13 @@
       const help = document.createElement('p')
       help.textContent = editor.help
       heading.append(category, title, help)
+      if (editor === reelsEditor) {
+        const upload = document.createElement('a')
+        upload.className = 'clevio-editor-tools__upload-link'
+        upload.href = '#/pages/reels'
+        upload.textContent = 'رفع ريلز من الجهاز'
+        heading.append(upload)
+      }
 
       const nav = document.createElement('nav')
       nav.className = 'clevio-editor-tools__sections'
@@ -222,7 +229,7 @@
           h('p', { className: 'clevio-editor-home__eyebrow' }, 'لوحة إدارة المحتوى'),
           h('h1', { id: 'clevio-editor-title' }, 'ماذا تريد أن تعدّل؟'),
           h('p', null, 'ابدأ باختيار إحدى المهام. بعد الحفظ، يظهر التغيير على الموقع عند اكتمال النشر.'),
-          h('a', { className: 'clevio-editor-home__reels', href: entry('galleries', reelsGallery) },
+          h('a', { className: 'clevio-editor-home__reels', href: '#/pages/reels' },
             'رفع ريلز لمعرض الأعمال', h('span', { 'aria-hidden': 'true' }, '←'),
           ),
         ),
@@ -285,6 +292,7 @@
   }
 
   cms.registerCustomPage({ id: 'start', label: 'ابدأ هنا', icon: 'space_dashboard', component: Welcome })
+  window.ClevioReelUploader?.register(cms)
   window.ClevioClients?.register(cms, {
     loadLeads: requestClients,
     updateLead: (id, status) => requestClients({ body: { id, status } }),

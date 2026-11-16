@@ -197,6 +197,18 @@
 
 .clevio-editor-tools__intro p { margin: 0; color: #d6e5f3; font-size: .875rem; line-height: 1.6; }
 .clevio-editor-tools__intro .clevio-editor-tools__category { color: #7af4fc; font-size: .78rem; font-weight: 700; }
+.clevio-editor-tools__upload-link:any-link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  margin-block-start: .25rem;
+  color: #7af4fc;
+  font-size: .875rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: .2em;
+}
+.clevio-editor-tools__upload-link:focus-visible { outline: 2px solid #7af4fc; outline-offset: 3px; }
 
 .clevio-editor-tools__sections {
   display: flex;

@@ -1,0 +1,135 @@
+.clevio-reel-uploader {
+  --reel-bg: var(--clevio-admin-bg, light-dark(#eef3f8, #0c1727));
+  --reel-card: var(--clevio-admin-card, light-dark(#fff, #132338));
+  --reel-text: var(--clevio-admin-text, light-dark(#0e213a, #f0f6fd));
+  --reel-muted: var(--clevio-admin-muted, light-dark(#485c73, #b4c7db));
+  --reel-edge: var(--clevio-admin-edge, light-dark(#cddbe8, #30465d));
+  --reel-focus: var(--clevio-admin-focus, light-dark(#007c91, #7af4fc));
+  min-block-size: 100%;
+  color: var(--reel-text);
+  background: var(--reel-bg);
+  font: 400 1rem/1.6 system-ui, sans-serif;
+}
+
+.clevio-reel-uploader *,
+.clevio-reel-uploader *::before,
+.clevio-reel-uploader *::after { box-sizing: border-box; }
+
+.clevio-reel-uploader__inner {
+  max-inline-size: 46rem;
+  margin-inline: auto;
+  padding: clamp(.8rem, 3vw, 1.75rem);
+}
+
+.clevio-reel-uploader__header {
+  padding: clamp(1rem, 3vw, 1.6rem);
+  border: 1px solid #29435c;
+  border-radius: 1rem;
+  color: #f4f9ff;
+  background: linear-gradient(120deg, #12314d, #07172e 76%);
+}
+
+.clevio-reel-uploader__header h1 {
+  margin: .25rem 0;
+  color: inherit;
+  font: 750 clamp(1.8rem, 5vw, 2.5rem)/1.25 system-ui, sans-serif;
+}
+
+.clevio-reel-uploader p { margin: 0; }
+.clevio-reel-uploader__header p { color: #d6e5f3; }
+.clevio-reel-uploader a { color: var(--reel-focus); text-decoration: underline; text-underline-offset: .2em; }
+.clevio-reel-uploader__header :is(a, .clevio-reel-uploader__stay) { color: #7af4fc; font-size: .88rem; font-weight: 650; }
+
+.clevio-reel-uploader__form {
+  display: grid;
+  gap: .55rem;
+  min-inline-size: 0;
+  margin-block-start: .85rem;
+  padding: clamp(1rem, 3vw, 1.6rem);
+  border: 1px solid var(--reel-edge);
+  border-radius: 1rem;
+  background: var(--reel-card);
+}
+
+.clevio-reel-uploader__form label { font-weight: 700; }
+.clevio-reel-uploader__form label:not(:first-child) { margin-block-start: .4rem; }
+
+.clevio-reel-uploader__form input {
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 2.75rem;
+  padding: .65rem .8rem;
+  border: 1px solid var(--reel-edge);
+  border-radius: .65rem;
+  color: var(--reel-text);
+  background: var(--reel-bg);
+  font: inherit;
+}
+
+.clevio-reel-uploader__form input[type='file'] { overflow: hidden; text-overflow: ellipsis; }
+.clevio-reel-uploader__form input[type='file']::file-selector-button {
+  margin-inline-end: .65rem;
+  padding: .35rem .6rem;
+  border: 1px solid var(--reel-edge);
+  border-radius: .4rem;
+  color: var(--reel-text);
+  background: var(--reel-card);
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.clevio-reel-uploader :is(input, button, a):focus-visible { outline: 2px solid var(--reel-focus); outline-offset: 3px; }
+.clevio-reel-uploader__hint, .clevio-reel-uploader__filename { color: var(--reel-muted); font-size: .875rem; }
+.clevio-reel-uploader__filename { overflow-wrap: anywhere; }
+
+.clevio-reel-uploader__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .65rem 1rem;
+  margin-block-start: .65rem;
+}
+
+.clevio-reel-uploader__actions button {
+  min-block-size: 2.75rem;
+  padding: .5rem .9rem;
+  border: 1px solid transparent;
+  border-radius: .65rem;
+  color: #07172e;
+  background: #7af4fc;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.clevio-reel-uploader__actions button:disabled { opacity: .65; cursor: wait; }
+.clevio-reel-uploader__actions button.clevio-reel-uploader__cancel {
+  border-color: var(--reel-edge);
+  color: var(--reel-text);
+  background: var(--reel-bg);
+}
+
+.clevio-reel-uploader__progress { display: grid; gap: .3rem; }
+.clevio-reel-uploader__progress progress { inline-size: 100%; accent-color: var(--reel-focus); }
+
+.clevio-reel-uploader__error,
+.clevio-reel-uploader__success {
+  padding: .65rem .8rem;
+  border: 1px solid;
+  border-radius: .65rem;
+  font-size: .9rem;
+}
+
+.clevio-reel-uploader__error {
+  border-color: light-dark(#c18b89, #785552);
+  color: light-dark(#8a302a, #ffbeb7);
+  background: light-dark(#fff1ef, #3b2628);
+}
+
+.clevio-reel-uploader__success {
+  border-color: light-dark(#5f9c69, #4f8b62);
+  color: light-dark(#235d30, #a8e3b3);
+  background: light-dark(#e1f3e4, #193728);
+}

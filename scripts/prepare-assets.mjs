@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises'
 import sharp from 'sharp'
+import { prepareReels } from './prepare-reels.mjs'
 
 await fs.mkdir('public/images', { recursive: true })
 const scene = sharp('design/hero-scene.png')
@@ -11,3 +12,5 @@ for (const file of await fs.readdir('public/images')) {
   const stat = await fs.stat('public/images/' + file)
   console.log(file + ': ' + Math.round(stat.size / 1024) + ' KB')
 }
+
+await prepareReels()
